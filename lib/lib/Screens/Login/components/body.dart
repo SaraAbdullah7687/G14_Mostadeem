@@ -1,57 +1,160 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/Login/components/background.dart';
-import 'package:flutter_auth/Screens/Signup/signup_screen.dart';
-import 'package:flutter_auth/Screens/Welcome/welcome_screen.dart';
-import 'package:flutter_auth/components/already_have_an_account_acheck.dart';
-import 'package:flutter_auth/components/rounded_button.dart';
-import 'package:flutter_auth/components/rounded_input_field.dart';
-import 'package:flutter_auth/components/rounded_password_field.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:form_field_validator/form_field_validator.dart';
+import 'package:test_project/Screens/background.dart';
+import 'package:test_project/Screens/Signup/signup_screen.dart';
+import 'package:test_project/Screens/Welcome/welcome_screen.dart';
+import 'package:test_project/components/already_have_an_account_acheck.dart';
+import 'package:test_project/components/rounded_button.dart';
+import 'package:test_project/components/rounded_input_field.dart';
+import 'package:test_project/components/rounded_password_field.dart';
+//import 'package:flutter_svg/svg.dart';
+import 'package:test_project/components/text_field_container.dart';
+import 'package:test_project/services/auth.dart';
+import 'package:test_project/shared/loading.dart';
 
-class Body extends StatelessWidget {
+import '../../../constants.dart';
+
+class Body extends StatefulWidget {
   const Body({
-    Key key,
+    Key key, 
   }) : super(key: key);
+
+  @override
+  _BodyState createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+  
+  final AuthService _auth = AuthService();
+  bool loading = false;
+  String error = '';
+
+Map<String, String> _authData = { // can use variables instead of map 
+    'email': '',
+    'password': '',
+  }; // added it 
+  TextEditingController _emailController = TextEditingController(); //add it in rounded input class
+  TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // added it
+  // firebase 
+  //final _auth = FirebaseAuth.instance; // delete it 
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Background(
+    return loading ? Loading(): Background(
       child: SingleChildScrollView(
-        child: Form( // added it
+        child: Container(
+          margin: EdgeInsets.all(24),
+     //  padding: EdgeInsets.all(50.0), // this is why the fields looks smaller
+       child: Form( // added it
+       key: _formKey, // added it
          autovalidateMode: AutovalidateMode.always, // added it
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            /*Text(
-              "LOGIN",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+         
+         SizedBox(height: size.height * 0.03),
+            SizedBox(
+             height: 200, // change the number to make the logo bigger     
+           // width:size.width,
+             child: Image.asset("assets/images/logo.png",
+              fit: BoxFit.contain,)),
+ 
             SizedBox(height: size.height * 0.03),
-            SvgPicture.asset(
-              "assets/icons/login.svg", // change it to mustadeem
-              height: size.height * 0.35,
-            ),*/
 
-            // add mostadeem logo
+TextFieldContainer(
+      child: TextFormField( 
+        autofocus: false,
+        keyboardType: TextInputType.emailAddress, 
+        controller: _emailController, 
+        cursorColor: kPrimaryColor,
+        textInputAction: TextInputAction.next, // added it
+       // keyboardType: TextInputType.number, //for phone there's one for email
 
-            SizedBox(height: size.height * 0.03),
-            RoundedInputField(
+        decoration: InputDecoration(
+          prefixIcon: Icon( Icons.mail, color: kPrimaryColor,
+          ),
+          hintText: "Email",
+          // contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15), // make it smaller
+       //  border: InputBorder.none,
+        border: new OutlineInputBorder(
+          borderRadius: const BorderRadius.all(
+            const Radius.circular(15.0),
+          ),
+          borderSide: new BorderSide(
+            color: Colors.black,
+            width: 1.0,
+          ),
+        ),
+        ),
+ /*validator: (value) {
+                    if (value.isEmpty || !value.contains('@')) {
+                      return 'Invalid email!';
+                    }
+                    return null;
+                  },*/
+         onSaved: (value) {
+           // or _emailController.text = value!;
+                    _authData['email'] = value;
+                  },
+      validator: MultiValidator([
+      RequiredValidator(errorText: "Required"),
+      EmailValidator(errorText: "Not a valid email"), // WRONG don't generlize all fields as email
+      ]
+      ),
+      ),
+    ),
+    
+            /*RoundedInputField(
               hintText: "Email",
+              icon: Icons.mail, 
               errorTextForValidation: "Not a valid email",// added it
-              onChanged: (value) {},
-            ),
+              textController: _emailController,
+              onSaved: (value) {},
+            ),*/
+            
             RoundedPasswordField(
-              onChanged: (value) {},
+              controller: _passwordController,
+              onSaved: (value) {
+                // or  _passwordController.text = value!;
+                    _authData['password'] = value;
+                  }, // change it to onSaved
+            //textInputAction: TextInputAction.done,
             ),
+            
             RoundedButton(
-              text: "LOGIN",
-              /*Text(
-    "LOGIN",
-    style: TextStyle(fontSize: 15),
-),*/
-              press: () {},
+              text: "LOGIN mo",
+              press: () async{ 
+ if(_formKey.currentState.validate()){
+                    setState(() => loading = true);
+                    dynamic result = await _auth.signInWithEmailAndPassword(_emailController.text.trim(), _passwordController.text); // see the bookclub
+                    if(result == null) {
+                      setState(() {
+                        loading = false;
+                        error = 'Could not sign in with those credentials'; // change it with toast
+                      });
+                    }
+                  }
+                /* context.read<AuthenticationService>().signIn(
+                    email: _emailController.text.trim(),
+                    password: _passwordController.text.trim(),
+                  );*/
+
+
+               // signIn(_emailController.text, _passwordController.text);
+                
+                /* if (!_formKey.currentState.validate()) {
+                   print("validation doesn't works");// delete it 
+                      return;
+                    }
+              print("validation works"); // delete it 
+                    _formKey.currentState.save();*/
+              },
             ),
+
+
             SizedBox(height: size.height * 0.03),
             AlreadyHaveAnAccountCheck(
               press: () {
@@ -67,8 +170,28 @@ class Body extends StatelessWidget {
             ),
           ],
         ),
-        ),
+        ), // form
+      ),
       ),
     );
   }
+
+  // login function
+  /*
+  void signIn(String email, String password) async {
+    //if (_formKey.currentState!.validate()) {
+      if (_formKey.currentState.validate()){
+      await _auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((uid) => {
+                Fluttertoast.showToast(msg: "Login Successful"),
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => HomeScreen())),
+              })
+          .catchError((e) {
+        Fluttertoast.showToast(msg: e.message); //e.!message
+      });
+    }
+  }*/
 }
+
