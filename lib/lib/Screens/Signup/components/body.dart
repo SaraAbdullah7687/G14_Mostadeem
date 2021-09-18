@@ -48,7 +48,8 @@ Map<String, String> _authData = { // can use variables instead of map
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return loading ? Loading() : Background(
+    return loading ? Loading() : 
+    Background(
       child: SingleChildScrollView(
         child: Container(
           margin: EdgeInsets.only(bottom: 40.0), // edit it 
@@ -162,17 +163,16 @@ TextFieldContainer(
               press: () async{ 
                  if(_formKey.currentState.validate()){
                     setState(() => loading = true);
-                    print("validate form,sending signup req");
+                    print("validate form,sending signup req"); // maybe beacuse it's dunamic?
                     dynamic result = await _auth.registerWithEmailAndPassword(_authData['email'].trim(), _authData['password'], _authData['name'].trim());
                     print("req sent");
                     if(result == null) {
                       print("req returend null");
+                      error = 'Please supply a valid email';
                       setState(() {
                         loading = false;
-                        error = 'Please supply a valid email';
-                        print(error); // delete it 
                       });
-                    }
+                    }else {print("req is not null");} 
                   }
                  /*if (!_formKey.currentState.validate()) {
                    print("validation doesn't works");// delete it 

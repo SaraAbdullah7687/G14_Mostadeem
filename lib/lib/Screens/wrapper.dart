@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'Login/login_screen.dart';
+import 'Signup/signup_screen.dart';
 
 class Wrapper extends StatelessWidget {
   @override

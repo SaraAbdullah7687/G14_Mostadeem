@@ -10,10 +10,14 @@ class Background extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Container(
-      height: size.height,
+    return Scaffold(
+backgroundColor: Colors.white, 
+    //resizeToAvoidBottomInset: false,
+    body: SingleChildScrollView(
+    child: Container(
       width: double.infinity,
-      child: Stack(
+      height: size.height,
+      child: Stack(             // add riyadh landmarks in this file
         alignment: Alignment.center,
         children: <Widget>[
 
@@ -21,35 +25,29 @@ class Background extends StatelessWidget {
           top:0,
           width:size.width,
           child: Image.asset('assets/images/main_top.png'),),
+
+             AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_outlined, color: Colors.green[50]),
+          onPressed: () {
+            // passing this to our root
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+
           Positioned(
             bottom:0,
             width:size.width,
             child: Image.asset('assets/images/main_bottom.png'),),
-            /*Positioned(
-            left:0,
-            top: 190,
-            width:size.width,
-            child: Image.asset('assets/images/logo.png'),),*/
-          /* 
-          Positioned(
-            top: 0,
-            left: 0,
-            child: Image.asset(
-              "assets/images/main_top.png",
-              width: size.width * 0.3,
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            child: Image.asset(
-              "assets/images/main_bottom.png",
-              width: size.width * 0.2,
-            ),
-          ),*/
+         
           child,
         ],
       ),
+    ),
+    ),
     );
   }
 }

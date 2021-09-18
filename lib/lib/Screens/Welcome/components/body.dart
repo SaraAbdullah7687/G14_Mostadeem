@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:test_project/Screens/Login/login_screen.dart';
 import 'package:test_project/Screens/Signup/signup_screen.dart';
-import 'package:test_project/Screens/Welcome/components/background.dart';
-//import 'package:test_project/Screens/modhiSignUp/modhi_signUp.dart';
-//import 'package:test_project/Screens/modhiTest/login_modhi.dart';
 import 'package:test_project/components/rounded_button.dart';
 import 'package:test_project/constants.dart';
+import 'package:test_project/Screens/Welcome/components/background.dart';
+//import '../../background.dart';
 //import 'package:flutter_svg/svg.dart';
 
 class Body extends StatelessWidget {
@@ -18,7 +17,7 @@ class Body extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-         AppBar(
+        /* AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -28,20 +27,24 @@ class Body extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
-      ),
+      ),*/
 
         //SizedBox(height: size.height * 0.03),
             SizedBox(
-             height: 250, // change the number to make the logo bigger     
+             height: 200, // change the number to make the logo bigger     
            // width:size.width,
              child: Image.asset("assets/images/logo.png",
               fit: BoxFit.contain,)),
 SizedBox(height: size.height * 0.05),
+           
             Text(
               "SIGN UP AS",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle( color: Colors.green[900],
+              fontSize: 27,
+                fontWeight: FontWeight.w600),
             ),
-           // SizedBox(height: size.height * 0.05), // for what?
+            SizedBox(height: size.height * 0.03), // for what?
+
             RoundedButton(
               text: "Contirbutor", // change size + font
               press: () {

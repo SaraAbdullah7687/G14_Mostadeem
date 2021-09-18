@@ -10,7 +10,11 @@ class Background extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Container(
+    return Scaffold(
+backgroundColor: Colors.white, 
+    //resizeToAvoidBottomInset: false,
+    body: SingleChildScrollView(
+    child: Container(
       width: double.infinity,
       height: size.height,
       child: Stack(             // add riyadh landmarks in this file
@@ -31,6 +35,8 @@ class Background extends StatelessWidget {
           child,
         ],
       ),
+    ),
+    ),
     );
   }
 }
