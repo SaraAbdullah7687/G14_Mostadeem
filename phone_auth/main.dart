@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mostadeem_app/Screens/Welcome/welcome_screen.dart';
 import 'package:mostadeem_app/constants.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp();
   runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
