@@ -1,6 +1,6 @@
 import 'dart:async';
 //import 'dart:html';
-
+import 'confirmation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -72,6 +72,10 @@ class _LocationAppState extends State<LocationApp> {
 
       bottomNavigationBar: FloatingActionButton(
         onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Confirmation()),
+          );
           // Add your onPressed code here!
         },
         shape: new RoundedRectangleBorder(
