@@ -11,31 +11,44 @@ import 'package:test_project/components/rounded_password_field.dart';
 //import 'package:flutter_svg/svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:test_project/components/text_field_container.dart';
+import 'package:test_project/services/auth.dart';
+import 'package:test_project/shared/loading.dart';
 
 import '../../../constants.dart';
 
 class Body extends StatefulWidget {
-  const Body({
-    Key key,
+  
+   const Body({
+    Key key, 
   }) : super(key: key);
+  
+
 
   @override
   _BodyState createState() => _BodyState();
 }
 
 class _BodyState extends State<Body> {
+  final AuthService _auth = AuthService();
+  String error = '';
+  bool loading = false;
+String _email = '';
+  String _password = '';
+
+
 Map<String, String> _authData = { // can use variables instead of map 
     'name': '',
     'email': '',
     'password': '',
   }; // added it 
+
   TextEditingController _emailController = TextEditingController(); //add it in rounded input class
   TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // added it
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Background(
+    return loading ? Loading() : Background(
       child: SingleChildScrollView(
         child: Container(
           margin: EdgeInsets.only(bottom: 40.0), // edit it 
@@ -85,6 +98,10 @@ TextFieldContainer(
         onSaved: (value) {
         // or _emailController.text = value!;
         _authData['name'] = value; },
+
+        onChanged: (val) {
+                  setState(() => _authData['name'] = val);
+                },
       ),
     ),
 
@@ -117,8 +134,13 @@ TextFieldContainer(
         RequiredValidator(errorText: "Required"),
         EmailValidator(errorText: "Not a valid email"),]),
         onSaved: (value) {
-        // or _emailController.text = value!;
+        // _emailController.text = value!;
+        _email=value; // choose one of them 
         _authData['email'] = value; },
+
+         onChanged: (val) {
+                  setState(() => _authData['email'] = val);
+                },
       ),
     ),
     
@@ -126,32 +148,51 @@ TextFieldContainer(
               controller: _passwordController,
               onSaved: (value) {
                 // or  _passwordController.text = value!;
+                _password=value;
                     _authData['password'] = value;
                   }, // change it to onSaved
             //textInputAction: TextInputAction.done,
+            onChanged: (val) {
+                  setState(() => _authData['password'] = val);
+                },
             ),
             
             RoundedButton(
-              text: "SIGNUP modhi",
-              press: () { 
-                 if (!_formKey.currentState.validate()) {
+              text: "SIGNUP modh",
+              press: () async{ 
+                 if(_formKey.currentState.validate()){
+                    setState(() => loading = true);
+                    print("validate form,sending signup req");
+                    dynamic result = await _auth.registerWithEmailAndPassword(_authData['email'].trim(), _authData['password'], _authData['name'].trim());
+                    print("req sent");
+                    if(result == null) {
+                      print("req returend null");
+                      setState(() {
+                        loading = false;
+                        error = 'Please supply a valid email';
+                        print(error); // delete it 
+                      });
+                    }
+                  }
+                 /*if (!_formKey.currentState.validate()) {
                    print("validation doesn't works");// delete it 
                       return;
                     }
 print("validation works"); // delete it 
-                    _formKey.currentState.save();
+                    _formKey.currentState.save();*/
               },
             ),
 
 
             SizedBox(height: size.height * 0.03),
-            AlreadyHaveAnAccountCheck(
+           AlreadyHaveAnAccountCheck( // must make it clear , add padding or smth
+              login: false,
               press: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return WelcomeScreen(); // the general signup screen from nouf
+                      return LoginScreen();
                     },
                   ),
                 );

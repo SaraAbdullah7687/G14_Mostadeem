@@ -16,7 +16,7 @@ import 'package:test_project/shared/loading.dart';
 import '../../../constants.dart';
 
 class Body extends StatefulWidget {
-  const Body({
+ const Body({
     Key key, 
   }) : super(key: key);
 
@@ -60,7 +60,8 @@ Map<String, String> _authData = { // can use variables instead of map
              height: 200, // change the number to make the logo bigger     
            // width:size.width,
              child: Image.asset("assets/images/logo.png",
-              fit: BoxFit.contain,)),
+              fit: BoxFit.contain,
+              alignment: Alignment.bottomCenter,)),
  
             SizedBox(height: size.height * 0.03),
 
@@ -99,6 +100,9 @@ TextFieldContainer(
            // or _emailController.text = value!;
                     _authData['email'] = value;
                   },
+                  onChanged: (val) {
+                  setState(() => _authData['email'] = val);
+                },
       validator: MultiValidator([
       RequiredValidator(errorText: "Required"),
       EmailValidator(errorText: "Not a valid email"), // WRONG don't generlize all fields as email
@@ -122,6 +126,10 @@ TextFieldContainer(
                     _authData['password'] = value;
                   }, // change it to onSaved
             //textInputAction: TextInputAction.done,
+            onChanged: (val) {
+                  setState(() => _authData['password'] = val);
+                },
+            
             ),
             
             RoundedButton(
@@ -129,11 +137,12 @@ TextFieldContainer(
               press: () async{ 
  if(_formKey.currentState.validate()){
                     setState(() => loading = true);
-                    dynamic result = await _auth.signInWithEmailAndPassword(_emailController.text.trim(), _passwordController.text); // see the bookclub
+                    dynamic result = await _auth.signInWithEmailAndPassword(_authData['email'], _authData['password']); // see the bookclub
                     if(result == null) {
                       setState(() {
                         loading = false;
                         error = 'Could not sign in with those credentials'; // change it with toast
+                        print(error); // delete it 
                       });
                     }
                   }
