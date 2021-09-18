@@ -8,14 +8,7 @@ class DatabaseService {
 
   // collection reference
   final CollectionReference _userCollection = FirebaseFirestore.instance.collection('users'); // was Firestore instead of FirebaseFirestore
-/*
-  Future<void> updateUserData(String name, String email) async {
-    return await userCollection.doc(uid).set({ // was document instead of doc
-      'sugars': sugars,
-      'name': name,
-      'strength': strength,
-    });
-  }*/
+
 
   // get brews stream
   Stream<QuerySnapshot> get brews {
@@ -23,12 +16,13 @@ class DatabaseService {
   }
 
 
-
 Future<String> createUser(ContributorModel user) async {
     String retVal = "error";
 //ممكن طريقة انشاء الكولكشن غلط مدري كم عندنا من كوليكشن
     try {
+      print("create user collection");
       await _userCollection.doc(user.uid).set({
+        'uid':user.uid,
         'Name': user.name,
         'email': user.email,
         //'notifToken': user.notifToken,?? what should we add?

@@ -51,23 +51,23 @@ class AuthService {
    try {
      print("before registering user");
       UserCredential _result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      User _user = _result.user; // was FirebaseUser instead of User
+      User user = _result.user; // was FirebaseUser instead of User
       print("user registered");
-       ContributorModel _userCont = ContributorModel(
-        uid: _user.uid,
-        email: _user.email,
+      /* ContributorModel _userCont = ContributorModel(
+        uid: user.uid,
+        email: user.email,
         name: name,); //notifToken: await _fcm.getToken(),?? 
 
         String _returnString = await DatabaseService().createUser(_userCont); // maybe database service
         print("user created");
         if (_returnString == "success") { // didn't work
         retVal = "success";
-      }
-    print(retVal); // delete it 
+      }*/
+   // print(retVal); // delete it 
        
       // create a new document for the user with the uid
      // await DatabaseService(uid: _user.uid).updateUserData('0','new crew member', 100);
-      return _userFromFirebaseUser(_user);
+      return _userFromFirebaseUser(user);
     } catch (error) {
       print(error.toString());
       return null;
