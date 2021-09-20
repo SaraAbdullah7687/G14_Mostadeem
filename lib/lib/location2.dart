@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 //import 'dart:html';
 import 'confirmation.dart';
@@ -60,7 +62,6 @@ class _LocationAppState extends State<LocationApp> {
           onPressed: () => getCurrentLocation(),
           child: Icon(
             Icons.gps_fixed,
-            // backgroundColor: Color.(fromRGBO(103, 145, 61, 1),
             color: Color.fromRGBO(103, 145, 61, 1),
           ),
         ),
@@ -72,11 +73,11 @@ class _LocationAppState extends State<LocationApp> {
 
       bottomNavigationBar: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Confirmation()),
-          );
-          // Add your onPressed code here!
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AdvanceCustomAlert();
+              });
         },
         shape: new RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(25.0),
@@ -89,13 +90,6 @@ class _LocationAppState extends State<LocationApp> {
               color: Colors.white,
             )),
       ),
-/*
-        bottomNavigationBar: Container(
-          height: 60,
-          alignment: Alignment.center,
-          child: Text(
-              "lat: ${currentLocation.latitude}, long: ${currentLocation.longitude}"),
-        )*/
     );
   }
 
@@ -116,5 +110,83 @@ class _LocationAppState extends State<LocationApp> {
     print(
         'animating camera to (lat: ${position.latitude}, long: ${position.longitude}"');
     controller.animateCamera(CameraUpdate.newCameraPosition(_cameraPosition));
+  }
+}
+
+class AdvanceCustomAlert extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: new RoundedRectangleBorder(
+        borderRadius: new BorderRadius.circular(15),
+      ),
+      child: Stack(
+        overflow: Overflow.visible,
+        children: [
+          Container(
+            height: 200,
+            width: 300,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      color: Colors.white70,
+                      child: Icon(
+                        Icons.celebration,
+                        size: 60,
+                        color: Color.fromRGBO(103, 145, 61, 1),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                      child: Container(
+                    color: Color.fromRGBO(103, 145, 61, 1),
+                    child: SizedBox.expand(
+                      child: Column(
+                        children: [
+                          Text(
+                            'Done!',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                          Text(
+                            'we have recievd your request',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                          ),
+                          RaisedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          Confirmation()), /*CHANGE IT TO HOME PAGE*/
+                                );
+                              },
+                              child: Text(
+                                'OK',
+                                style: TextStyle(
+                                  color: Color.fromRGBO(103, 145, 61, 1),
+                                ),
+                              ))
+                        ],
+                      ),
+                    ),
+                  )),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
