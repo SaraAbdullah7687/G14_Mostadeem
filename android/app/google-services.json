@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "684915991167",
+    "project_id": "mostadeem1",
+    "storage_bucket": "mostadeem1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:684915991167:android:46edab3a0564c679fd554a",
+        "android_client_info": {
+          "package_name": "com.project.mostadeem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "684915991167-47bctdis9d671afq90vbffhfeu9vr4sg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5ocelGj1xzr3_XTomuZPIeWolrySWr5w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "684915991167-47bctdis9d671afq90vbffhfeu9vr4sg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
