@@ -14,6 +14,7 @@ class _regScreenState extends State<regScreen> {
   
   
     final formKey = GlobalKey<FormState>();
+  
 
     String name = '';
     String email = '';
@@ -23,6 +24,8 @@ class _regScreenState extends State<regScreen> {
 
   @override
   Widget build(BuildContext context) =>Scaffold(
+
+     
 
     body: Form(
       key: formKey,
@@ -46,16 +49,36 @@ class _regScreenState extends State<regScreen> {
     );
     Widget buildName() => TextFormField(
       decoration: InputDecoration(
+        prefixIcon: Padding(
+         padding: EdgeInsets.all(0.0),
+         child: Icon(
+          Icons.person,
+           color: Color.fromRGBO(83, 122, 88, 1)),
+            ), 
+
         labelText: 'Name',
-        border: OutlineInputBorder(),
+        border: OutlineInputBorder(
+       borderRadius: BorderRadius.circular(15.0),
+
+        ),
       ),
       onChanged: (value) => setState(() => name = value),
     );
 
     Widget buildEmail() => TextFormField(
       decoration: InputDecoration(
+        prefixIcon: Padding(
+         padding: EdgeInsets.all(0.0),
+         child: Icon(
+          Icons.email,
+           color: Color.fromRGBO(83, 122, 88, 1)),
+            ), 
         labelText: 'Email',
-        border: OutlineInputBorder(),
+        
+        border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15.0),
+
+        ),
       ),
       onChanged: (value) => setState(() => email = value),
     );
@@ -63,23 +86,51 @@ class _regScreenState extends State<regScreen> {
   
   Widget buildPassword() => TextFormField(
       decoration: InputDecoration(
+        prefixIcon: Padding(
+         padding: EdgeInsets.all(0.0),
+         child: Icon(
+          Icons.lock,
+           color: Color.fromRGBO(83, 122, 88, 1)),
+            ), 
         labelText: 'Password',
-        border: OutlineInputBorder(),
+        border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15.0),
+
+        ),
       ),
       onChanged: (value) => setState(() => password = value),
+      obscureText: true,
     );
 
      Widget buildSocialM() => TextFormField(
       decoration: InputDecoration(
+        prefixIcon: Padding(
+         padding: EdgeInsets.all(0.0),
+         child: Icon(
+          Icons.link,
+           color: Color.fromRGBO(83, 122, 88, 1)),
+            ), 
         labelText: 'Social media profile link',
-        border: OutlineInputBorder(),
+        border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15.0),
+
+        ),
       ),
       onChanged: (value) => setState(() => socialM = value),
     );
     Widget buildCR() => TextFormField(
       decoration: InputDecoration(
+        prefixIcon: Padding(
+         padding: EdgeInsets.all(0.0),
+         child: Icon(
+          Icons.verified,
+           color: Color.fromRGBO(83, 122, 88, 1)),
+            ), 
         labelText: 'Commercial Record',
-        border: OutlineInputBorder(),
+        border: OutlineInputBorder(
+       borderRadius: BorderRadius.circular(15.0),
+
+        ),
       ),
       onChanged: (value) => setState(() => CR = value),
     );
