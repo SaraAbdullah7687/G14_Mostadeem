@@ -1,5 +1,6 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
+import 'package:inst_registration/CheckBoxState.dart';
 
 
 class regScreen extends StatefulWidget {
@@ -11,6 +12,14 @@ class regScreen extends StatefulWidget {
 
 class _regScreenState extends State<regScreen> {
   
+  bool value = false;
+
+  final notifications =[
+    CheckBoxState(title: 'Plastic'),
+    CheckBoxState(title: 'Paper'),
+    CheckBoxState(title: 'Furniture'),
+  ];
+
   
   
     final formKey = GlobalKey<FormState>();
@@ -42,6 +51,11 @@ class _regScreenState extends State<regScreen> {
         const SizedBox(height: 32),
         buildCR(),
         const SizedBox(height: 32),
+        buildTitle(),
+        buildSingleCateg(),
+        buildSingleCateg(),
+        buildSingleCateg(),
+        buildSingleCateg(),
         buildNext(),
       ],
       ),
@@ -134,7 +148,24 @@ class _regScreenState extends State<regScreen> {
       ),
       onChanged: (value) => setState(() => CR = value),
     );
-    // ignore: deprecated_member_use
+
+    Widget buildTitle() => Container(
+       
+       child: Text(
+            'Accepted Categories', 
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+    );
+
+  Widget buildSingleCateg() => CheckboxListTile(
+    controlAffinity: ListTileControlAffinity.leading ,
+    activeColor: Color.fromRGBO(83, 122, 88, 1),
+    title: Text('Plastic', style: TextStyle(fontSize: 20),),
+
+    value: value, 
+    onChanged: (value) => setState (() => this.value = value!),
+
+
+
     Widget buildNext() => ElevatedButton(
          child: Text('Next',
           style: TextStyle(fontSize: 20)
