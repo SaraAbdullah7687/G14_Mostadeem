@@ -4,10 +4,18 @@ import 'dart:async';
 //import 'dart:html';
 import 'confirmation.dart';
 import 'package:flutter/material.dart';
+// import location packges
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+// Import the firebase_core plugin
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-void main() {
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  //FirebaseApp LocationApp = await Firebase.initializeApp();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
