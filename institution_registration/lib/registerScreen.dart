@@ -12,12 +12,22 @@ class regScreen extends StatefulWidget {
 
 class _regScreenState extends State<regScreen> {
   
-  bool value = false;
 
   final notifications =[
-    CheckBoxState(title: 'Plastic'),
     CheckBoxState(title: 'Paper'),
+    CheckBoxState(title: 'Cardboard'),
+    CheckBoxState(title: 'Glass'),
+    CheckBoxState(title: 'Plastic'),
+    CheckBoxState(title: 'Nylon'),
+    CheckBoxState(title: 'Cans'),
+    CheckBoxState(title: 'Metals'),
+    CheckBoxState(title: 'Electronics'),
+    CheckBoxState(title: 'Batteries'),
     CheckBoxState(title: 'Furniture'),
+    CheckBoxState(title: 'Clothes'),
+    CheckBoxState(title: 'Food'),
+
+
   ];
 
   
@@ -34,7 +44,7 @@ class _regScreenState extends State<regScreen> {
   @override
   Widget build(BuildContext context) =>Scaffold(
 
-     
+     backgroundColor: Colors.transparent, 
 
     body: Form(
       key: formKey,
@@ -52,10 +62,7 @@ class _regScreenState extends State<regScreen> {
         buildCR(),
         const SizedBox(height: 32),
         buildTitle(),
-        buildSingleCateg(),
-        buildSingleCateg(),
-        buildSingleCateg(),
-        buildSingleCateg(),
+        ...notifications.map(buildSingleCateg).toList(),
         buildNext(),
       ],
       ),
@@ -152,19 +159,19 @@ class _regScreenState extends State<regScreen> {
     Widget buildTitle() => Container(
        
        child: Text(
-            'Accepted Categories', 
+            'Accepted Categories\n', 
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
     );
 
-  Widget buildSingleCateg() => CheckboxListTile(
+  Widget buildSingleCateg(CheckBoxState Checkbox) => CheckboxListTile(
     controlAffinity: ListTileControlAffinity.leading ,
     activeColor: Color.fromRGBO(83, 122, 88, 1),
-    title: Text('Plastic', style: TextStyle(fontSize: 20),),
+    title: Text(Checkbox.title, style: TextStyle(fontSize: 20),),
 
-    value: value, 
-    onChanged: (value) => setState (() => this.value = value!),
+    value: Checkbox.value, 
+    onChanged: (value) => setState (() => Checkbox.value = value!),
 
-
+  );
 
     Widget buildNext() => ElevatedButton(
          child: Text('Next',
