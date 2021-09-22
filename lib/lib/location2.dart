@@ -4,18 +4,18 @@ import 'dart:async';
 //import 'dart:html';
 import 'confirmation.dart';
 import 'package:flutter/material.dart';
-// import location packges
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 // Import the firebase_core plugin
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+// to store geoPoints
+import 'package:geoflutterfire/geoflutterfire.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //FirebaseApp LocationApp = await Firebase.initializeApp();
-  await Firebase.initializeApp();
+  FirebaseApp LocationApp = await Firebase.initializeApp();
+  // await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -39,13 +39,15 @@ class LocationApp extends StatefulWidget {
 }
 
 class _LocationAppState extends State<LocationApp> {
+  CollectionReference requests =
+      FirebaseFirestore.instance.collection('requests');
+
   //*السوري*//
   Completer<GoogleMapController> _controller = Completer();
 
   // when page first open this will show
   static final CameraPosition _initialCameraPosition = CameraPosition(
       target: LatLng(24.724797214237658, 46.63837971603376), zoom: 14.4746);
-
   LatLng currentLocation = _initialCameraPosition.target;
 
   @override
@@ -78,9 +80,12 @@ class _LocationAppState extends State<LocationApp> {
 ///////////////////////////////////////////
 
       /* to display location lang+long*/
-
       bottomNavigationBar: FloatingActionButton(
         onPressed: () {
+          /*DB HERE ADDED*/
+          //  await requests.add({'location': currentLocation.latitude});
+          _addGeoPoint();
+          /* display conformation pop up*/
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -101,6 +106,7 @@ class _LocationAppState extends State<LocationApp> {
     );
   }
 
+  /////////////METHOD////////////
 /*to get user current location*/
   Future<void> getCurrentLocation() async {
     final postition = await Geolocator.getCurrentPosition(
@@ -118,6 +124,18 @@ class _LocationAppState extends State<LocationApp> {
     print(
         'animating camera to (lat: ${position.latitude}, long: ${position.longitude}"');
     controller.animateCamera(CameraUpdate.newCameraPosition(_cameraPosition));
+  }
+
+  /////////////METHOD////////////
+  /*ADEDD DB HERE: store locaation*/
+  _addGeoPoint() async {
+    // Init firestore and geoFlutterFire
+    final geo = Geoflutterfire();
+    var pos = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    GeoFirePoint point =
+        geo.point(latitude: pos.latitude, longitude: pos.longitude);
+    requests.add({'location': point.data});
   }
 }
 
