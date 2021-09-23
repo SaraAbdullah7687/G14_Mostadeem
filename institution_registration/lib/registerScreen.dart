@@ -1,6 +1,10 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:inst_registration/CheckBoxState.dart';
+import 'package:f_datetimerangepicker/f_datetimerangepicker.dart';
+import 'package:time_range/time_range.dart';
+
+
 
 
 class regScreen extends StatefulWidget {
@@ -47,9 +51,13 @@ class _regScreenState extends State<regScreen> {
       onChanged: (value) => setState(() => email = value),
     );
 
-  
+      bool _isHidden = true;
+
   Widget buildPassword() => TextFormField(
       decoration: InputDecoration(
+        suffix: InkWell(
+         onTap: _togglePasswordView,
+        child: Icon(Icons.visibility),),
         prefixIcon: Padding(
          padding: EdgeInsets.all(0.0),
          child: Icon(
@@ -65,7 +73,10 @@ class _regScreenState extends State<regScreen> {
       onChanged: (value) => setState(() => password = value),
       obscureText: true,
     );
-
+void _togglePasswordView() {
+    setState(() {
+      _isHidden = !_isHidden;
+    });}
      Widget buildSocialM() => TextFormField(
       decoration: InputDecoration(
         prefixIcon: Padding(
@@ -131,87 +142,109 @@ class _regScreenState extends State<regScreen> {
             borderRadius: new BorderRadius.circular(25.0),
             
             ),
-          ));
-  Widget buildStartTime() {
-String startTime = '8:00 AM';
-  Future<void> _openTimePicker(BuildContext context) async {
-    
-    final TimeOfDay? startingTime = 
-    await showTimePicker(context: context, initialTime: TimeOfDay.now());
-    if(startingTime != null){
-
-      setState(() {
-        startTime = startingTime.format(context);
-      });
-    }
-  }
-
-return Container(
   
-  child: RawMaterialButton(
-    fillColor: Color.fromRGBO(83, 122, 88, 1),
-    child: Text(startTime,
-    style: TextStyle(color: Colors.white),),
-    onPressed: (){
-      _openTimePicker(context);
-    },
-    ),);
-
-
-  }
-Widget buildEndTime() {
-String endTime = '9:00 PM';
-  Future<void> _openTimePicker(BuildContext context) async {
-    
-    final TimeOfDay? endingTime = 
-    await showTimePicker(context: context, initialTime: TimeOfDay.now());
-    if(endingTime != null){
-
-      setState(() {
-        endTime = endingTime.format(context);
-      });
-    }
-  }
-
-return Container(
+       ));
+     @override
+  Widget buildStartTime(BuildContext context) {
   
-  child: ElevatedButton(
-    onPressed: (){
-      _openTimePicker(context);
-    },
-    style: ElevatedButton.styleFrom(
-    shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(30.0)
-    
-       ),
-    primary: Color.fromRGBO(83, 122, 88, 1)),
+   final _defaultTimeRange = TimeRangeResult(
+    TimeOfDay(hour: 14, minute: 50),
+    TimeOfDay(hour: 15, minute: 20),
+    );
+   TimeRangeResult? _timeRange;
 
-    child: Text(endTime,
-    style: TextStyle(color: Colors.white),),
-    
-    ),);
+   @override
+   void initState() {
+    super.initState();
+    _timeRange = _defaultTimeRange;
+   }
 
-
+//https://pub.dev/packages/time_range/example
+    return Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 16, left: 5),
+                child: Text(
+                  'Pickup Times',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6!
+                      .copyWith(fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+              ),
+              SizedBox(height: 20),
+              TimeRange(
+                fromTitle: Text(
+                  'FROM',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                toTitle: Text(
+                  'TO',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                titlePadding: 50,
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black,
+                ),
+                activeTextStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromRGBO(83, 122, 88, 0.5),
+                ),
+                borderColor: Colors.black,
+                activeBorderColor: Colors.black,
+                backgroundColor: Colors.transparent,
+                activeBackgroundColor: Color.fromRGBO(83, 122, 88, 0.5),
+                firstTime: TimeOfDay(hour: 8, minute: 00),
+                lastTime: TimeOfDay(hour: 23, minute: 59),
+                initialRange: _timeRange,
+                timeStep: 10,
+                timeBlock: 30,
+                onRangeCompleted: (range) => setState(() => _timeRange = range),
+              ),
+              SizedBox(height: 30),
+              if (_timeRange != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, left: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Selected Range: ${_timeRange!.start.format(context)} - ${_timeRange!.end.format(context)}',
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                      SizedBox(height: 20),
+                      MaterialButton(
+                        child: Text('Default'),
+                        onPressed: () =>
+                            setState(() => _timeRange = _defaultTimeRange),
+                        color: Color.fromRGBO(83, 122, 88, 0.5),
+                      )
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        );
   }
 
-  Widget buildTimetitle() => Container(
-       
-       child: Text(
-            '\nPickup Time\n', 
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-    );
-     Widget buildStartTimeTitle() => Container(
-       
-       child: Text(
-            '\nStart Time\n', 
-            style: TextStyle( fontSize: 20),),
-    );
-      Widget buildEndTimeTitle() => Container(
-       
-       child: Text(
-            '\nEnd Time\n', 
-            style: TextStyle( fontSize: 20),),
-    );
+
+ 
+
+
+
+
+  
     Widget buildSpace() => Container(
        
        child: Text(
@@ -251,6 +284,10 @@ return Container(
   Widget build(BuildContext context) => Scaffold(
      backgroundColor: Colors.white, 
     appBar: AppBar(
+  leading: IconButton(
+    icon: Icon(Icons.arrow_back, color: Colors.black),
+    onPressed: (){},),
+
   backgroundColor: Color.fromRGBO(83, 122, 88, 1),
   ),
 
@@ -273,11 +310,7 @@ return Container(
         const SizedBox(height: 32),
         buildTitle(),
         ...notifications.map(buildSingleCateg).toList(),
-        buildTimetitle(),
-        buildStartTimeTitle(),
-        buildStartTime(),
-        buildEndTimeTitle(),
-        buildEndTime(),
+        buildStartTime( context),
         buildSpace(),
         buildNext(),
       ],
