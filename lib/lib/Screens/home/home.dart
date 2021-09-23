@@ -15,10 +15,10 @@ class Home extends StatelessWidget {
       value: DatabaseService().brews,
       initialData: null,
       child: Scaffold(
-        backgroundColor: Colors.brown[50],
+        backgroundColor: Colors.green[50],
         appBar: AppBar(
-          title: Text('مستديم'),
-          backgroundColor: Colors.green[900],
+          title: Text('MOSTADEEM'),
+          backgroundColor: Colors.lightGreen[900],
           elevation: 0.0,
           actions: <Widget>[
             FlatButton.icon(

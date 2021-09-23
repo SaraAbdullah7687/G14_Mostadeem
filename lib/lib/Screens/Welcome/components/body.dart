@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:test_project/Screens/authenticate/bodyLogin.dart';
+import 'package:test_project/Screens/authenticate/bodySignUp.dart';
 import 'package:test_project/Screens/Login/login_screen.dart';
 import 'package:test_project/Screens/Signup/signup_screen.dart';
 import 'package:test_project/components/rounded_button.dart';
@@ -52,7 +54,7 @@ SizedBox(height: size.height * 0.05),
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return SignUpScreen(); // SignUpScreen() origenal reg form contirbutor
+                      return BodySignUp(); // SignUpScreen() origenal reg form contirbutor
                     },
                   ),
                 );
@@ -67,7 +69,7 @@ SizedBox(height: size.height * 0.05),
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return LoginScreen();//LoginModhi(); SignUpModhi// reg form Institution was SignUpScreen
+                      return BodyLogin();//LoginScreen // reg form Institution was SignUpScreen
                     },
                   ),
                 );

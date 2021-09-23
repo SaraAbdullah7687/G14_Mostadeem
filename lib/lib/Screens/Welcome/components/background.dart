@@ -30,7 +30,7 @@ backgroundColor: Colors.white,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_outlined, color: Colors.green[50]),
+          icon: Icon(Icons.arrow_back_outlined, color: Colors.green[50], size: 30.0,),
           onPressed: () {
             // passing this to our root
             Navigator.of(context).pop();
