@@ -1,8 +1,15 @@
+// ignore: file_names
+// ignore: file_names
+// ignore: file_names
 import 'dart:core';
 import 'package:flutter/material.dart';
-import 'package:inst_registration/CheckBoxState.dart';
-import 'package:f_datetimerangepicker/f_datetimerangepicker.dart';
+import 'package:mostadeem_app/CheckBoxState.dart';
+import 'package:mostadeem_app/otp.dart';
 import 'package:time_range/time_range.dart';
+import 'package:email_validator/email_validator.dart';
+
+import 'Screens/background.dart';
+
 
 
 
@@ -16,6 +23,12 @@ class regScreen extends StatefulWidget {
 
 class _regScreenState extends State<regScreen> {
   Widget buildName() => TextFormField(
+    validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'required';
+    }
+    return null;
+  },
       decoration: InputDecoration(
         prefixIcon: Padding(
          padding: EdgeInsets.all(0.0),
@@ -34,7 +47,9 @@ class _regScreenState extends State<regScreen> {
     );
 
     Widget buildEmail() => TextFormField(
-      decoration: InputDecoration(
+     
+    decoration: InputDecoration(
+        
         prefixIcon: Padding(
          padding: EdgeInsets.all(0.0),
          child: Icon(
@@ -43,8 +58,8 @@ class _regScreenState extends State<regScreen> {
             ), 
         labelText: 'Email',
         
-        border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15.0),
+       border: OutlineInputBorder(
+       borderRadius: BorderRadius.circular(15.0),
 
         ),
       ),
@@ -54,6 +69,12 @@ class _regScreenState extends State<regScreen> {
       bool _isHidden = true;
 
   Widget buildPassword() => TextFormField(
+      validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'required';
+    }
+    return null;
+  },
       decoration: InputDecoration(
         suffix: InkWell(
          onTap: _togglePasswordView,
@@ -85,7 +106,7 @@ void _togglePasswordView() {
           Icons.link,
            color: Color.fromRGBO(83, 122, 88, 1)),
             ), 
-        labelText: 'Social media profile link',
+        labelText: 'Twitter Account',
         border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15.0),
 
@@ -132,9 +153,18 @@ void _togglePasswordView() {
           style: TextStyle(fontSize: 20, color: Colors.white)
           ),
           onPressed: () {
-            //final isValid = formKey.currentState.validate();
-     
+           
+          if(!formKey.currentState!.validate()){
+            return;
+          }
+         Navigator.push(
+         context,
+         //FIX IT
+         MaterialPageRoute(builder: (context) => firstBackground(child: Scaffold())));
+
+          
           },
+          
            
             style: ElevatedButton.styleFrom(
             primary: Color.fromRGBO(83, 122, 88, 1),
