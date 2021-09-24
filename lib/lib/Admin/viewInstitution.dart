@@ -1,15 +1,15 @@
 
-import 'dart:convert';
+//import 'dart:convert';
 
 import 'package:flutter/material.dart';
 //import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:test_project/Screens/background.dart';
+//import 'package:flutter_svg/svg.dart';
+////import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+//import 'package:test_project/Screens/background.dart';
 import 'package:test_project/services/auth.dart';
 import 'package:test_project/shared/loading.dart';
-import 'package:provider/provider.dart';
+//import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'components/social_icon.dart';
@@ -76,7 +76,7 @@ class ViewInstitution extends StatelessWidget {
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
           if (!snapshot.hasData) return Loading();
          return //Container( height: 50, width: 50,child: 
-         new ListView.builder(
+         new ListView.builder( 
             itemCount: snapshot.data.docs.length,
             itemBuilder: (context, index) =>
                 buildInstitutionCard(context, snapshot.data.docs[index]),//),
@@ -213,20 +213,21 @@ class ViewInstitution extends StatelessWidget {
         Row(
           children: <Widget>[
             Flexible(  child:
-GestureDetector( child:
-IconButton(
-  iconSize: 50.0,
-          icon: const Icon(Icons.check),
-          color: Colors.lightGreen[600],
-          onPressed: (){ },), // pop up , are you show?
+              GestureDetector( child:
+              IconButton(
+               iconSize: 50.0,
+               icon: const Icon(Icons.check),
+               color: Colors.lightGreen[600],
+               onPressed: (){_showMyDialog("approve", context,document.id); },), // pop up , are you show?
 ),),
-Flexible(  child:
-GestureDetector( child:
-IconButton(
-  iconSize: 50.0,
-          icon: const Icon(Icons.clear),
-          color: Colors.red[800],
-          onPressed: (){ },), // pop up , are you show?
+
+            Flexible(  child:
+              GestureDetector( child:
+              IconButton(
+              iconSize: 50.0,
+              icon: const Icon(Icons.clear),
+              color: Colors.red[800],
+              onPressed: (){ _showMyDialog("disapprove", context,document.id);},), // pop up , are you show?
 ),),
           ],  
         ),
@@ -294,21 +295,46 @@ if (await canLaunch(url)) {
 }
 
 
-Future<void> _showMyDialog(String status) async {
+Future<void> _showMyDialog(String status, BuildContext context, String uid) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: false, // user must tap button!
     builder: (BuildContext context) {
       return AlertDialog(
         title: const Text('Institution Status'),
-        content: const Text('Do you want to'),
+        content: Text('Do you want to $status this intitution?'),
         actions: <Widget>[
-          TextButton(
+          TextButton( // nothing should happen 
               onPressed: () => Navigator.pop(context, 'Cancel'),
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () => Navigator.pop(context, 'OK'),
+              onPressed: (){
+                
+                if(status=="approve"){
+                  // change status to approved, then admin would not be able to see them 
+                 String result= _auth.updateInstitutionStatus(status,uid);
+                 if(result=='Success approve'){ // show another pop up 
+                   print('status has changed to approved');
+
+                 }
+                 else if(result=='Fail approve'){print('could not update status, procces failed');}
+                 else{ print(result);}
+                }
+
+                
+                else {
+                  // delete institution and send email to them to let them know 
+                  String result= _auth.updateInstitutionStatus(status,uid);
+                 if(result=='Success delete'){ // show another pop up 
+                   print('intitution has been deleted');
+
+                 }
+                 else if(result=='Fail delete') {print('could not delete institution, procces failed');}
+                  else{ print(result);}
+                }
+                
+                Navigator.pop(context, 'OK');},
               child: const Text('Yes'),
             ),
           ],
