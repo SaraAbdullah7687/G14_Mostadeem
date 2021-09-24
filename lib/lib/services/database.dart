@@ -7,24 +7,25 @@ class DatabaseService {
  //DatabaseService({ this.uid });
 
   // collection reference
-  final CollectionReference _userCollection = FirebaseFirestore.instance.collection('users'); // was Firestore instead of FirebaseFirestore
+  final CollectionReference _contributorCollection = FirebaseFirestore.instance.collection('contributor'); // was Firestore instead of FirebaseFirestore
+  final CollectionReference _institutionCollection = FirebaseFirestore.instance.collection('institution'); // was Firestore instead of FirebaseFirestore
 
-
-  // get brews stream
+  // get institution stream
   Stream<QuerySnapshot> get brews {
-    return _userCollection.snapshots();
+    return _institutionCollection.snapshots();
   }
 
 
-Future<String> createUser(ContributorModel user) async {
+Future<String> createUserContributor(ContributorModel user) async {
     String retVal = "error";
 //ممكن طريقة انشاء الكولكشن غلط مدري كم عندنا من كوليكشن
     try {
-      print("create user collection");
-      await _userCollection.doc(user.uid).set({
+      print("create contributor collection");
+      await _contributorCollection.doc(user.uid).set({
         'uid':user.uid,
         'Name': user.name,
         'email': user.email,
+        'userType': 'contributor',
         //'notifToken': user.notifToken,?? what should we add?
       });
       retVal = "success";
@@ -36,7 +37,24 @@ Future<String> createUser(ContributorModel user) async {
   }
 
 
+String updateInstitution(String uid, String status){
+String result="nothing changed";
+// check condition approve or disapprove
+if(status =='approve'){
+_institutionCollection.doc(uid)
+    .update({'status' : 'approved'})
+    .then((_) => print(result='Success approve'),)
+    .catchError((error) => print(result='Fail approve'),);
+}
+else{ // delete institution and send them email 
+_institutionCollection.doc(uid)
+    .delete()
+    .then((_) => print(result='Success delete'),)
+    .catchError((error) => print(result='Fail delete'),);
+}
+return result;
 
+}
 
 
 

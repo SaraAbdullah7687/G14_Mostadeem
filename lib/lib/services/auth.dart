@@ -21,19 +21,6 @@ class AuthService {
       //.map((FirebaseUser user) => _userFromFirebaseUser(user));
   }
 
-  // sign in anon
-  /*
-  Future signInAnon() async {
-    try {
-      UserCredential result = await _auth.signInAnonymously(); // was AuthResult instead of UserCredential
-      User user = result.user; // was FirebaseUser instead of User
-      return _userFromFirebaseUser(user);
-    } catch (e) {
-      print(e.toString());
-      return null;
-    }
-  }*/
-
   // sign in with email and password
   Future <dynamic> signInWithEmailAndPassword(String email, String password) async {
     try {
@@ -55,18 +42,18 @@ class AuthService {
   Future <dynamic>registerWithEmailAndPassword(String email, String password, String name) async { // خلي الميثود تقبل رقم جواله
    String retVal = "retVal error";
    try {
-     print("before registering user");
+     print("before registering contributor");
       UserCredential _result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
      await _auth.currentUser.reload(); //delete it
       User user = _result.user; // was FirebaseUser instead of User
-      print("user registered");
+      print("contributor registered");
        ContributorModel _userCont = ContributorModel(
         uid: user.uid,
         email: user.email,
         name: name,); //notifToken: await _fcm.getToken(),?? 
 
-        String _returnString = await DatabaseService().createUser(_userCont); // maybe database service
-        print("user created");
+        String _returnString = await DatabaseService().createUserContributor(_userCont); // maybe database service
+        print("contributor created");
         if (_returnString == "success") { // didn't work
         retVal = "success";
         print("retVal success");
@@ -114,6 +101,13 @@ class AuthService {
     return _auth.currentUser.uid;
   }
 
+String updateInstitutionStatus(String status, String uid){ // return string ?
+
+//String uid =getCurrentUserID(); WRONG this is returns current user!!! i need uid of the selected institution
+String result = DatabaseService().updateInstitution(uid,status);
+return result;
+
+}
 
 
 }
