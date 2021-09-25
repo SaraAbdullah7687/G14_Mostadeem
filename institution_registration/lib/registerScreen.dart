@@ -1,6 +1,4 @@
-// ignore: file_names
-// ignore: file_names
-// ignore: file_names
+
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:mostadeem_app/CheckBoxState.dart';
@@ -16,12 +14,16 @@ import 'Screens/background.dart';
 
 class regScreen extends StatefulWidget {
   const regScreen({ Key? key }) : super(key: key);
+  
 
   @override
   _regScreenState createState() => _regScreenState();
 }
 
 class _regScreenState extends State<regScreen> {
+
+  TextEditingController _controller = TextEditingController();
+
   Widget buildName() => TextFormField(
     validator: (value) {
     if (value == null || value.isEmpty) {
@@ -47,7 +49,12 @@ class _regScreenState extends State<regScreen> {
     );
 
     Widget buildEmail() => TextFormField(
-     
+     validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'required';
+    }
+    return null;
+  },
     decoration: InputDecoration(
         
         prefixIcon: Padding(
@@ -98,7 +105,15 @@ void _togglePasswordView() {
     setState(() {
       _isHidden = !_isHidden;
     });}
+
+
      Widget buildSocialM() => TextFormField(
+       validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'required';
+    }
+    return null;
+  },
       decoration: InputDecoration(
         prefixIcon: Padding(
          padding: EdgeInsets.all(0.0),
@@ -115,6 +130,13 @@ void _togglePasswordView() {
       onChanged: (value) => setState(() => socialM = value),
     );
     Widget buildCR() => TextFormField(
+      maxLength: 10, keyboardType: TextInputType.number,controller: _controller,
+      validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'required';
+    }
+    return null;
+  },
       decoration: InputDecoration(
         prefixIcon: Padding(
          padding: EdgeInsets.all(0.0),
@@ -157,11 +179,10 @@ void _togglePasswordView() {
           if(!formKey.currentState!.validate()){
             return;
           }
-         Navigator.push(
+         /*Navigator.push(
          context,
-         //FIX IT
          MaterialPageRoute(builder: (context) => firstBackground(child: Scaffold())));
-
+*/
           
           },
           
@@ -324,6 +345,7 @@ void _togglePasswordView() {
 
 
     body: Form(
+      autovalidate: true,
       key: formKey,
       child: ListView(
       padding: EdgeInsets.all(16),
