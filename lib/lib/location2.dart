@@ -132,7 +132,8 @@ class _LocationAppState extends State<LocationApp> {
   _addGeoPoint() async {
     /* create refrence to DB*/
     CollectionReference requestRef =
-        FirebaseFirestore.instance.collection('request');
+        FirebaseFirestore.instance.collection("contributor")
+        .doc("442d24Jv53mOePKEBElK").collection('request');
     
     // Init firestore and geoFlutterFire
     final geo = Geoflutterfire();
