@@ -39,8 +39,6 @@ class LocationApp extends StatefulWidget {
 }
 
 class _LocationAppState extends State<LocationApp> {
-  CollectionReference requests =
-      FirebaseFirestore.instance.collection('requests');
 
   //*السوري*//
   Completer<GoogleMapController> _controller = Completer();
@@ -129,6 +127,13 @@ class _LocationAppState extends State<LocationApp> {
   /////////////METHOD////////////
   /*ADEDD DB HERE: store locaation*/
   _addGeoPoint() async {
+    
+    /*ADEDD DB HERE: store locaation*/
+  _addGeoPoint() async {
+    /* create refrence to DB*/
+    CollectionReference requestRef =
+        FirebaseFirestore.instance.collection('request');
+    
     // Init firestore and geoFlutterFire
     final geo = Geoflutterfire();
     var pos = await Geolocator.getCurrentPosition(
