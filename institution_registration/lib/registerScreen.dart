@@ -1,7 +1,6 @@
 
 import 'dart:core';
 import 'package:flutter/material.dart';
-import 'package:mostadeem_app/CheckBoxState.dart';
 import 'package:mostadeem_app/otp.dart';
 import 'package:time_range/time_range.dart';
 import 'package:email_validator/email_validator.dart';
@@ -153,6 +152,9 @@ void _togglePasswordView() {
       onChanged: (value) => setState(() => CR = value),
     );
 
+
+
+
     Widget buildTitle() => Container(
        
        child: Text(
@@ -160,15 +162,72 @@ void _togglePasswordView() {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
     );
 
-  Widget buildSingleCateg(CheckBoxState Checkbox) => CheckboxListTile(
-    controlAffinity: ListTileControlAffinity.leading ,
-    activeColor: Color.fromRGBO(83, 122, 88, 1),
-    title: Text(Checkbox.title, style: TextStyle(fontSize: 20),),
 
-    value: Checkbox.value, 
-    onChanged: (value) => setState (() => Checkbox.value = value!),
+Column buildAllCategories(){
+  return Column(
+    children:[ 
+      Row (
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+       children: [
+      buildSingleCateg('assets/images/grey_paper.png', 'Paper'),
+      buildSingleCateg('assets/images/green_paper.png', 'Cardboard'),
+      buildSingleCateg('assets/images/green_paper.png', 'Glass'),
+      buildSingleCateg('assets/images/grey_paper.png', 'Plastic'),
 
-  );
+
+    ],),
+    SizedBox(height: 20),
+    Row (
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+       children: [
+        buildSingleCateg('assets/images/grey_paper.png', 'Metals'),
+      buildSingleCateg('assets/images/green_paper.png', 'Electronics'),
+      buildSingleCateg('assets/images/green_paper.png', 'Nylon'),
+      buildSingleCateg('assets/images/green_paper.png', 'Cans'),
+
+    ],),
+     SizedBox(height: 20),
+    Row (
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+       children: [
+     
+      buildSingleCateg('assets/images/green_paper.png', 'Batteries'),
+      buildSingleCateg('assets/images/grey_paper.png', 'Furniture'),
+      buildSingleCateg('assets/images/green_paper.png', 'Clothes'),
+      buildSingleCateg('assets/images/green_paper.png', 'Food'),
+
+    ],),
+   
+    ]);
+}
+    
+
+     Container buildSingleCateg(String IconName, String category) {
+       return Container(
+         child: Column(
+           children:[
+             Container(
+               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+               decoration: BoxDecoration(
+               border: Border.all(color: Colors.grey),
+
+               borderRadius: BorderRadius.circular(10),
+               ),
+               child: Image.asset(IconName, width: 60,)
+             ),
+             Text(category, 
+             style: TextStyle(fontWeight: FontWeight.bold),
+             )]
+         )
+       );
+     }
+
+
+
+
+
+
+  
 
     Widget buildNext() => ElevatedButton(
          child: Text('Next',
@@ -302,23 +361,7 @@ void _togglePasswordView() {
             '\n', )
     );
 
-  final notifications =[
-    CheckBoxState(title: 'Paper'),
-    CheckBoxState(title: 'Cardboard'),
-    CheckBoxState(title: 'Glass'),
-    CheckBoxState(title: 'Plastic'),
-    CheckBoxState(title: 'Nylon'),
-    CheckBoxState(title: 'Cans'),
-    CheckBoxState(title: 'Metals'),
-    CheckBoxState(title: 'Electronics'),
-    CheckBoxState(title: 'Batteries'),
-    CheckBoxState(title: 'Furniture'),
-    CheckBoxState(title: 'Clothes'),
-    CheckBoxState(title: 'Food'),
-  
 
-
-  ];
 
   
   
@@ -335,6 +378,7 @@ void _togglePasswordView() {
   Widget build(BuildContext context) => Scaffold(
      backgroundColor: Colors.white, 
     appBar: AppBar(
+      title:  Text('Institution Registration'),
   leading: IconButton(
     icon: Icon(Icons.arrow_back, color: Colors.black),
     onPressed: (){},),
@@ -361,7 +405,7 @@ void _togglePasswordView() {
         buildCR(),
         const SizedBox(height: 32),
         buildTitle(),
-        ...notifications.map(buildSingleCateg).toList(),
+        buildAllCategories(),
         buildStartTime( context),
         buildSpace(),
         buildNext(),
