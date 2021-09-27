@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class adminHome extends StatelessWidget {
+class AdminHome extends StatelessWidget {
 
   final AuthService _auth = AuthService();
 
