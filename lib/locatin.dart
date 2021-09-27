@@ -53,7 +53,7 @@ class _LocationAppState extends State<LocationApp> {
     return new Scaffold(
       body: GoogleMap(
           initialCameraPosition: _initialCameraPosition,
-          mapType: MapType.normal,
+          mapType: MapType.satellite,
           onMapCreated: (controller) => _controller.complete(controller),
 
           /* to move camera*/
@@ -116,7 +116,7 @@ class _LocationAppState extends State<LocationApp> {
     final GoogleMapController controller = await _controller.future;
     CameraPosition _cameraPosition = CameraPosition(
       target: LatLng(position.latitude, position.longitude),
-      zoom: 25.4746,
+      zoom: 20.4746,
     );
     print(
         'animating camera to (lat: ${position.latitude}, long: ${position.longitude}"');
