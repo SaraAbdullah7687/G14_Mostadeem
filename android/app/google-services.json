@@ -1,40 +1,40 @@
 {
   "project_info": {
-    "project_number": "658205900064",
-    "project_id": "mostadeem-be8f2",
-    "storage_bucket": "mostadeem-be8f2.appspot.com"
+    "project_number": "684915991167",
+    "project_id": "mostadeem1",
+    "storage_bucket": "mostadeem1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:658205900064:android:2576e5ee691914dabdeb45",
+        "mobilesdk_app_id": "1:684915991167:android:46edab3a0564c679fd554a",
         "android_client_info": {
-          "package_name": "com.example.mostadeem_app"
+          "package_name": "com.project.mostadeem"
         }
       },
       "oauth_client": [
         {
-          "client_id": "658205900064-m4jlo1a6908ljg02hl1fe7vk70lgahnv.apps.googleusercontent.com",
+          "client_id": "684915991167-47bctdis9d671afq90vbffhfeu9vr4sg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCEoaCcmxVApbaISSZnAv5NH0Kvosnuepk"
+          "current_key": "AIzaSyB5ocelGj1xzr3_XTomuZPIeWolrySWr5w"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "658205900064-m4jlo1a6908ljg02hl1fe7vk70lgahnv.apps.googleusercontent.com",
+              "client_id": "684915991167-47bctdis9d671afq90vbffhfeu9vr4sg.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "658205900064-0am236628iciievesa2ihruqr9ojfivq.apps.googleusercontent.com",
+              "client_id": "684915991167-rirvvibqj7m0ifqlv05bt6c0cvsf6kvk.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.mostadeemApp"
+                "bundle_id": "com.project.mostadeem"
               }
             }
           ]
