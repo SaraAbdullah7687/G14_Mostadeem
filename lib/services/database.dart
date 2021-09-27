@@ -16,7 +16,7 @@ class database extends StatelessWidget {
     findCategory("jjjjjjjjj");
   }*/
 
-  //addRequest
+  // Add request to database *call it in location page*
   Future<String> addRequest(String contribId, requestModel request) async {
     String retVal = "error";
 
@@ -35,8 +35,8 @@ class database extends StatelessWidget {
         'time': "00:00 am" //request.time!.trim
       });
       //////=================================
-      /* yo be reviewd 
-    QuerySnapshot query = await _firestore
+      /* to be reviewd *why?  AZ *
+    QuerySnapshot query = await _firestore  /* is it fine to acess appioments collection direct? AZ */
           .collection("appointment")
           .doc(appId).set("state: unavalible");*/
       ///===========
@@ -47,9 +47,9 @@ class database extends StatelessWidget {
     return retVal;
   }
 
-  // Find institutions that has the selected category ----------------------------------------------------------------
+  // Find institutions that has the selected category  ----------------------------------------------------------------
   Future<List<String>> findCategory(String categories) async {
-    List<String> ids = []; //list();
+    List<String> insIDs = []; //list(); /* i changed varible name AZ */
 
 // string formalition
     List<String>? userCat = null;
@@ -66,7 +66,7 @@ class database extends StatelessWidget {
     query.docs.forEach((element) {
       // retVal.add(BookModel.fromDocumentSnapshot(doc: element));
       //==============
-      int count = userCat!.length;
+      int count = userCat!.length; /* what do u mean by "!" AZ */
       int indexIDs = 0;
       for (var i = 0; i < count; i++) {
         if (!element.get("category").contains(userCat[i])) {
@@ -74,14 +74,18 @@ class database extends StatelessWidget {
         }
       } // inner loop
 
-      if (flag) ids[indexIDs] = element.id; // .add ####################
-
+      if (flag)
+      {
+        insIDs[indexIDs] = element.id; // .add ####################
+      }
+      
       //===========
     } //outer loop
         );
-    return ids;
+    return insIDs;
   }
 
+  
   Future<List<String>> findAvailable(List<String> insIDs) async {
     //// علامة الاستفهام في الاوتبوت
     List<String> appIDs = [];
@@ -108,6 +112,8 @@ class database extends StatelessWidget {
 // CHANGE
 Future<String> changeStateAndLocation(String appId /* OR insId */) async {
   /*  QuerySnapshot query = await _firestore
+        .collection("instituation")
+        .doc(
         .collection("appointment")
         .doc(appId)
         .update({"state": "unavalible"});
