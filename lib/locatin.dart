@@ -51,6 +51,25 @@ class _LocationAppState extends State<LocationApp> {
   Widget build(BuildContext contexts) {
     // ignore: unnecessary_new
     return new Scaffold(
+          appBar: AppBar(
+        backgroundColor: Color.fromRGBO(103, 145, 61, 1),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color: Colors.white,
+          ),
+          tooltip: 'Show Snackbar',
+          onPressed: () {
+            Navigator.of(context).pop();
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      Confirmation()), /*CHANGE IT TO HOME PAGE*/
+            );
+          },
+        ),
+      ),
       body: GoogleMap(
           initialCameraPosition: _initialCameraPosition,
           mapType: MapType.satellite,
