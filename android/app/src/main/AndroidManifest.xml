@@ -3,6 +3,13 @@
    <application
         android:label="mostadeem_app"
         android:icon="@mipmap/ic_launcher">
+       
+       //AFNAN------------------------------------------------------------
+       <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyBD-F5GOwSfQKSeN-j4hREktEuxRXMJEs4"/>
+       
+      //AFNAN------------------------------------------------------------
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
