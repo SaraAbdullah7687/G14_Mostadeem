@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:test_project/models/ContributorModel.dart';
 import 'package:test_project/models/userMu.dart';
@@ -109,5 +110,27 @@ return result;
 
 }
 
+Future<String> checkUserType(//BuildContext context
+){
 
+String uid = getCurrentUserID();
+print("check user type method");
+//dynamic userType =
+ return DatabaseService().getUserType(uid//,context
+ );
+ 
+//print("retrived user type");
+/*userType.toString();
+if (userType!=null){
+  DatabaseService().getUserType(uid).then((value) {
+  return value.toString();
+});
+  print("user type is $userType");
+//return userType.toString();
+}
+else {
+  print("user type returned null");
+return "could not find userType";}
+return "user type is problem";*/
+}
 }
