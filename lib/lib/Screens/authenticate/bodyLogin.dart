@@ -48,7 +48,8 @@ Map<String, String> _authData = { // can use variables instead of map
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: loading ? Loading(): Background(
+      body: loading ? Loading(): 
+      Background(
         child: SingleChildScrollView(
           child: Container(
             margin: EdgeInsets.all(24),
