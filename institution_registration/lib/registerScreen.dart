@@ -1,11 +1,9 @@
-
 import 'dart:core';
 import 'package:flutter/material.dart';
-import 'package:mostadeem_app/otp.dart';
+import 'package:inst_registration/CheckBoxState.dart';
+import 'package:f_datetimerangepicker/f_datetimerangepicker.dart';
 import 'package:time_range/time_range.dart';
 import 'package:email_validator/email_validator.dart';
-
-import 'Screens/background.dart';
 
 
 
@@ -13,16 +11,12 @@ import 'Screens/background.dart';
 
 class regScreen extends StatefulWidget {
   const regScreen({ Key? key }) : super(key: key);
-  
 
   @override
   _regScreenState createState() => _regScreenState();
 }
 
 class _regScreenState extends State<regScreen> {
-
-  TextEditingController _controller = TextEditingController();
-
   Widget buildName() => TextFormField(
     validator: (value) {
     if (value == null || value.isEmpty) {
@@ -48,12 +42,7 @@ class _regScreenState extends State<regScreen> {
     );
 
     Widget buildEmail() => TextFormField(
-     validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'required';
-    }
-    return null;
-  },
+     
     decoration: InputDecoration(
         
         prefixIcon: Padding(
@@ -104,15 +93,7 @@ void _togglePasswordView() {
     setState(() {
       _isHidden = !_isHidden;
     });}
-
-
      Widget buildSocialM() => TextFormField(
-       validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'required';
-    }
-    return null;
-  },
       decoration: InputDecoration(
         prefixIcon: Padding(
          padding: EdgeInsets.all(0.0),
@@ -129,13 +110,6 @@ void _togglePasswordView() {
       onChanged: (value) => setState(() => socialM = value),
     );
     Widget buildCR() => TextFormField(
-      maxLength: 10, keyboardType: TextInputType.number,controller: _controller,
-      validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'required';
-    }
-    return null;
-  },
       decoration: InputDecoration(
         prefixIcon: Padding(
          padding: EdgeInsets.all(0.0),
@@ -152,9 +126,6 @@ void _togglePasswordView() {
       onChanged: (value) => setState(() => CR = value),
     );
 
-
-
-
     Widget buildTitle() => Container(
        
        child: Text(
@@ -162,89 +133,27 @@ void _togglePasswordView() {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
     );
 
+  Widget buildSingleCateg(CheckBoxState Checkbox) => CheckboxListTile(
+    controlAffinity: ListTileControlAffinity.leading ,
+    activeColor: Color.fromRGBO(83, 122, 88, 1),
+    title: Text(Checkbox.title, style: TextStyle(fontSize: 20),),
 
-Column buildAllCategories(){
-  return Column(
-    children:[ 
-      Row (
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-       children: [
-      buildSingleCateg('assets/images/grey_paper.png', 'Paper'),
-      buildSingleCateg('assets/images/green_paper.png', 'Cardboard'),
-      buildSingleCateg('assets/images/green_paper.png', 'Glass'),
-      buildSingleCateg('assets/images/grey_paper.png', 'Plastic'),
+    value: Checkbox.value, 
+    onChanged: (value) => setState (() => Checkbox.value = value!),
 
-
-    ],),
-    SizedBox(height: 20),
-    Row (
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-       children: [
-        buildSingleCateg('assets/images/grey_paper.png', 'Metals'),
-      buildSingleCateg('assets/images/green_paper.png', 'Electronics'),
-      buildSingleCateg('assets/images/green_paper.png', 'Nylon'),
-      buildSingleCateg('assets/images/green_paper.png', 'Cans'),
-
-    ],),
-     SizedBox(height: 20),
-    Row (
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-       children: [
-     
-      buildSingleCateg('assets/images/green_paper.png', 'Batteries'),
-      buildSingleCateg('assets/images/grey_paper.png', 'Furniture'),
-      buildSingleCateg('assets/images/green_paper.png', 'Clothes'),
-      buildSingleCateg('assets/images/green_paper.png', 'Food'),
-
-    ],),
-   
-    ]);
-}
-    
-
-     Container buildSingleCateg(String IconName, String category) {
-       return Container(
-         child: Column(
-           children:[
-             Container(
-               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-               decoration: BoxDecoration(
-               border: Border.all(color: Colors.grey),
-
-               borderRadius: BorderRadius.circular(10),
-               ),
-               child: Image.asset(IconName, width: 60,)
-             ),
-             Text(category, 
-             style: TextStyle(fontWeight: FontWeight.bold),
-             )]
-         )
-       );
-     }
-
-
-
-
-
-
-  
+  );
 
     Widget buildNext() => ElevatedButton(
          child: Text('Next',
           style: TextStyle(fontSize: 20, color: Colors.white)
           ),
           onPressed: () {
-           
+
           if(!formKey.currentState!.validate()){
             return;
           }
-         /*Navigator.push(
-         context,
-         MaterialPageRoute(builder: (context) => firstBackground(child: Scaffold())));
-*/
-          
+     
           },
-          
            
             style: ElevatedButton.styleFrom(
             primary: Color.fromRGBO(83, 122, 88, 1),
@@ -361,7 +270,23 @@ Column buildAllCategories(){
             '\n', )
     );
 
+  final notifications =[
+    CheckBoxState(title: 'Paper'),
+    CheckBoxState(title: 'Cardboard'),
+    CheckBoxState(title: 'Glass'),
+    CheckBoxState(title: 'Plastic'),
+    CheckBoxState(title: 'Nylon'),
+    CheckBoxState(title: 'Cans'),
+    CheckBoxState(title: 'Metals'),
+    CheckBoxState(title: 'Electronics'),
+    CheckBoxState(title: 'Batteries'),
+    CheckBoxState(title: 'Furniture'),
+    CheckBoxState(title: 'Clothes'),
+    CheckBoxState(title: 'Food'),
+  
 
+
+  ];
 
   
   
@@ -378,7 +303,6 @@ Column buildAllCategories(){
   Widget build(BuildContext context) => Scaffold(
      backgroundColor: Colors.white, 
     appBar: AppBar(
-      title:  Text('Institution Registration'),
   leading: IconButton(
     icon: Icon(Icons.arrow_back, color: Colors.black),
     onPressed: (){},),
@@ -389,7 +313,6 @@ Column buildAllCategories(){
 
 
     body: Form(
-      autovalidate: true,
       key: formKey,
       child: ListView(
       padding: EdgeInsets.all(16),
@@ -405,7 +328,7 @@ Column buildAllCategories(){
         buildCR(),
         const SizedBox(height: 32),
         buildTitle(),
-        buildAllCategories(),
+        ...notifications.map(buildSingleCateg).toList(),
         buildStartTime( context),
         buildSpace(),
         buildNext(),
