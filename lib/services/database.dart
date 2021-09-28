@@ -121,12 +121,39 @@ Future<String> changeStateAndLocation(String appId /* OR insId */) async {
     return "";
   }
 
-  Future<List<requestModel>?> displayApps(List<requestModel> availableApps) async {
+   Future<List<appointmentModel>?> displayApps(DateTime date) async {
     //// في الواجهة
+//_firestore.collection("appointments").whereEqualTo("appointment_date",your_date).whereEqualTo("speciallist_id",your_speccialist_id)
+//_firestore.
+    ////////////////////////////////
+    ///
+    /* to get all instituation docs*/
+    QuerySnapshot allInst = await _firestore.collection("instituation").get();
 
+    allInst.docs.forEach((element) async {
+      //outer loop te rech spicific instituation apps
+      String id = element.toString();
+      //QuerySnapshot query = await
+      _firestore
+          .collection("instituation")
+          .doc(id)
+          .collection("appointments")
+          .whereEqualTo("date", date)
+          .whereEqualTo("isAvailabe", true)
+          .then((query) {
+            query
+          });
+
+      // inner loop te rech spicific app and check if is the same date
+      /*  query.docs.forEach((appoint) {
+        if (appoint.get("date").equals(date) && appoint.get("isAvailabe")== true) {// date is the passed argument from user
+
+        }
+      }); // inner foreach
+*/
+    }); // outer foreach
     return null;
   }
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
