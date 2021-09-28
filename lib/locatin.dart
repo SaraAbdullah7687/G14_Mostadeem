@@ -2,7 +2,7 @@
 
 import 'dart:async';
 //import 'dart:html';
-import 'confirmation.dart';
+import 'myHomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -60,12 +60,11 @@ class _LocationAppState extends State<LocationApp> {
           ),
           tooltip: 'Show Snackbar',
           onPressed: () {
-            Navigator.of(context).pop();
+              /* Navigator.of(context).pop();
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      Confirmation()), /*CHANGE IT TO HOME PAGE*/
+              MaterialPageRoute(builder: (context) => MyHomePage()),
+            );*/
             );
           },
         ),
@@ -217,7 +216,7 @@ class AdvanceCustomAlert extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          Confirmation()), /*CHANGE IT TO HOME PAGE*/
+                                          MyHomePage()), 
                                 );
                               },
                               child: Text(
