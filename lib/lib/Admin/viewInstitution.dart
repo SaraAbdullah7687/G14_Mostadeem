@@ -37,7 +37,7 @@ class ViewInstitution extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),*/
-        backgroundColor: Color.fromRGBO(103, 145, 61, 1),
+        backgroundColor: Color.fromRGBO(48, 126, 80, 1),
         elevation: 0.0,
          leading: IconButton(
           icon: Icon(Icons.arrow_back_outlined, color: Colors.green[50], size: 30.0,),
@@ -218,7 +218,7 @@ Container( margin: const EdgeInsets.all(5),
                 label: Text(document['CR'], style: TextStyle(color: Colors.white, fontSize: 18.0,fontWeight: FontWeight.bold),),
                 icon: Icon(Icons.confirmation_num_sharp), // or assignment
                 style: ElevatedButton.styleFrom(
-                  primary: Color.fromRGBO(103, 145, 61, 1), // can be changed 
+                  primary: Color.fromRGBO(48, 126, 80, 1) // can be changed 
                 ),
               )),
     

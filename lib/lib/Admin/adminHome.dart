@@ -64,7 +64,7 @@ class AdminHome extends StatelessWidget {
           ),
         ),*/
         
-        backgroundColor: Color.fromRGBO(103, 145, 61, 1),
+        backgroundColor: Color.fromRGBO(48, 126, 80, 1),//Color.fromRGBO(103, 145, 61, 1),
         elevation: 0.0,
           actions: <Widget>[
             FlatButton.icon(
@@ -103,7 +103,7 @@ class AdminHome extends StatelessWidget {
                         heightFactor: 0.6,
                         child: FloatingActionButton(
                           onPressed: () {},
-                          backgroundColor: Color.fromRGBO(103, 145, 61, 1),
+                          backgroundColor: Color.fromRGBO(48, 126, 80, 1),//Color.fromRGBO(103, 145, 61, 1),
                           child: Icon(Icons.add_circle),
                           elevation: 0.1,
                         ),
@@ -119,7 +119,7 @@ class AdminHome extends StatelessWidget {
                             IconButton(
                                 icon: Icon(
                                   Icons.house_rounded,
-                                  color: Color.fromRGBO(103, 145, 61, 1),
+                                  color: Color.fromRGBO(48, 126, 80, 1),
                                   size: 50,
                                 ),
                                 onPressed: () {Navigator.push(
@@ -133,7 +133,7 @@ class AdminHome extends StatelessWidget {
                             IconButton(
                                 icon: Icon(
                                   Icons.person_rounded,
-                                  color: Color.fromRGBO(103, 145, 61, 1),
+                                  color: Color.fromRGBO(48, 126, 80, 1),
                                   size: 50,
                                 ),
                                 onPressed: () {}),
