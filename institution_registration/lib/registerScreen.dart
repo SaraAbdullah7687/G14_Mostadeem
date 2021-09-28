@@ -1,9 +1,11 @@
+
 import 'dart:core';
 import 'package:flutter/material.dart';
-import 'package:inst_registration/CheckBoxState.dart';
-import 'package:f_datetimerangepicker/f_datetimerangepicker.dart';
+import 'package:mostadeem_app/otp.dart';
 import 'package:time_range/time_range.dart';
 import 'package:email_validator/email_validator.dart';
+
+import 'Screens/background.dart';
 
 
 
@@ -11,12 +13,16 @@ import 'package:email_validator/email_validator.dart';
 
 class regScreen extends StatefulWidget {
   const regScreen({ Key? key }) : super(key: key);
+  
 
   @override
   _regScreenState createState() => _regScreenState();
 }
 
 class _regScreenState extends State<regScreen> {
+
+  TextEditingController _controller = TextEditingController();
+
   Widget buildName() => TextFormField(
     validator: (value) {
     if (value == null || value.isEmpty) {
@@ -29,7 +35,7 @@ class _regScreenState extends State<regScreen> {
          padding: EdgeInsets.all(0.0),
          child: Icon(
           Icons.person,
-           color: Color.fromRGBO(83, 122, 88, 1)),
+           color: Color.fromRGBO(48, 126, 80, 1)),
             ), 
 
         labelText: 'Name',
@@ -42,14 +48,19 @@ class _regScreenState extends State<regScreen> {
     );
 
     Widget buildEmail() => TextFormField(
-     
+     validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'required';
+    }
+    return null;
+  },
     decoration: InputDecoration(
         
         prefixIcon: Padding(
          padding: EdgeInsets.all(0.0),
          child: Icon(
           Icons.email,
-           color: Color.fromRGBO(83, 122, 88, 1)),
+           color: Color.fromRGBO(48, 126, 80, 1)),
             ), 
         labelText: 'Email',
         
@@ -78,7 +89,7 @@ class _regScreenState extends State<regScreen> {
          padding: EdgeInsets.all(0.0),
          child: Icon(
           Icons.lock,
-           color: Color.fromRGBO(83, 122, 88, 1)),
+           color: Color.fromRGBO(48, 126, 80, 1)),
             ), 
         labelText: 'Password',
         border: OutlineInputBorder(
@@ -93,13 +104,21 @@ void _togglePasswordView() {
     setState(() {
       _isHidden = !_isHidden;
     });}
+
+
      Widget buildSocialM() => TextFormField(
+       validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'required';
+    }
+    return null;
+  },
       decoration: InputDecoration(
         prefixIcon: Padding(
          padding: EdgeInsets.all(0.0),
          child: Icon(
           Icons.link,
-           color: Color.fromRGBO(83, 122, 88, 1)),
+           color: Color.fromRGBO(48, 126, 80, 1)),
             ), 
         labelText: 'Twitter Account',
         border: OutlineInputBorder(
@@ -110,12 +129,19 @@ void _togglePasswordView() {
       onChanged: (value) => setState(() => socialM = value),
     );
     Widget buildCR() => TextFormField(
+      maxLength: 10, keyboardType: TextInputType.number,controller: _controller,
+      validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'required';
+    }
+    return null;
+  },
       decoration: InputDecoration(
         prefixIcon: Padding(
          padding: EdgeInsets.all(0.0),
          child: Icon(
           Icons.verified,
-           color: Color.fromRGBO(83, 122, 88, 1)),
+           color: Color.fromRGBO(48, 126, 80, 1)),
             ), 
         labelText: 'Commercial Record',
         border: OutlineInputBorder(
@@ -126,6 +152,9 @@ void _togglePasswordView() {
       onChanged: (value) => setState(() => CR = value),
     );
 
+
+
+
     Widget buildTitle() => Container(
        
        child: Text(
@@ -133,30 +162,92 @@ void _togglePasswordView() {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
     );
 
-  Widget buildSingleCateg(CheckBoxState Checkbox) => CheckboxListTile(
-    controlAffinity: ListTileControlAffinity.leading ,
-    activeColor: Color.fromRGBO(83, 122, 88, 1),
-    title: Text(Checkbox.title, style: TextStyle(fontSize: 20),),
 
-    value: Checkbox.value, 
-    onChanged: (value) => setState (() => Checkbox.value = value!),
+Column buildAllCategories(){
+  return Column(
+    children:[ 
+      Row (
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+       children: [
+      buildSingleCateg('assets/images/grey_paper.png', 'Paper'),
+      buildSingleCateg('assets/images/grey_cardboard.png', 'Cardboard'),
+      buildSingleCateg('assets/images/grey_glass.png', 'Glass'),
+      buildSingleCateg('assets/images/grey_plastic.png', 'Plastic'),
 
-  );
+
+    ],),
+    SizedBox(height: 20),
+    Row (
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+       children: [
+        buildSingleCateg('assets/images/grey_metal.png', 'Metals'),
+      buildSingleCateg('assets/images/grey_electronic.png', 'Electronics'),
+      buildSingleCateg('assets/images/grey_nylon.png', 'Nylon'),
+      buildSingleCateg('assets/images/grey_can.png', 'Cans'),
+
+    ],),
+     SizedBox(height: 20),
+    Row (
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+       children: [
+     
+      buildSingleCateg('assets/images/grey_battery.png', 'Batteries'),
+      buildSingleCateg('assets/images/grey_sofa.png', 'Furniture'),
+      buildSingleCateg('assets/images/grey_clothes.png', 'Clothes'),
+      buildSingleCateg('assets/images/grey_pizza.png', 'Food'),
+
+    ],),
+   
+    ]);
+}
+    
+
+     Container buildSingleCateg(String IconName, String category) {
+       return Container(
+         child: Column(
+           children:[
+             Container(
+               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+               decoration: BoxDecoration(
+               border: Border.all(color: Colors.grey),
+
+               borderRadius: BorderRadius.circular(10),
+               ),
+               child: Image.asset(IconName, width: 60,)
+             ),
+             Text(category, 
+             style: TextStyle(fontWeight: FontWeight.bold),
+             )]
+         )
+       );
+     }
+
+
+
+
+
+
+  
 
     Widget buildNext() => ElevatedButton(
          child: Text('Next',
           style: TextStyle(fontSize: 20, color: Colors.white)
           ),
           onPressed: () {
-
+           
           if(!formKey.currentState!.validate()){
             return;
           }
-     
+         /*Navigator.push(
+         context,
+         MaterialPageRoute(builder: (context) => firstBackground(child: Scaffold())));
+*/
+          
           },
+          
            
             style: ElevatedButton.styleFrom(
-            primary: Color.fromRGBO(83, 122, 88, 1),
+            primary: Color.fromRGBO(48, 126, 80, 1),
             shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(25.0),
             
@@ -218,12 +309,12 @@ void _togglePasswordView() {
                 ),
                 activeTextStyle: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Color.fromRGBO(83, 122, 88, 0.5),
+                  color: Color.fromRGBO(48, 126, 80, 0.5),
                 ),
                 borderColor: Colors.black,
                 activeBorderColor: Colors.black,
                 backgroundColor: Colors.transparent,
-                activeBackgroundColor: Color.fromRGBO(83, 122, 88, 0.5),
+                activeBackgroundColor: Color.fromRGBO(48, 126, 80, 0.5),
                 firstTime: TimeOfDay(hour: 8, minute: 00),
                 lastTime: TimeOfDay(hour: 23, minute: 59),
                 initialRange: _timeRange,
@@ -270,23 +361,7 @@ void _togglePasswordView() {
             '\n', )
     );
 
-  final notifications =[
-    CheckBoxState(title: 'Paper'),
-    CheckBoxState(title: 'Cardboard'),
-    CheckBoxState(title: 'Glass'),
-    CheckBoxState(title: 'Plastic'),
-    CheckBoxState(title: 'Nylon'),
-    CheckBoxState(title: 'Cans'),
-    CheckBoxState(title: 'Metals'),
-    CheckBoxState(title: 'Electronics'),
-    CheckBoxState(title: 'Batteries'),
-    CheckBoxState(title: 'Furniture'),
-    CheckBoxState(title: 'Clothes'),
-    CheckBoxState(title: 'Food'),
-  
 
-
-  ];
 
   
   
@@ -303,16 +378,22 @@ void _togglePasswordView() {
   Widget build(BuildContext context) => Scaffold(
      backgroundColor: Colors.white, 
     appBar: AppBar(
+      title:  Text('Institution Registration'),
+      shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        bottom: Radius.circular(20))),
+
   leading: IconButton(
     icon: Icon(Icons.arrow_back, color: Colors.black),
     onPressed: (){},),
 
-  backgroundColor: Color.fromRGBO(83, 122, 88, 1),
+  backgroundColor: Color.fromRGBO(48, 126, 80, 1),
   ),
 
 
 
     body: Form(
+      autovalidate: true,
       key: formKey,
       child: ListView(
       padding: EdgeInsets.all(16),
@@ -328,7 +409,7 @@ void _togglePasswordView() {
         buildCR(),
         const SizedBox(height: 32),
         buildTitle(),
-        ...notifications.map(buildSingleCateg).toList(),
+        buildAllCategories(),
         buildStartTime( context),
         buildSpace(),
         buildNext(),
