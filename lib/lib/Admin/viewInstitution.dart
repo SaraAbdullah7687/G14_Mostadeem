@@ -37,7 +37,7 @@ class ViewInstitution extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),*/
-        backgroundColor: Colors.lightGreen[800],
+        backgroundColor: Color.fromRGBO(103, 145, 61, 1),
         elevation: 0.0,
          leading: IconButton(
           icon: Icon(Icons.arrow_back_outlined, color: Colors.green[50], size: 30.0,),
@@ -46,7 +46,7 @@ class ViewInstitution extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
-          actions: <Widget>[
+       /*   actions: <Widget>[
             FlatButton.icon(
               icon: Icon(Icons.person , size: 30.0,
             color: Colors.white,),
@@ -60,7 +60,7 @@ class ViewInstitution extends StatelessWidget {
                 await _auth.signOut();
               },
             ),
-          ],
+          ],*/
           toolbarHeight:80.0,
         ),
         
@@ -218,7 +218,7 @@ Container( margin: const EdgeInsets.all(5),
                 label: Text(document['CR'], style: TextStyle(color: Colors.white, fontSize: 18.0,fontWeight: FontWeight.bold),),
                 icon: Icon(Icons.confirmation_num_sharp), // or assignment
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.green[800],
+                  primary: Color.fromRGBO(103, 145, 61, 1), // can be changed 
                 ),
               )),
     
