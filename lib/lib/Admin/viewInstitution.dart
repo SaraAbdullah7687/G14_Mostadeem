@@ -13,16 +13,16 @@ import 'package:test_project/services/auth.dart';
 import 'package:test_project/shared/loading.dart';
 //import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:webview_flutter/webview_flutter.dart';
 import 'components/social_icon.dart';
 
 class ViewInstitution extends StatelessWidget {
   final AuthService _auth = AuthService();
-
+ WebViewController controller;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.green[50],
+        backgroundColor: Colors.white,
         appBar: AppBar(
 
            shape: RoundedRectangleBorder(
@@ -67,7 +67,7 @@ class ViewInstitution extends StatelessWidget {
       body: Container( // ممكن ينشال
 
  decoration: BoxDecoration(
-                  color: Colors.green[50],
+                  color: Colors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30.0),
                     topRight: Radius.circular(30.0),
@@ -211,43 +211,19 @@ class ViewInstitution extends StatelessWidget {
         Container(margin: EdgeInsets.only(left:18 ), child: Text(document['category'],
           style: TextStyle(color: Colors.black54, fontSize: 18.0,fontWeight: FontWeight.bold),)),
           // Spacer(),
-// add Commercial record
-Container(margin: EdgeInsets.only(left:18 ), child: Text(document['CD'],
-          style: TextStyle(color: Colors.black54, fontSize: 18.0,fontWeight: FontWeight.bold),)),
+
+Container( margin: const EdgeInsets.all(5),
+              child: ElevatedButton.icon(
+                onPressed: ()=> _checkCR(document.get("CR"),context),
+                label: Text(document['CR'], style: TextStyle(color: Colors.white, fontSize: 18.0,fontWeight: FontWeight.bold),),
+                icon: Icon(Icons.confirmation_num_sharp), // or assignment
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.green[800],
+                ),
+              )),
+    
      // Row( children: <Widget>[
         lastRow(context,document),
-   /*     Container(
-          margin: EdgeInsets.only(left:150),
-           width:100,
-           height: 60,
-          child:  
-        Row(
-          children: <Widget>[
-            Flexible(  child:
-              GestureDetector( child:
-              IconButton(
-               iconSize: 50.0,
-               icon: const Icon(Icons.check),
-               color: Colors.lightGreen[600],
-               onPressed: (){_showMyDialog("approve", context,document.id); },), // pop up , are you show?
-),),
-
-            Flexible(  child:
-              GestureDetector( child:
-              IconButton(
-              iconSize: 50.0,
-              icon: const Icon(Icons.clear),
-              color: Colors.red[800],
-              onPressed: (){ _showMyDialog("disapprove", context,document.id);},), // pop up , are you show?
-),),
-          ],  
-        ),
-        ),*/
-     
-     
-    //  ],),
-
-
   ],
     );
 
@@ -282,7 +258,7 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
           onPressed: ()=> _sendingMails(document.get("email")),
           
           ),),
-    SizedBox(width: 10),
+    SizedBox(width: 5),
     Flexible( child:
           SocalIcon(
                   iconSrc: "assets/icons/twitter.svg",
@@ -367,7 +343,8 @@ Future _sendingMails(String email) async {
 Future _goToTwitter(String account) async {
   String url = 'https://twitter.com/$account';
 if (await canLaunch(url)) {
-    await launch(url);
+    await launch(url,forceWebView: true,enableJavaScript: true,
+    enableDomStorage: true,);
   } else {
     throw 'Could not launch $url';
   }
@@ -381,7 +358,6 @@ if (await canLaunch(url)) {
     throw 'Could not launch $url';
   }
 }
-
 
 Future<void> _showMyDialog(String status, BuildContext context, String uid) async {
   return showDialog<void>(
@@ -430,6 +406,31 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid) asyn
       );
     },
   );
+}
+
+
+ _checkCR(String CR, BuildContext context){
+  // String url='https://mc.gov.sa/ar/eservices/Pages/Commercial-data.aspx';
+     Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context)  =>
+ WebView(
+  javascriptMode: JavascriptMode.unrestricted,
+  initialUrl: 'https://mc.gov.sa/ar/eservices/Pages/Commercial-data.aspx',
+  onWebViewCreated: (WebViewController webController) {
+   this.controller = webController;
+  },
+  
+onProgress: (url){
+controller.evaluateJavascript("document.getElementByTagName('header')[0].style.display='none'");
+controller.evaluateJavascript("document.getElementByTagName('footer')[0].style.display='none'");
+controller.evaluateJavascript("document.getElementById('ctl00_ctl74_g_3aefad74_14c7_474a_ac96_010ad3a5e1c1_ctl00_txtCRName').value='$CR'");
+  },
+
+ ),),
+);
+
 }
 
 }// end of class
