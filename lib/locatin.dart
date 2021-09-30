@@ -1,7 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:async';
-//import 'dart:html';
+import 'package:flutter/foundation.dart';
+
 import 'myHomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -11,6 +12,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 // to store geoPoints
 import 'package:geoflutterfire/geoflutterfire.dart';
+import 'calendar.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,8 +53,15 @@ class _LocationAppState extends State<LocationApp> {
   Widget build(BuildContext contexts) {
     // ignore: unnecessary_new
     return new Scaffold(
-          appBar: AppBar(
-        backgroundColor: Color.fromRGBO(103, 145, 61, 1),
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text('Location'),
+        backgroundColor: Color.fromRGBO(48, 126, 80, 1),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(18),
+          ),
+        ),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_rounded,
@@ -60,15 +69,16 @@ class _LocationAppState extends State<LocationApp> {
           ),
           tooltip: 'Show Snackbar',
           onPressed: () {
-              /* Navigator.of(context).pop();
+            Navigator.of(context).pop();
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => MyHomePage()),
-            );*/
+              MaterialPageRoute(builder: (context) => MainPage()),
             );
           },
         ),
+        toolbarHeight: 80.0,
       ),
+
       body: GoogleMap(
           initialCameraPosition: _initialCameraPosition,
           mapType: MapType.satellite,
@@ -87,7 +97,7 @@ class _LocationAppState extends State<LocationApp> {
           onPressed: () => getCurrentLocation(),
           child: Icon(
             Icons.gps_fixed,
-            color: Color.fromRGBO(103, 145, 61, 1),
+            color: Color.fromRGBO(48, 126, 80, 1),
           ),
         ),
       ),
@@ -110,7 +120,7 @@ class _LocationAppState extends State<LocationApp> {
         shape: new RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(25.0),
         ),
-        backgroundColor: Color.fromRGBO(103, 145, 61, 1),
+        backgroundColor: Color.fromRGBO(48, 126, 80, 1),
         child: Text(
             "Use This Location\n ${currentLocation.latitude} , ${currentLocation.longitude}",
             textAlign: TextAlign.center,
@@ -134,7 +144,7 @@ class _LocationAppState extends State<LocationApp> {
     final GoogleMapController controller = await _controller.future;
     CameraPosition _cameraPosition = CameraPosition(
       target: LatLng(position.latitude, position.longitude),
-      zoom: 20.4746,
+      zoom: 19.4746,
     );
     print(
         'animating camera to (lat: ${position.latitude}, long: ${position.longitude}"');
@@ -184,13 +194,13 @@ class AdvanceCustomAlert extends StatelessWidget {
                       child: Icon(
                         Icons.celebration,
                         size: 60,
-                        color: Color.fromRGBO(103, 145, 61, 1),
+                        color: Color.fromRGBO(48, 126, 80, 1),
                       ),
                     ),
                   ),
                   Expanded(
                       child: Container(
-                    color: Color.fromRGBO(103, 145, 61, 1),
+                    color: Color.fromRGBO(48, 126, 80, 1),
                     child: SizedBox.expand(
                       child: Column(
                         children: [
@@ -210,21 +220,21 @@ class AdvanceCustomAlert extends StatelessWidget {
                             ),
                           ),
                           RaisedButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          MyHomePage()), 
-                                );
-                              },
-                              child: Text(
-                                'OK',
-                                style: TextStyle(
-                                  color: Color.fromRGBO(103, 145, 61, 1),
-                                ),
-                              ))
+                            child: Text(
+                              'OK',
+                              style: TextStyle(
+                                color: Color.fromRGBO(48, 126, 80, 1),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MyHomePage()),
+                              );
+                            },
+                          )
                         ],
                       ),
                     ),
