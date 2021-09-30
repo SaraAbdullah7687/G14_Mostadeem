@@ -1,21 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class appointmentModel {
-// category array
-  String? day;
-  GeoPoint? location;
-  String? state;
-  String? time;
+  String appId;
+  String category;
+  String date;
+  GeoPoint location;
+  // String? isAvailable; //نحذفه؟
+  String time;
 
   appointmentModel({
-    this.day,
-    this.location,
-    this.state,
-    this.time,
+    required this.appId,
+    required this.category,
+    required this.date,
+    required this.location,
+    //this.isAvailable,
+    required this.time,
   });
 
   /*requestModel.fromDocumentSnapshot({DocumentSnapshot doc}) {
-    // id = doc.documentID;
+    // appId = doc.documentID;
+    category= doc.data["category"]
     day = doc.data["day"];
     location = doc.data["location"];
     state = doc.data["state"];
