@@ -1,84 +1,246 @@
-import 'package:flutter/cupertino.dart';
-
+// ignore: file_names
 import 'package:flutter/material.dart';
-import 'package:flutter_application_xd/home3.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
+import 'home3.dart';
+import 'locatin.dart';
 
-//================================================================
-/*
-void main() {
-  runApp(const calendar(
-    key: null,
-  ));
-}
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
-class calendar extends StatefulWidget {
-  const calendar({
-    required Key? key,
-  }) : super(key: key);
-
-  @override
-  _CalendarState createState() => _CalendarState();
-}*/
-
-void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: calendar(),
-    );
-  }
-}
-
-class calendar extends StatefulWidget {
-  const calendar({Key? key}) : super(key: key);
+  static final String title = 'Date & Time';
 
   @override
-  _CalendarState createState() => _CalendarState();
+  Widget build(BuildContext context) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: title,
+        theme: ThemeData(
+          primaryColor: Colors.black,
+        ),
+        home: MainPage(),
+      );
 }
 
-class _CalendarState extends State<calendar> {
-  DateTime date = DateTime.now();
-  Future<Null> selectTimeMethod(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: date,
-        firstDate: DateTime(2021),
-        lastDate: DateTime(2022));
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageState createState() => _MainPageState();
+}
 
-    if (picked != null && picked != date) {
-      setState(() {
-        date = picked; // NULL CHECK 888888888888888888888888888
-        print(date.toString());
-      });
+class _MainPageState extends State<MainPage> {
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        body: Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: Text('Date&Time'),
+            backgroundColor: Color.fromRGBO(48, 126, 80, 1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(18),
+              ),
+            ),
+            actions: <Widget>[
+              IconButton(
+                icon: const Icon(
+                  Icons.arrow_forward_rounded,
+                  color: Colors.white,
+                ),
+                tooltip: 'Show Snackbar',
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LocationApp()),
+                  );
+                },
+              ),
+            ],
+            leading: IconButton(
+              icon: const Icon(
+                Icons.arrow_back_rounded,
+                color: Colors.white,
+              ),
+              tooltip: 'Show Snackbar',
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => home3()),
+                );
+              },
+            ),
+            toolbarHeight: 80.0,
+          ),
+          backgroundColor: Colors.white10,
+          body: Padding(
+            padding: EdgeInsets.all(32),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DatetimePickerWidget(),
+              ],
+            ),
+          ),
+        ),
+      );
+}
+
+class DatetimePickerWidget extends StatefulWidget {
+  @override
+  _DatetimePickerWidgetState createState() => _DatetimePickerWidgetState();
+}
+
+class _DatetimePickerWidgetState extends State<DatetimePickerWidget> {
+  DateTime? dateTime;
+
+  String getText() {
+    if (dateTime == null) {
+      return 'Select DateTime';
+    } else {
+      return DateFormat('MM/dd/yyyy HH:mm').format(dateTime!);
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          /* Text(_dateTime == null
-              ? "Nothing has been picked yet"
-              : _dateTime.toString()),
-         
-         */
-          // ignore: deprecated_member_use
-          RaisedButton(
-            child: Text("Pick a date"),
-            onPressed: () {
-              selectTimeMethod(context);
-            },
-          )
-        ],
-      ),
-    );
+  Widget build(BuildContext context) => ButtonHeaderWidget(
+        title: 'DateTime',
+        text: getText(),
+        onClicked: () => pickDateTime(context),
+      );
+
+  Future pickDateTime(BuildContext context) async {
+    final date = await pickDate(context);
+    if (date == null) return;
+
+    final time = await pickTime(context);
+    if (time == null) return;
+
+    setState(() {
+      dateTime = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        time.hour,
+        time.minute,
+      );
+    });
   }
+
+  Future<DateTime?> pickDate(BuildContext context) async {
+    final initialDate = DateTime.now();
+    final newDate = await showDatePicker(
+      context: context,
+      initialDate: dateTime ?? initialDate,
+      firstDate: DateTime(DateTime.now().year - 5),
+      lastDate: DateTime(DateTime.now().year + 5),
+    );
+
+    if (newDate == null) return null;
+
+    return newDate;
+  }
+
+  Future<TimeOfDay?> pickTime(BuildContext context) async {
+    final initialTime = TimeOfDay(hour: 9, minute: 0);
+    final newTime = await showTimePicker(
+      context: context,
+      initialTime: dateTime != null
+          ? TimeOfDay(hour: dateTime!.hour, minute: dateTime!.minute)
+          : initialTime,
+    );
+
+    if (newTime == null) return null;
+
+    return newTime;
+  }
+}
+
+/////////////////////////////////////////
+
+class ButtonHeaderWidget extends StatelessWidget {
+  final String title;
+  final String text;
+  final VoidCallback onClicked;
+
+  const ButtonHeaderWidget({
+    Key? key,
+    required this.title,
+    required this.text,
+    required this.onClicked,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => HeaderWidget(
+        title: title,
+        child: ButtonWidget(
+          text: text,
+          onClicked: onClicked,
+        ),
+      );
+}
+
+class ButtonWidget extends StatelessWidget {
+  final String text;
+  final VoidCallback onClicked;
+
+  const ButtonWidget({
+    Key? key,
+    required this.text,
+    required this.onClicked,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          minimumSize: Size.fromHeight(40),
+          primary: Color.fromRGBO(48, 126, 80, 1),
+          shape: new RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(25.0),
+          ),
+        ),
+        child: FittedBox(
+          child: Text(
+            text,
+            style: TextStyle(fontSize: 20, color: Colors.white),
+          ),
+        ),
+        onPressed: onClicked,
+      );
+}
+
+class HeaderWidget extends StatelessWidget {
+  final String title;
+  final Widget child;
+
+  const HeaderWidget({
+    Key? key,
+    required this.title,
+    required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          child,
+        ],
+      );
 }
