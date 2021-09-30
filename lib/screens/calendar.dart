@@ -106,7 +106,7 @@ class _DatetimePickerWidgetState extends State<DatetimePickerWidget> {
     if (dateTime == null) {
       return 'Select DateTime';
     } else {
-      return DateFormat('MM/dd/yyyy HH:mm').format(dateTime!);
+      return DateFormat('MM/dd/yyyy - HH:mm').format(dateTime!);
     }
   }
 
