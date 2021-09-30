@@ -26,11 +26,20 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: Colors.black,
         ),
-        home: MainPage(),
+        home: MainPage(
+          category: '',
+        ),
+
+        ///PARAMETER
       );
 }
 
 class MainPage extends StatefulWidget {
+  String category; //FINAL ?
+
+  //constructer--------------------------------------------------------------------------------------------
+  MainPage({required this.category});
+
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -59,7 +68,12 @@ class _MainPageState extends State<MainPage> {
                   Navigator.of(context).pop();
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => LocationApp()),
+                    MaterialPageRoute(
+                        builder: (context) => LocationApp(
+                              category: widget.category,
+                              dateTime:
+                                  dateTime, // ERROR HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRREEEEEEEEEEEEEEE
+                            )),
                   );
                 },
               ),
@@ -100,13 +114,13 @@ class DatetimePickerWidget extends StatefulWidget {
 }
 
 class _DatetimePickerWidgetState extends State<DatetimePickerWidget> {
-  DateTime? dateTime;
+  var dateTime;
 
   String getText() {
     if (dateTime == null) {
       return 'Select DateTime';
     } else {
-      return DateFormat('MM/dd/yyyy - HH:mm').format(dateTime!);
+      return DateFormat('MM/dd/yyyy HH:mm').format(dateTime!);
     }
   }
 
