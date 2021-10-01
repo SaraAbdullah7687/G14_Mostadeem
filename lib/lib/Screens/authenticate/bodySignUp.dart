@@ -1,9 +1,8 @@
 
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_pw_validator/flutter_pw_validator.dart';
-import 'package:test_project/Screens/Login/login_screen.dart';
 import 'package:test_project/Screens/Welcome/welcome_screen.dart';
+import 'package:test_project/Screens/authenticate/bodyLogin.dart';
 import 'package:test_project/Screens/background.dart';
 //import 'package:flutter_auth/Screens/Signup/components/or_divider.dart';
 //import 'package:flutter_auth/Screens/Signup/components/social_icon.dart';
@@ -54,6 +53,46 @@ Map<String, String> _authData = { // can use variables instead of map
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(
+
+           shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        bottom: Radius.circular(18),
+      ),
+    ),
+      /*  title: Text(
+          "MOSTADEEM",
+          style: TextStyle(
+            fontSize: 28.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),*/
+        backgroundColor: Color.fromRGBO(48, 126, 80, 1),
+        elevation: 0.0,
+       /*   leading: IconButton(
+          icon: Icon(Icons.arrow_back_outlined, color: Colors.green[50], size: 30.0,),
+          onPressed: () {
+            // passing this to our root
+            Navigator.of(context).pop();
+          },
+        ),
+         actions: <Widget>[
+            FlatButton.icon(
+              icon: Icon(Icons.person , size: 30.0,
+            color: Colors.white,),
+              
+              label: Text(
+          "Logout",
+          style: TextStyle(color: Colors.white,
+          ),
+        ),
+              onPressed: () async {
+                await _auth.signOut();
+              },
+            ),
+          ],*/
+          toolbarHeight:80.0,
+        ),
       body: loading ? Loading() : 
       Background(
         child: SingleChildScrollView(
@@ -67,16 +106,16 @@ Map<String, String> _authData = { // can use variables instead of map
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-           SizedBox(height: size.height * 0.03),
+          // SizedBox(height: size.height * 0.03),
            
-           SizedBox(height: size.height * 0.05),
+           SizedBox(height: size.height * 0.03),
               SizedBox(
                height: 200, // change the number to make the logo bigger     
-             // width:size.width,
+              width:size.width,
                child: Image.asset("assets/images/logo.png",
                 fit: BoxFit.contain,)),
  
-              SizedBox(height: size.height * 0.01),
+              SizedBox(height: size.height * 0.03),
 
 TextFieldContainer(
         child: TextFormField( 
@@ -101,7 +140,12 @@ TextFieldContainer(
                       }
                       return null;
                     },*/
-          validator: RequiredValidator(errorText: "Required"),
+          validator:  MultiValidator([
+            RequiredValidator(errorText: "Required"),
+            MaxLengthValidator(15, errorText: "At most 15 characters"),
+            
+            ]
+            ),
           onSaved: (value) {
           // or _emailController.text = value!;
           _authData['name'] = value; },
@@ -167,7 +211,7 @@ TextFieldContainer(
               
 
               RoundedButton(
-                text: "SIGNUP",
+                text: "Next",
                 press: () async{ 
                    if(_formKey.currentState.validate()){
                       setState(() => loading = true);
@@ -205,15 +249,15 @@ print("validation works"); // delete it
              AlreadyHaveAnAccountCheck( // must make it clear , add padding or smth
                 login: false,
                 press: () {
-                 // widget.toggleView();
-                  Navigator.push(
+                  widget.toggleView();
+                /*  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return LoginScreen();
+                        return BodyLogin();
                       },
                     ),
-                  );
+                  );*/
                 },
               ),
             ],

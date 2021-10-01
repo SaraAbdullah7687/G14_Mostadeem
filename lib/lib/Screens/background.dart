@@ -15,16 +15,21 @@ backgroundColor: Colors.white,
     //resizeToAvoidBottomInset: false,
     body: SingleChildScrollView(
     child: Container(
-      width: double.infinity,
+     width: double.infinity,
       height: size.height,
+      //height: MediaQuery.of(context).size.height,
+     // width: MediaQuery.of(context).size.width,
       child: Stack(             // add riyadh landmarks in this file
         alignment: Alignment.center,
         children: <Widget>[
-
+/*
           Positioned(
           top:0,
           width:size.width,
-          child: Image.asset('assets/images/main_top.png'),),
+          child: Image.asset('assets/images/main_top.png'),
+          
+          ),*/
+
 
           
           Positioned(
