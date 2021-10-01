@@ -1,16 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:test_project/Screens/authenticate/bodyLogin.dart';
 import 'package:test_project/Screens/background.dart';
-import 'package:test_project/Screens/Signup/signup_screen.dart';
-import 'package:test_project/Screens/Welcome/welcome_screen.dart';
-import 'package:test_project/components/already_have_an_account_acheck.dart';
 import 'package:test_project/components/rounded_button.dart';
-import 'package:test_project/components/rounded_input_field.dart';
-import 'package:test_project/components/rounded_password_field.dart';
-//import 'package:flutter_svg/svg.dart';
 import 'package:test_project/components/text_field_container.dart';
 import 'package:test_project/services/auth.dart';
 import 'package:test_project/shared/loading.dart';

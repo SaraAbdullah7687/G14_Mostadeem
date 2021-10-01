@@ -16,7 +16,7 @@ backgroundColor: Colors.white,
     body: SingleChildScrollView(
     child: Container(
      width: double.infinity,
-      height: size.height,
+     // height: size.height, // كان مسبب مشكله بالسكرول
       //height: MediaQuery.of(context).size.height,
      // width: MediaQuery.of(context).size.width,
       child: Stack(             // add riyadh landmarks in this file

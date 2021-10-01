@@ -68,7 +68,7 @@ Map<String, String> _authData = { // can use variables instead of map
           ),
         ),*/
         backgroundColor: Color.fromRGBO(48, 126, 80, 1),
-        elevation: 0.0,
+        elevation: 4.0,
        /*   leading: IconButton(
           icon: Icon(Icons.arrow_back_outlined, color: Colors.green[50], size: 30.0,),
           onPressed: () {
@@ -95,176 +95,181 @@ Map<String, String> _authData = { // can use variables instead of map
         ),
       body: loading ? Loading() : 
       Background(
-        child: SingleChildScrollView(
-          child: Container(
-          //  margin: EdgeInsets.only(bottom: 40.0), // edit it 
-          margin: EdgeInsets.all(24),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+           //   child: Container(
+              //  margin: EdgeInsets.only(bottom: 40.0), // edit it 
+       //   margin: EdgeInsets.all(24),
        //  padding: EdgeInsets.all(50.0), // this is why the fields looks smaller
-         child: Form( // added it
-         key: _formKey, // added it
-           autovalidateMode: AutovalidateMode.always, // added it
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-          // SizedBox(height: size.height * 0.03),
-           
-           SizedBox(height: size.height * 0.03),
-              SizedBox(
-               height: 200, // change the number to make the logo bigger     
-              width:size.width,
-               child: Image.asset("assets/images/logo.png",
-                fit: BoxFit.contain,)),
+             
+               child:  Form( // added it
+                 key: _formKey, // added it
+                   autovalidateMode: AutovalidateMode.always, // added it
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                  // SizedBox(height: size.height * 0.03),
+                   
+                   SizedBox(height: size.height * 0.03),
+                      SizedBox(
+                       height: 200, // change the number to make the logo bigger     
+                      width:size.width,
+                       child: Image.asset("assets/images/logo.png",
+                        fit: BoxFit.contain,)),
  
-              SizedBox(height: size.height * 0.03),
+                      SizedBox(height: size.height * 0.03),
 
 TextFieldContainer(
-        child: TextFormField( 
-          //autofocus: false,
-          cursorColor: kPrimaryColor,
-          textInputAction: TextInputAction.next, // added it
-          decoration: InputDecoration(
-          prefixIcon: Icon( Icons.person, color: kPrimaryColor, ),
-          hintText: "Name",
-         // contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15), // make it smaller
-          border: new OutlineInputBorder(
-          borderRadius: const BorderRadius.all(
-          const Radius.circular(15.0),),
-          borderSide: new BorderSide(
-          color: Colors.black,
-          width: 1.0,),
-          ),
-          ),
+            child: TextFormField( 
+                  //autofocus: false,
+                  cursorColor: kPrimaryColor,
+                  textInputAction: TextInputAction.next, // added it
+                  decoration: InputDecoration(
+                  prefixIcon: Icon( Icons.person, color: kPrimaryColor, ),
+                  hintText: "Name",
+                 // contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15), // make it smaller
+                  border: new OutlineInputBorder(
+                  borderRadius: const BorderRadius.all(
+                  const Radius.circular(15.0),),
+                  borderSide: new BorderSide(
+                  color: Colors.black,
+                  width: 1.0,),
+                  ),
+                  ),
  /*validator: (value) {
-                      if (value.isEmpty || !value.contains('@')) {
-                        return 'Invalid email!';
-                      }
-                      return null;
-                    },*/
-          validator:  MultiValidator([
-            RequiredValidator(errorText: "Required"),
-            MaxLengthValidator(15, errorText: "At most 15 characters"),
-            
-            ]
-            ),
-          onSaved: (value) {
-          // or _emailController.text = value!;
-          _authData['name'] = value; },
+                              if (value.isEmpty || !value.contains('@')) {
+                                return 'Invalid email!';
+                              }
+                              return null;
+                            },*/
+                  validator:  MultiValidator([
+                    RequiredValidator(errorText: "Required"),
+                    MaxLengthValidator(15, errorText: "At most 15 characters"),
+                    
+                    ]
+                    ),
+                  onSaved: (value) {
+                  // or _emailController.text = value!;
+                  _authData['name'] = value; },
 
-          onChanged: (val) {
-                    setState(() => _authData['name'] = val);
-                  },
-        ),
+                  onChanged: (val) {
+                            setState(() => _authData['name'] = val);
+                          },
+            ),
       ),
 
 TextFieldContainer(
-        child: TextFormField( 
-          //autofocus: false,
-          keyboardType: TextInputType.emailAddress, 
-          controller: _emailController, 
-          cursorColor: kPrimaryColor,
-          textInputAction: TextInputAction.next, // added it
-          decoration: InputDecoration(
-          prefixIcon: Icon( Icons.mail, color: kPrimaryColor, ),
-          hintText: "Email",
-         // contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15), // make it smaller
-          border: new OutlineInputBorder(
-          borderRadius: const BorderRadius.all(
-          const Radius.circular(15.0),),
-          borderSide: new BorderSide(
-          color: Colors.black,
-          width: 1.0,),
-          ),
-          ),
+            child: TextFormField( 
+                  //autofocus: false,
+                  keyboardType: TextInputType.emailAddress, 
+                  controller: _emailController, 
+                  cursorColor: kPrimaryColor,
+                  textInputAction: TextInputAction.next, // added it
+                  decoration: InputDecoration(
+                  prefixIcon: Icon( Icons.mail, color: kPrimaryColor, ),
+                  hintText: "Email",
+                 // contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15), // make it smaller
+                  border: new OutlineInputBorder(
+                  borderRadius: const BorderRadius.all(
+                  const Radius.circular(15.0),),
+                  borderSide: new BorderSide(
+                  color: Colors.black,
+                  width: 1.0,),
+                  ),
+                  ),
  /*validator: (value) {
-                      if (value.isEmpty || !value.contains('@')) {
-                        return 'Invalid email!';
-                      }
-                      return null;
-                    },*/
-          validator: MultiValidator([
-          RequiredValidator(errorText: "Required"),
-          EmailValidator(errorText: "Not a valid email"),]),
-          onSaved: (value) {
-          // _emailController.text = value!;
-          _email=value; // choose one of them 
-          _authData['email'] = value; },
+                              if (value.isEmpty || !value.contains('@')) {
+                                return 'Invalid email!';
+                              }
+                              return null;
+                            },*/
+                  validator: MultiValidator([
+                  RequiredValidator(errorText: "Required"),
+                  EmailValidator(errorText: "Not a valid email"),]),
+                  onSaved: (value) {
+                  // _emailController.text = value!;
+                  _email=value; // choose one of them 
+                  _authData['email'] = value; },
 
-           onChanged: (val) {
-                    setState(() => _authData['email'] = val);
-                  },
-        ),
+                   onChanged: (val) {
+                            setState(() => _authData['email'] = val);
+                          },
+            ),
       ),
       
-              RoundedPasswordField(
-                isSignUp: true,
-                controllerPw: _passwordController,
-                onSaved: (value) {
-                  // or  _passwordController.text = value!;
-                  _password=value;
-                      _authData['password'] = value;
-                    }, 
-              //textInputAction: TextInputAction.done,
-              onChanged: (val) {
-                    setState(() => _authData['password'] = val);
-                  },
-              ),
-              
-
-              RoundedButton(
-                text: "Next",
-                press: () async{ 
-                   if(_formKey.currentState.validate()){
-                      setState(() => loading = true);
-                      print("validate form,sending signup req"); // maybe beacuse it's dunamic?
-                      dynamic result = await _auth.registerWithEmailAndPassword(_authData['email'].trim(), _authData['password'], _authData['name'].trim());
+                      RoundedPasswordField(
+                        isSignUp: true,
+                        controllerPw: _passwordController,
+                        onSaved: (value) {
+                          // or  _passwordController.text = value!;
+                          _password=value;
+                              _authData['password'] = value;
+                            }, 
+                      //textInputAction: TextInputAction.done,
+                      onChanged: (val) {
+                            setState(() => _authData['password'] = val);
+                          },
+                      ),
                       
-                      if(result == null) {
-                        print("req returend null");
-                        error = 'Please supply a valid email';
-                        setState(() {
-                          loading = false;
-                        });
-                      }else if(result == "email exists")
-                      {print("email exists in if");
-                      setState(() {
-                          loading = false;
-                        });
-                        showTopSnackBar(context);
 
-                        } 
-                      else{print("req is not null");}
-                   
-                    } 
-                   /*if (!_formKey.currentState.validate()) {
-                     print("validation doesn't works");// delete it 
-                        return;
-                      }
+                      RoundedButton(
+                        text: "Next",
+                        press: () async{ 
+                           if(_formKey.currentState.validate()){
+                              setState(() => loading = true);
+                              print("validate form,sending signup req"); // maybe beacuse it's dunamic?
+                              dynamic result = await _auth.registerWithEmailAndPassword(_authData['email'].trim(), _authData['password'], _authData['name'].trim());
+                              
+                              if(result == null) {
+                                print("req returend null");
+                                error = 'Please supply a valid email';
+                                setState(() {
+                                  loading = false;
+                                });
+                              }else if(result == "email exists")
+                              {print("email exists in if");
+                              setState(() {
+                                  loading = false;
+                                });
+                                showTopSnackBar(context);
+
+                                } 
+                              else{print("req is not null");}
+                           
+                            } 
+                           /*if (!_formKey.currentState.validate()) {
+                             print("validation doesn't works");// delete it 
+                                return;
+                              }
 print("validation works"); // delete it 
-                      _formKey.currentState.save();*/
-                },
-              ),
+                              _formKey.currentState.save();*/
+                        },
+                      ),
 
 
-              SizedBox(height: size.height * 0.03),
-             AlreadyHaveAnAccountCheck( // must make it clear , add padding or smth
-                login: false,
-                press: () {
-                  widget.toggleView();
-                /*  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return BodyLogin();
-                      },
-                    ),
-                  );*/
-                },
-              ),
-            ],
-          ),
-          ), // form
-        ),
-        ),
+                      SizedBox(height: size.height * 0.03),
+                     AlreadyHaveAnAccountCheck( // must make it clear , add padding or smth
+                        login: false,
+                        press: () {
+                          widget.toggleView();
+                        /*  Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return BodyLogin();
+                              },
+                            ),
+                          );*/
+                        },
+                      ),
+                    
+                    ],
+                  ),
+                  ),
+             
+            //),
+            ),
+         
       ),
 
     );
