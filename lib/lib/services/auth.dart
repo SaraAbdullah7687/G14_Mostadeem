@@ -133,4 +133,12 @@ else {
 return "could not find userType";}
 return "user type is problem";*/
 }
+
+
+resetPassword(String email) async{
+
+ await _auth.sendPasswordResetEmail(email: email);
+ 
+}
+
 }

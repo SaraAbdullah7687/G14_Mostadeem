@@ -10,6 +10,7 @@ import 'package:test_project/models/ContributorModel.dart';
 
 class DatabaseService {
 
+
   //final String uid;
  //DatabaseService({ this.uid });
 
@@ -66,10 +67,17 @@ _institutionCollection.doc(uid)
     .catchError((error) => print(result='Fail approve'),);
 }
 else{ // delete institution and send them email 
-_institutionCollection.doc(uid)
+_institutionCollection.doc(uid) // also delete it from users collecction
     .delete()
     .then((_) => print(result='Success delete'),)
     .catchError((error) => print(result='Fail delete'),);
+
+_usersCollection.doc(uid) // also delete it from users collecction
+    .delete()
+    .then((_) => print(result='Success delete'),)
+    .catchError((error) => print(result='Fail delete'),);
+
+
 }
 return result;
 
