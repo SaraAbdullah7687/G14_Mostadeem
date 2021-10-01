@@ -9,9 +9,11 @@ class RoundedPasswordField extends StatelessWidget {
   final ValueChanged<String> onChanged;
   final TextEditingController controllerPw;
   final bool isSignUp;
+  final Function press;
   const RoundedPasswordField({
     Key key,
     this.onSaved,
+    this.press,
    this.isSignUp,
     this.onChanged,
     this.controllerPw, TextInputAction textInputAction,
@@ -76,7 +78,20 @@ isSignUp?
     width: 400,
     height: 150,
     onSuccess: (){},/// do something
-): Text("not sign up" ,style: TextStyle(color: Colors.white,),),
+):  
+GestureDetector(
+          onTap: press,
+          child: Container(
+            margin: EdgeInsets.only(top: 15),
+            child: Text(
+              "Forgot password?",
+              style: TextStyle(
+                color: kPrimaryColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
 
 ],
       ),
