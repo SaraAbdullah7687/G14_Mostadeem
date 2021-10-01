@@ -1,6 +1,7 @@
 
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:test_project/Screens/Login/login_screen.dart';
 import 'package:test_project/Screens/Welcome/welcome_screen.dart';
 import 'package:test_project/Screens/background.dart';
@@ -57,7 +58,8 @@ Map<String, String> _authData = { // can use variables instead of map
       Background(
         child: SingleChildScrollView(
           child: Container(
-            margin: EdgeInsets.only(bottom: 40.0), // edit it 
+          //  margin: EdgeInsets.only(bottom: 40.0), // edit it 
+          margin: EdgeInsets.all(24),
        //  padding: EdgeInsets.all(50.0), // this is why the fields looks smaller
          child: Form( // added it
          key: _formKey, // added it
@@ -66,19 +68,8 @@ Map<String, String> _authData = { // can use variables instead of map
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
            SizedBox(height: size.height * 0.03),
-        /* AppBar(
-          elevation: 0.0,
-          actions: <Widget>[
-            FlatButton.icon(
-              icon: Icon(Icons.person),
-              label: Text('Register'),
-              onPressed: () => widget.toggleView(),
-            ), 
-         
-          ],
-        ),*/
            
-           SizedBox(height: size.height * 0.03),
+           SizedBox(height: size.height * 0.05),
               SizedBox(
                height: 200, // change the number to make the logo bigger     
              // width:size.width,
@@ -161,18 +152,20 @@ TextFieldContainer(
       ),
       
               RoundedPasswordField(
-                controller: _passwordController,
+                isSignUp: true,
+                controllerPw: _passwordController,
                 onSaved: (value) {
                   // or  _passwordController.text = value!;
                   _password=value;
                       _authData['password'] = value;
-                    }, // change it to onSaved
+                    }, 
               //textInputAction: TextInputAction.done,
               onChanged: (val) {
                     setState(() => _authData['password'] = val);
                   },
               ),
               
+
               RoundedButton(
                 text: "SIGNUP",
                 press: () async{ 
@@ -229,6 +222,7 @@ print("validation works"); // delete it
         ),
         ),
       ),
+
     );
   
   

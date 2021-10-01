@@ -50,7 +50,9 @@ class Wrapper extends StatelessWidget {
         
        else{ 
          if (text.data == "admin")
-        {return AdminHome();}
+        {return AdminHome(); //عدليه وخليه هذا
+        //return ViewInstitution();
+        }
         else if (text.data == "contributor")
         { return Home();}
         else{ return ViewInstitution();}}

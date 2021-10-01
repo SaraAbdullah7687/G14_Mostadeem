@@ -47,7 +47,20 @@ Map<String, String> _authData = { // can use variables instead of map
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
+    return Scaffold(/*appBar: AppBar(
+
+           shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        bottom: Radius.circular(18),
+      ),
+    ),
+        backgroundColor: Color.fromRGBO(48, 126, 80, 1),
+        elevation: 0.0,
+          toolbarHeight:80.0,
+        ),*/
+
+
+
       body: loading ? Loading(): 
       Background(
         child: SingleChildScrollView(
@@ -136,7 +149,8 @@ TextFieldContainer(
               ),*/
               
               RoundedPasswordField(
-                controller: _passwordController,
+                controllerPw: _passwordController,
+                isSignUp: false,
                 onSaved: (value) {
                   // or  _passwordController.text = value!;
                       _authData['password'] = value;
@@ -149,7 +163,7 @@ TextFieldContainer(
               ),
               
               RoundedButton(
-                text: "LOGIN",
+                text: "SIGN IN",
                 press: () async{ 
                 if(_formKey.currentState.validate()){
                       setState(() => loading = true);
@@ -203,6 +217,7 @@ TextFieldContainer(
               AlreadyHaveAnAccountCheck(
                 press: () {
                   widget.toggleView();
+                  
                  /* Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -229,7 +244,7 @@ TextFieldContainer(
           icon: Icon(Icons.error, size: 32, color: Colors.white),
           shouldIconPulse: false,
           title: 'INVALID',
-          message: 'Email or password doesn\'t exist', // change message
+          message: 'Email or password incorrect', // change message
           duration: Duration(seconds: 3),
           flushbarPosition: FlushbarPosition.TOP,
           margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
