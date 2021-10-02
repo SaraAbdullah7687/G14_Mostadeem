@@ -67,6 +67,7 @@ _institutionCollection.doc(uid)
     .catchError((error) => print(result='Fail approve'),);
 }
 else{ // delete institution and send them email 
+/*
 _institutionCollection.doc(uid) // also delete it from users collecction
     .delete()
     .then((_) => print(result='Success delete'),)
@@ -75,8 +76,11 @@ _institutionCollection.doc(uid) // also delete it from users collecction
 _usersCollection.doc(uid) // also delete it from users collecction
     .delete()
     .then((_) => print(result='Success delete'),)
-    .catchError((error) => print(result='Fail delete'),);
-
+    .catchError((error) => print(result='Fail delete'),);*/
+_institutionCollection.doc(uid)
+    .update({'status' : 'disapproved'})
+    .then((_) => print(result='Success disapprove'),)
+    .catchError((error) => print(result='Fail disapprove'),);
 
 }
 return result;
@@ -86,7 +90,9 @@ return result;
 Future<String> getUserType(String uid/*,BuildContext context*/) async{
 
 print(uid);
+print("database file");
 final snapshot =await _usersCollection.doc(uid).get();
+print("after getting type");
 print (snapshot['userType']+" in database method");
  String userType = snapshot['userType'];
  return userType;
