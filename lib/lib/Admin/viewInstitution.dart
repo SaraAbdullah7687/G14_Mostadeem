@@ -6,6 +6,8 @@
 import 'package:flutter/material.dart';
 //import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
 //import 'package:flutter_svg/svg.dart';
 ////import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 //import 'package:test_project/Screens/background.dart';
@@ -288,14 +290,14 @@ SingleChildScrollView(
   //  Flexible(  child:
              /* Container( width:25 , 
                 child:*/
- GestureDetector( onTap: (){_showMyDialog("approve", context,document.id); },
+ GestureDetector( onTap: (){_showMyDialog("approve", context,document.id,document); },
   child: Icon( Icons.check,
                size: 50.0,
                color: Colors.lightGreen[600],
              ), 
 ),
 
-GestureDetector( onTap: (){_showMyDialog("Disapprove", context,document.id); },
+GestureDetector( onTap: (){_showMyDialog("Disapprove", context,document.id,document); },
   child: Icon( Icons.clear,
                size: 50.0,
                color: Colors.red[800],
@@ -359,7 +361,7 @@ if (await canLaunch(url)) {
   }
 }
 
-Future<void> _showMyDialog(String status, BuildContext context, String uid) async {
+Future<void> _showMyDialog(String status, BuildContext context, String uid,DocumentSnapshot document) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: false, // user must tap button!
@@ -380,6 +382,7 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid) asyn
                  String result= _auth.updateInstitutionStatus(status,uid);
                  if(result=='Success approve'){ // show another pop up 
                    print('status has changed to approved');
+                  // sendEmail("YOU'VE BEEN APPROVED!!","Congratulations you've been approved to use Mostadeem app",context,document);
 
                  }
                  else if(result=='Fail approve'){print('could not update status, procces failed');}
@@ -390,11 +393,11 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid) asyn
                 else {
                   // delete institution and send email to them to let them know 
                   String result= _auth.updateInstitutionStatus(status,uid);
-                 if(result=='Success delete'){ // show another pop up 
+                 if(result=='Success disapprove'){ // show another pop up 
                    print('intitution has been deleted');
 
                  }
-                 else if(result=='Fail delete') {print('could not delete institution, procces failed');}
+                 else if(result=='Fail disapprove') {print('could not delete institution, procces failed');}
                   else{ print(result);}
                 }
                 
@@ -408,6 +411,23 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid) asyn
   );
 }
 
+Future sendEmail(String subject, String text,BuildContext context,DocumentSnapshot document) async{
+final email = 'p8713915@gmail.com';
+final token='';
+final smtpServer = gmailSaslXoauth2(email, token);
+final message= Message()
+..from = Address(email, 'Mostadeem team')
+..recipients= [document.get("email")]
+..subject= subject
+..text= text;
+
+try{
+  await send(message, smtpServer);
+}on MailerException catch (e){
+  print(e);
+}
+
+}
 
  _checkCR(String CR, BuildContext context){
   // String url='https://mc.gov.sa/ar/eservices/Pages/Commercial-data.aspx';
