@@ -2,13 +2,12 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:test_project/Screens/authenticate/bodyLogin.dart';
-import 'package:test_project/Screens/background.dart';
+import 'package:test_project/Screens/authenticate/bodyLogin.dart'; 
+import 'package:test_project/Screens/Login/components/backgroundReset.dart';
 import 'package:test_project/components/rounded_button.dart';
 import 'package:test_project/components/text_field_container.dart';
 import 'package:test_project/services/auth.dart';
 import 'package:test_project/shared/loading.dart';
-
 import '../../../constants.dart';
 
 
@@ -68,7 +67,7 @@ Map<String, String> _authData = { // can use variables instead of map
           child: Container(
           //  height: MediaQuery.of(context).size.height,
      // width: MediaQuery.of(context).size.width,
-            margin: EdgeInsets.all(24),
+            //margin: EdgeInsets.all(24),
        //  padding: EdgeInsets.all(50.0), // this is why the fields looks smaller
      
          child: Form( // added it
@@ -132,22 +131,35 @@ TextFieldContainer(
                 if(_formKey.currentState.validate()){
                       setState(() => loading = true);
    
-                      _auth.resetPassword(_authData['email']);
-                        setState(() { 
+                     dynamic result= await _auth.resetPassword(_authData['email']);
+                        
+if(result == "pass"){
+  setState(() { 
                           loading = false;
                         });
-                      Navigator.push(
+                    /*  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return BodyLogin(); // the general signup screen from nouf
+                        return BodyLogin(); 
                       },
                     ),
-                  );
-                  showTopSnackBar(context);
-                      
+                  );*/
+                  Navigator.of(context).pop();
+                  showTopSnackBar(context, "Success","A reset password message has been sent to your email",);
+                   }
+
+                 else if(result=="fail"){ setState(() { 
+                          loading = false;
+                        });
+                   showTopSnackBar(context, "Fail", "please make sure you entered the correct email");
+                 }
                     }
                 },
+
+
+
+                
               ),
 
 
@@ -162,13 +174,13 @@ TextFieldContainer(
   
   }
 // works but shows an error in the console
-       void showTopSnackBar(BuildContext context) => show(
+       void showTopSnackBar(BuildContext context, String title, String message) => show(
         context,
         Flushbar(
           icon: Icon(Icons.error, size: 32, color: Colors.white),
           shouldIconPulse: false,
-          title: 'Success',
-          message: 'A reset password message has been sent to your email', // change message
+          title: title,
+          message: message, // change message
           duration: Duration(seconds: 5),
           flushbarPosition: FlushbarPosition.TOP,
           margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),

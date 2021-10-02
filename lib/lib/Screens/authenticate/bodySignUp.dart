@@ -283,7 +283,7 @@ print("validation works"); // delete it
           icon: Icon(Icons.error, size: 32, color: Colors.white),
           shouldIconPulse: false,
           title: 'INVALID',
-          message: 'invalid email or password', // change message
+          message: 'Email already exists, please sign in', // change message
           duration: Duration(seconds: 3),
           flushbarPosition: FlushbarPosition.TOP,
           margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
