@@ -76,7 +76,7 @@ class _LocationAppState extends State<LocationApp> {
             );
           },
         ),
-        toolbarHeight: 80.0,
+        toolbarHeight: 50.0,
       ),
 
       body: GoogleMap(
@@ -118,9 +118,9 @@ class _LocationAppState extends State<LocationApp> {
               });
         },
         shape: new RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(25.0),
+        //  borderRadius: new BorderRadius.circular(25.0),
         ),
-        backgroundColor: Color.fromRGBO(48, 126, 80, 1),
+        backgroundColor: Color.fromRGBO(236, 232, 201, 0.7),
         child: Text(
             "Use This Location\n ${currentLocation.latitude} , ${currentLocation.longitude}",
             textAlign: TextAlign.center,
