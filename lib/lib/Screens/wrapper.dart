@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:test_project/Admin/adminHome.dart';
 import 'package:test_project/Admin/viewInstitution.dart';
 import 'package:test_project/Screens/authenticate/authenticate.dart';
+import 'package:test_project/Screens/authenticate/bodyLogin.dart';
 import 'package:test_project/models/userMu.dart';
 import 'package:test_project/screens/home/home.dart';
 import 'package:flutter/material.dart';
@@ -23,28 +24,14 @@ class Wrapper extends StatelessWidget {
     if (user == null){
       return Authenticate(); // was Authenticate indtead of LoginScreen  SignUpScreen
     } else {// make it else if insted of else
-    /* return FutureBuilder(
-        future: _authService.checkUserType(),
-     builder: (BuildContext context, AsyncSnapshot<Widget> widget) {
-        if(widget.connectionState == ConnectionState.done){
-          if (!widget.hasData) {
-            return Authenticate();
-          }
-          return widget.data;
-        }
-        return Center(
-          child: Text("CircularProgressIndicator"),
-        );
-      },
-     );*/
-//return ViewInstitution();
-      //return _authService.checkUserType(context);
       return new FutureBuilder(
       future: _authService.checkUserType(),
       builder: (BuildContext context, AsyncSnapshot<String> text) { // add code to wait for data
-        
-        if(text.connectionState == ConnectionState.done){
+        print("inside builder");
+        if(text.connectionState == ConnectionState.done && text.data != null){
+          print("inside if connection stm");
           if (!text.hasData) {
+            print("inside hasData");
             return Loading();
           }
         
@@ -54,10 +41,11 @@ class Wrapper extends StatelessWidget {
         //return ViewInstitution();
         }
         else if (text.data == "contributor")
-        { return Home();}
-        else{ return ViewInstitution();}}
+        { print("entered home");
+          return Home();}
+        else{ return BodyLogin();}} 
       }
-      return Loading();
+      return BodyLogin(); // يجي هنا بعد الساين اب
       }
       
       );

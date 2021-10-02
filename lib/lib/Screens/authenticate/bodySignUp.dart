@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:test_project/Screens/Welcome/welcome_screen.dart';
 import 'package:test_project/Screens/authenticate/bodyLogin.dart';
 import 'package:test_project/Screens/background.dart';
+import 'package:test_project/Screens/home/home.dart';
 //import 'package:flutter_auth/Screens/Signup/components/or_divider.dart';
 //import 'package:flutter_auth/Screens/Signup/components/social_icon.dart';
 import 'package:test_project/components/already_have_an_account_acheck.dart';
@@ -44,11 +45,21 @@ Map<String, String> _authData = { // can use variables instead of map
     'name': '',
     'email': '',
     'password': '',
+    'phone': '',
   }; // added it 
 
-  TextEditingController _emailController = TextEditingController(); //add it in rounded input class
+  //TextEditingController _emailController = TextEditingController(); //add it in rounded input class
   TextEditingController _passwordController = TextEditingController();
+ // TextEditingController _phoneController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // added it
+ 
+
+
+/*
+void clearText() {
+    _passwordController.clear();
+  }*/
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -162,7 +173,7 @@ TextFieldContainer(
             child: TextFormField( 
                   //autofocus: false,
                   keyboardType: TextInputType.emailAddress, 
-                  controller: _emailController, 
+                 // controller: _emailController, 
                   cursorColor: kPrimaryColor,
                   textInputAction: TextInputAction.next, // added it
                   decoration: InputDecoration(
@@ -197,26 +208,71 @@ TextFieldContainer(
             ),
       ),
       
+/*
+TextFieldContainer(
+            child: TextFormField( 
+                  //autofocus: false,
+                  keyboardType: TextInputType.number, // or phone
+                 // controller: _phoneController, 
+                  cursorColor: kPrimaryColor,
+                  textInputAction: TextInputAction.next, // added it
+                  decoration: InputDecoration(
+                  prefixIcon: Icon( Icons.phone, color: kPrimaryColor, ),
+                  hintText: "05xxxxxxxx",
+                 // contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15), // make it smaller
+                  border: new OutlineInputBorder(
+                  borderRadius: const BorderRadius.all(
+                  const Radius.circular(15.0),),
+                  borderSide: new BorderSide(
+                  color: Colors.black,
+                  width: 1.0,),
+                  ),
+                  ),
+ /*validator: (value) {
+                              if (value.isEmpty || !value.contains('@')) {
+                                return 'Invalid email!';
+                              }
+                              return null;
+                            },*/
+                  validator: MultiValidator([
+                  RequiredValidator(errorText: "Required"),
+                   MaxLengthValidator(10, errorText: "At most 10 numbers"),
+                   MinLengthValidator(10, errorText: "At least 10 numbers"),
+                  ]),
+                  onSaved: (value) {
+                  // _emailController.text = value!;
+                  _email=value; // choose one of them 
+                  _authData['phone'] = value; },
+
+                   onChanged: (val) {
+                            setState(() => _authData['phone'] = val);
+                          },
+            ),
+      ),
+      
+*/
+
                       RoundedPasswordField(
                         isSignUp: true,
-                        controllerPw: _passwordController,
+                       controllerPw: _passwordController,
                         onSaved: (value) {
                           // or  _passwordController.text = value!;
                           _password=value;
                               _authData['password'] = value;
                             }, 
-                      //textInputAction: TextInputAction.done,
+                    //  textInputAction: TextInputAction.done,
                       onChanged: (val) {
                             setState(() => _authData['password'] = val);
                           },
                       ),
                       
 
-                      RoundedButton(
+                      RoundedButton( // when click go to auth phone number , and send data with it 
                         text: "Next",
                         press: () async{ 
                            if(_formKey.currentState.validate()){
-                              setState(() => loading = true);
+                            //  setState(() => loading = true);
+                             // clearText();
                               print("validate form,sending signup req"); // maybe beacuse it's dunamic?
                               dynamic result = await _auth.registerWithEmailAndPassword(_authData['email'].trim(), _authData['password'], _authData['name'].trim());
                               
@@ -234,7 +290,11 @@ TextFieldContainer(
                                 showTopSnackBar(context);
 
                                 } 
-                              else{print("req is not null");}
+                              else{print("req is not null");
+                            /*  setState(() {
+                                  loading = false;
+                                });*/
+                              }
                            
                             } 
                            /*if (!_formKey.currentState.validate()) {
