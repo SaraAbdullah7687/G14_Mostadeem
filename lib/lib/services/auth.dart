@@ -135,10 +135,14 @@ return "user type is problem";*/
 }
 
 
-resetPassword(String email) async{
-
+Future<dynamic> resetPassword(String email) async{
+try {
  await _auth.sendPasswordResetEmail(email: email);
- 
+ return "pass";
+} on FirebaseAuthException catch (e) {
+ print(e.message);
+ return "fail";
 }
 
+}
 }
