@@ -1,18 +1,16 @@
-
 import 'dart:core';
+//import 'dart:js';
 import 'package:flutter/material.dart';
-import 'package:mostadeem_app/otp.dart';
-import 'package:time_range/time_range.dart';
-import 'package:email_validator/email_validator.dart';
-
-import 'Screens/background.dart';
+import 'package:inst_registration/services/auth.dart';
+import 'package:inst_registration/toOTP.dart';
+import 'package:form_field_validator/form_field_validator.dart';
+import 'package:provider/provider.dart';
 
 
 
 
 
 class regScreen extends StatefulWidget {
-  const regScreen({ Key? key }) : super(key: key);
   
 
   @override
@@ -21,7 +19,22 @@ class regScreen extends StatefulWidget {
 
 class _regScreenState extends State<regScreen> {
 
+ final AuthService _auth = AuthService();
+
+
+
+var isSelected = [false,false,false,false,false,false,false,false,false,false,false,false]; 
   TextEditingController _controller = TextEditingController();
+  TextEditingController _emailController = TextEditingController(); //add it in rounded input class
+  TextEditingController _passwordController = TextEditingController();
+  
+
+
+    Color _color = Colors.white;
+
+
+
+
 
   Widget buildName() => TextFormField(
     validator: (value) {
@@ -47,13 +60,13 @@ class _regScreenState extends State<regScreen> {
       onChanged: (value) => setState(() => name = value),
     );
 
+
+
+
+
     Widget buildEmail() => TextFormField(
-     validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'required';
-    }
-    return null;
-  },
+     
+
     decoration: InputDecoration(
         
         prefixIcon: Padding(
@@ -69,8 +82,20 @@ class _regScreenState extends State<regScreen> {
 
         ),
       ),
+       controller: _emailController, 
+
       onChanged: (value) => setState(() => email = value),
+      validator: MultiValidator([
+  RequiredValidator(errorText: "Required"),
+  EmailValidator(errorText: "Enter a valid email"),
+])
     );
+
+
+
+
+
+
 
       bool _isHidden = true;
 
@@ -97,6 +122,7 @@ class _regScreenState extends State<regScreen> {
 
         ),
       ),
+      controller: _passwordController,
       onChanged: (value) => setState(() => password = value),
       obscureText: true,
     );
@@ -106,6 +132,10 @@ void _togglePasswordView() {
     });}
 
 
+
+
+
+
      Widget buildSocialM() => TextFormField(
        validator: (value) {
     if (value == null || value.isEmpty) {
@@ -113,6 +143,7 @@ void _togglePasswordView() {
     }
     return null;
   },
+  
       decoration: InputDecoration(
         prefixIcon: Padding(
          padding: EdgeInsets.all(0.0),
@@ -127,14 +158,33 @@ void _togglePasswordView() {
         ),
       ),
       onChanged: (value) => setState(() => socialM = value),
+      
     );
+
+
+
+
+
+
+
+
+
+
+
     Widget buildCR() => TextFormField(
-      maxLength: 10, keyboardType: TextInputType.number,controller: _controller,
+
+      maxLength: 10,
+      
+       keyboardType: TextInputType.number,controller: _controller,
       validator: (value) {
-    if (value == null || value.isEmpty) {
+
+      if (value == null || value.isEmpty) {
+
       return 'required';
     }
-    return null;
+     else if (value.length<10)
+    return 'Commercial record length should be 10';
+    else return null;
   },
       decoration: InputDecoration(
         prefixIcon: Padding(
@@ -150,7 +200,12 @@ void _togglePasswordView() {
         ),
       ),
       onChanged: (value) => setState(() => CR = value),
+      
     );
+
+
+
+
 
 
 
@@ -169,10 +224,10 @@ Column buildAllCategories(){
       Row (
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
        children: [
-      buildSingleCateg('assets/images/grey_paper.png', 'Paper'),
-      buildSingleCateg('assets/images/grey_cardboard.png', 'Cardboard'),
-      buildSingleCateg('assets/images/grey_glass.png', 'Glass'),
-      buildSingleCateg('assets/images/grey_plastic.png', 'Plastic'),
+      buildSingleCateg('assets/images/grey_paper.png', 'Paper',0),
+      buildSingleCateg('assets/images/grey_cardboard.png', 'Cardboard',1),
+      buildSingleCateg('assets/images/grey_glass.png', 'Glass',2),
+      buildSingleCateg('assets/images/grey_plastic.png', 'Plastic',3),
 
 
     ],),
@@ -180,10 +235,10 @@ Column buildAllCategories(){
     Row (
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
        children: [
-        buildSingleCateg('assets/images/grey_metal.png', 'Metals'),
-      buildSingleCateg('assets/images/grey_electronic.png', 'Electronics'),
-      buildSingleCateg('assets/images/grey_nylon.png', 'Nylon'),
-      buildSingleCateg('assets/images/grey_can.png', 'Cans'),
+        buildSingleCateg('assets/images/grey_metal.png', 'Metals',4),
+      buildSingleCateg('assets/images/grey_electronic.png', 'Electronics',5),
+      buildSingleCateg('assets/images/grey_nylon.png', 'Nylon',6),
+      buildSingleCateg('assets/images/grey_can.png', 'Cans',7),
 
     ],),
      SizedBox(height: 20),
@@ -191,10 +246,10 @@ Column buildAllCategories(){
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
        children: [
      
-      buildSingleCateg('assets/images/grey_battery.png', 'Batteries'),
-      buildSingleCateg('assets/images/grey_sofa.png', 'Furniture'),
-      buildSingleCateg('assets/images/grey_clothes.png', 'Clothes'),
-      buildSingleCateg('assets/images/grey_pizza.png', 'Food'),
+      buildSingleCateg('assets/images/grey_battery.png', 'Batteries',8),
+      buildSingleCateg('assets/images/grey_sofa.png', 'Furniture',9),
+      buildSingleCateg('assets/images/grey_clothes.png', 'Clothes',10),
+      buildSingleCateg('assets/images/grey_pizza.png', 'Food',11),
 
     ],),
    
@@ -202,26 +257,37 @@ Column buildAllCategories(){
 }
     
 
-     Container buildSingleCateg(String IconName, String category) {
+
+
+
+    
+
+     Container buildSingleCateg(String IconName, String category, int index) {
        return Container(
          child: Column(
+          
            children:[
-             Container(
+             InkWell(
+             child: Container(
+                
+
                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                decoration: BoxDecoration(
                border: Border.all(color: Colors.grey),
-
+               
                borderRadius: BorderRadius.circular(10),
                ),
                child: Image.asset(IconName, width: 60,)
-             ),
-             Text(category, 
-             style: TextStyle(fontWeight: FontWeight.bold),
-             )]
+             ),onTap: () {
+               print('s');
+               _color=Colors.red; 
+               })
+
+             ]
          )
        );
+       
      }
-
 
 
 
@@ -230,14 +296,35 @@ Column buildAllCategories(){
   
 
     Widget buildNext() => ElevatedButton(
-         child: Text('Next',
+           child: Text('Next',
           style: TextStyle(fontSize: 20, color: Colors.white)
           ),
-          onPressed: () {
+          onPressed: () async{
+         String Email = _emailController.text.trim();
+         String Pass = _passwordController.text.trim();
+
+
+          if(formKey.currentState!.validate()){
+          dynamic result=  await _auth.createUserWithEmailAndPassword(Email, Pass);}
+          else
+          return;
+            //Navigator.push(
+          //  context,
+          // MaterialPageRoute(builder: (context) => WelcomeScreen()),
+          // );
            
-          if(!formKey.currentState!.validate()){
-            return;
-          }
+
+          /*print("validate form,sending signup req"); // maybe beacuse it's dunamic?
+                    dynamic result = await _auth.registerWithEmailAndPassword(_authData['email'].trim(), _authData['password'], _authData['name'].trim());
+                    print("req sent");
+                    if(result == null) {
+                      print("req returend null");
+                      error = 'Please supply a valid email';
+                      setState(() {
+                        loading = false;
+                      });
+                    }else {print("req is not null");} 
+*/
          /*Navigator.push(
          context,
          MaterialPageRoute(builder: (context) => firstBackground(child: Scaffold())));
@@ -254,99 +341,11 @@ Column buildAllCategories(){
             ),
   
        ));
-     @override
-  Widget buildStartTime(BuildContext context) {
-  
-   final _defaultTimeRange = TimeRangeResult(
-    TimeOfDay(hour: 14, minute: 50),
-    TimeOfDay(hour: 15, minute: 20),
-    );
-   TimeRangeResult? _timeRange;
 
-   @override
-   void initState() {
-    super.initState();
-    _timeRange = _defaultTimeRange;
-   }
 
-//https://pub.dev/packages/time_range/example
-    return Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 16, left: 5),
-                child: Text(
-                  'Pickup Times',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline6!
-                      .copyWith(fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-              ),
-              SizedBox(height: 20),
-              TimeRange(
-                fromTitle: Text(
-                  'FROM',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                toTitle: Text(
-                  'TO',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                titlePadding: 50,
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.normal,
-                  color: Colors.black,
-                ),
-                activeTextStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromRGBO(48, 126, 80, 0.5),
-                ),
-                borderColor: Colors.black,
-                activeBorderColor: Colors.black,
-                backgroundColor: Colors.transparent,
-                activeBackgroundColor: Color.fromRGBO(48, 126, 80, 0.5),
-                firstTime: TimeOfDay(hour: 8, minute: 00),
-                lastTime: TimeOfDay(hour: 23, minute: 59),
-                initialRange: _timeRange,
-                timeStep: 10,
-                timeBlock: 30,
-                onRangeCompleted: (range) => setState(() => _timeRange = range),
-              ),
-              SizedBox(height: 30),
-              if (_timeRange != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, left: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Selected Range: ${_timeRange!.start.format(context)} - ${_timeRange!.end.format(context)}',
-                        style: TextStyle(fontSize: 20, color: Colors.black),
-                      ),
-                      SizedBox(height: 20),
-                      MaterialButton(
-                        child: Text('Default'),
-                        onPressed: () =>
-                            setState(() => _timeRange = _defaultTimeRange),
-                        color: Color.fromRGBO(83, 122, 88, 0.5),
-                      )
-                    ],
-                  ),
-                ),
-            ],
-          ),
-        );
-  }
+
+
+
 
 
  
@@ -410,7 +409,6 @@ Column buildAllCategories(){
         const SizedBox(height: 32),
         buildTitle(),
         buildAllCategories(),
-        buildStartTime( context),
         buildSpace(),
         buildNext(),
       ],
