@@ -1,9 +1,12 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-
-import 'myHomePage.dart';
+import 'package:mostadeem/models/contributorModel.dart';
+import 'package:mostadeem/models/requestModel.dart';
+import 'package:mostadeem/services/database.dart';
+import 'package:mostadeem/main.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -12,9 +15,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 // to store geoPoints
 import 'package:geoflutterfire/geoflutterfire.dart';
-import 'calendar.dart';
+import 'package:mostadeem/screens/calendar.dart';
+import 'package:mostadeem/globals/global.dart' as global;
 
-Future<void> main() async {
+/*Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   FirebaseApp LocationApp = await Firebase.initializeApp();
   // await Firebase.initializeApp();
@@ -28,21 +32,83 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: LocationApp(),
+      home: LocationApp(category: ' ', date: ' ', time: ' '),
     );
   }
 }
-
+*/
 class LocationApp extends StatefulWidget {
-  const LocationApp({Key? key}) : super(key: key);
+  //const LocationApp({Key? key, String category}) : super(key: key);
+  String category; //FINAL ?
+  String date;
+  String time;
+  contributorModel?
+      currentUser; //===========================================================================================
+
+  LocationApp(
+      {required this.category,
+      required this.date,
+      required this.time,
+      this.currentUser});
 
   @override
   _LocationAppState createState() => _LocationAppState();
 }
 
 class _LocationAppState extends State<LocationApp> {
+  // FINAL STEP > ADD to database
+  void _addRequest(
+      BuildContext context, String contId, requestModel request) async {
+    // NEED PARAMETERS ==================================================================================================================
+    String _returnString;
+    await Firebase.initializeApp();
+    _returnString = await database().addRequest(contId, request);
+
+    if (_returnString == "success") {
+      global.globalDate = null;
+      global.globalTime = null;
+      /* Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MyHomePage(),
+          ),
+          (route) => false);*/
+    } // END inner if
+    /* }*/ else {
+      // WE must show error msg
+      print("ERRRRRRRRRRRRRRRRRRRRRRRRRRRRROR 52 location");
+    }
+  } // END FINAL STEP > ADD to database
+
+// when onPressed: take the cats and go to calendar screens
+  void _goToCalendar(BuildContext context, String thisCategory) async {
+    // AFNAN
+    Navigator.of(context).pop();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MainPage(
+          // Calendar
+          category: thisCategory,
+        ),
+      ),
+    );
+    //SARA
+    /* Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => calendarScreen(
+          category: thisCategory,
+        ),
+      ),
+    );*/
+  }
+
   //*السوري*//
   Completer<GoogleMapController> _controller = Completer();
+  /* to add marker*/
+  Set<Marker> _markers = {};
+  BitmapDescriptor? mapMarker;
 
   // when page first open this will show
   static final CameraPosition _initialCameraPosition = CameraPosition(
@@ -53,82 +119,110 @@ class _LocationAppState extends State<LocationApp> {
   Widget build(BuildContext contexts) {
     // ignore: unnecessary_new
     return new Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text('Location'),
-        backgroundColor: Color.fromRGBO(48, 126, 80, 1),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(18),
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text('Location'),
+          backgroundColor: Color.fromRGBO(48, 126, 80, 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(18),
+            ),
           ),
-        ),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_rounded,
-            color: Colors.white,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_rounded,
+              color: Colors.white,
+            ),
+            tooltip: 'Show Snackbar',
+            onPressed: () {
+              // ==========================================================================================================
+              _goToCalendar(context, widget.category);
+            },
           ),
-          tooltip: 'Show Snackbar',
-          onPressed: () {
-            Navigator.of(context).pop();
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MainPage()),
-            );
-          },
+          toolbarHeight: 80.0,
         ),
-        toolbarHeight: 50.0,
-      ),
+        body: GoogleMap(
+            initialCameraPosition: _initialCameraPosition,
+            mapType: MapType.normal,
+            onMapCreated: (controller) => _controller.complete(controller),
+            markers: _markers,
 
-      body: GoogleMap(
-          initialCameraPosition: _initialCameraPosition,
-          mapType: MapType.satellite,
-          onMapCreated: (controller) => _controller.complete(controller),
-
-          /* to move camera*/
-          onCameraMove: (CameraPosition newPos) {
-            setState(() {
-              currentLocation = newPos.target;
-            });
-          }),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 15.0, right: 40),
-        child: FloatingActionButton(
-          backgroundColor: Colors.white,
-          onPressed: () => getCurrentLocation(),
-          child: Icon(
-            Icons.gps_fixed,
-            color: Color.fromRGBO(48, 126, 80, 1),
+            /* to move camera*/
+            onCameraMove: (CameraPosition newPos) {
+              setState(() {
+                currentLocation = newPos.target;
+              });
+            }),
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.only(bottom: 40.0, right: 40),
+          child: FloatingActionButton(
+            backgroundColor: Colors.white,
+            onPressed: () => getCurrentLocation(),
+            child: Icon(
+              Icons.gps_fixed,
+              color: Color.fromRGBO(48, 126, 80, 1),
+            ),
           ),
         ),
-      ),
 
 ///////////////////////////////////////////
 
-      /* to display location lang+long*/
-      bottomNavigationBar: FloatingActionButton(
-        onPressed: () {
-          /*DB HERE ADDED*/
-          //  await requests.add({'location': currentLocation.latitude});
-          _addGeoPoint();
-          /* display conformation pop up*/
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AdvanceCustomAlert();
-              });
-        },
-        shape: new RoundedRectangleBorder(
-        //  borderRadius: new BorderRadius.circular(25.0),
-        ),
-        backgroundColor: Color.fromRGBO(236, 232, 201, 0.7),
-        child: Text(
-            "Use This Location\n ${currentLocation.latitude} , ${currentLocation.longitude}",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-            )),
-      ),
-    );
+        /* to display location lang+long*/
+        bottomNavigationBar: SizedBox(
+          height: 45,
+          child: FloatingActionButton(
+            onPressed: () async {
+              //======================================================================================================================
+              // Init firestore and geoFlutterFire
+              final geo = Geoflutterfire();
+              var pos = await Geolocator.getCurrentPosition(
+                  desiredAccuracy: LocationAccuracy.high);
+              GeoFirePoint point =
+                  geo.point(latitude: pos.latitude, longitude: pos.longitude);
+
+              // make request obj
+              requestModel request = requestModel(
+                contId:
+                    "NK9m5Zwe40aIAo722ulq", //widget.currentUser!.uid,// NULLABLE ###################################################################
+                category: widget.category,
+                date: widget.date,
+                time: widget.time,
+                location: point,
+                status: 'new',
+              );
+
+              // ADD TO DB
+              _addRequest(
+                  context,
+                  "NK9m5Zwe40aIAo722ulq" /*widget.currentUser!.uid */,
+                  request); // NULLABLE ###################################################################
+
+              /* display conformation pop up*/
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AdvanceCustomAlert(
+                      icon: Icons.celebration,
+                      msgTitle: 'Done!',
+                      msgContent: 'We have recievd your request.',
+                      btnContent: 'Ok',
+                    );
+                  });
+            },
+            shape: new RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(25.0),
+            ),
+            backgroundColor: Color.fromRGBO(48, 126, 80, 1),
+            child: Text("Use This Location",
+                // ${currentLocation.latitude} , ${currentLocation.longitude}",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18,
+                  //fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                )),
+          ),
+        ));
   }
 
   /////////////METHOD////////////
@@ -149,29 +243,59 @@ class _LocationAppState extends State<LocationApp> {
     print(
         'animating camera to (lat: ${position.latitude}, long: ${position.longitude}"');
     controller.animateCamera(CameraUpdate.newCameraPosition(_cameraPosition));
+    // controller.showMarkerInfoWindow(MarkerId('id-1'));
+    // markerMethod(position);
+    _onMapCreated(controller, position);
   }
 
-  /////////////METHOD////////////
-  /*ADEDD DB HERE: store locaation*/
-  _addGeoPoint() async {
-    /* create refrence to DB*/
-    CollectionReference requestRef = FirebaseFirestore.instance
-        .collection("contributor")
-        .doc("442d24Jv53mOePKEBElK")
-        .collection('request');
-
-    // Init firestore and geoFlutterFire
-    final geo = Geoflutterfire();
-    var pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    GeoFirePoint point =
-        geo.point(latitude: pos.latitude, longitude: pos.longitude);
-    // add it to object######################################################3S
-    requestRef.add({'location': point.data});
+  static const double hueGreen = 120.0;
+  void _onMapCreated(GoogleMapController controller, Position position) {
+    /// Convenience hue value representing green.
+    setState(() {
+      _markers.add(
+        Marker(
+          markerId: MarkerId('id-1'),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+              (true) ? BitmapDescriptor.hueGreen : BitmapDescriptor.hueRed),
+          position: LatLng(position.latitude, position.longitude),
+          //  icon: Icons.fmd_good_outlined,
+          infoWindow: InfoWindow(
+            title: 'Your current location',
+            snippet: '${position.latitude}, ${position.longitude}',
+          ),
+        ),
+      );
+    });
   }
+
+/*
+  Future<void> markerMethod(Position position) async {
+    final GoogleMapController controller = await _controller.future;
+
+    setState(() {
+      _markers.add(
+        Marker(
+            markerId: MarkerId('id-1'),
+            position: LatLng(position.latitude, position.longitude)),
+      );
+    });
+  }*/
 }
 
 class AdvanceCustomAlert extends StatelessWidget {
+  IconData icon;
+  String msgTitle;
+  String msgContent;
+  String btnContent;
+
+// constructor
+  AdvanceCustomAlert({
+    required this.icon,
+    required this.msgTitle,
+    required this.msgContent,
+    required this.btnContent,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -192,7 +316,9 @@ class AdvanceCustomAlert extends StatelessWidget {
                     child: Container(
                       color: Colors.white70,
                       child: Icon(
-                        Icons.celebration,
+                        //1- Icon var ######################################################################33
+                        //  Icons.celebration,
+                        icon, // icon var
                         size: 60,
                         color: Color.fromRGBO(48, 126, 80, 1),
                       ),
@@ -205,7 +331,9 @@ class AdvanceCustomAlert extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            'Done!',
+                            // 2- msg title var ######################################################################33
+                            //  'Done!',
+                            msgTitle, // var
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -213,7 +341,9 @@ class AdvanceCustomAlert extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            'we have recievd your request',
+                            // 3- msg content var ######################################################################33
+                            //  'we have recievd your request',
+                            msgContent, // var
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,
@@ -221,18 +351,30 @@ class AdvanceCustomAlert extends StatelessWidget {
                           ),
                           RaisedButton(
                             child: Text(
-                              'OK',
+                              // 4- msg btn content var ######################################################################33
+                              // 'OK',
+                              btnContent, //var
                               style: TextStyle(
                                 color: Color.fromRGBO(48, 126, 80, 1),
                               ),
                             ),
                             onPressed: () {
                               Navigator.of(context).pop();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MyHomePage()),
-                              );
+
+                              if (icon == Icons.celebration) {
+                                //=======================================================================================================================
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => MyHomePage(),
+                                    ),
+                                    (route) => false);
+                                /*  Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MyHomePage()),
+                                );*/
+                              }
                             },
                           )
                         ],
