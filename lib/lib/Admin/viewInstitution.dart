@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 //import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
+import 'package:mailer/smtp_server/gmail.dart';
+import 'package:test_project/components/google_auth_api.dart';
 //import 'package:flutter_svg/svg.dart';
 ////import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 //import 'package:test_project/Screens/background.dart';
@@ -210,8 +211,9 @@ class ViewInstitution extends StatelessWidget {
             style: TextStyle(color: Colors.green[900], fontSize: 30.0,fontWeight: FontWeight.bold),),),//),
        // ),
        // Spacer(),
+       /*
         Container(margin: EdgeInsets.only(left:18 ), child: Text(document['category'],
-          style: TextStyle(color: Colors.black54, fontSize: 18.0,fontWeight: FontWeight.bold),)),
+          style: TextStyle(color: Colors.black54, fontSize: 18.0,fontWeight: FontWeight.bold),)),*/
           // Spacer(),
 
 Container( margin: const EdgeInsets.all(5),
@@ -382,7 +384,7 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid,Docum
                  String result= _auth.updateInstitutionStatus(status,uid);
                  if(result=='Success approve'){ // show another pop up 
                    print('status has changed to approved');
-                  // sendEmail("YOU'VE BEEN APPROVED!!","Congratulations you've been approved to use Mostadeem app",context,document);
+                   sendEmail("YOU'VE BEEN APPROVED!!","Congratulations you've been approved to use Mostadeem app",context,document);
 
                  }
                  else if(result=='Fail approve'){print('could not update status, procces failed');}
@@ -394,7 +396,8 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid,Docum
                   // delete institution and send email to them to let them know 
                   String result= _auth.updateInstitutionStatus(status,uid);
                  if(result=='Success disapprove'){ // show another pop up 
-                   print('intitution has been deleted');
+                   print('intitution has been deleted'); // may change it
+                   sendEmail("YOU'VE BEEN DISAPPROVED!!","Sorry you've been disapproved to use Mostadeem app",context,document);
 
                  }
                  else if(result=='Fail disapprove') {print('could not delete institution, procces failed');}
@@ -412,8 +415,16 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid,Docum
 }
 
 Future sendEmail(String subject, String text,BuildContext context,DocumentSnapshot document) async{
-final email = 'p8713915@gmail.com';
-final token='';
+
+final user  = await GoogleAuthApi.signIn();
+
+if (user ==null) return;
+
+final email = user.email;
+final auth= await user.authentication;
+final token=auth.accessToken;
+
+print('Authenticated: $email');
 final smtpServer = gmailSaslXoauth2(email, token);
 final message= Message()
 ..from = Address(email, 'Mostadeem team')
