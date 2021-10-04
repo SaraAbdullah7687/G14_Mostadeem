@@ -99,6 +99,7 @@ class AuthService {
 
   //get current user ID
    String getCurrentUserID() {
+     print(_auth.currentUser.uid);
     return _auth.currentUser.uid;
   }
 
@@ -110,13 +111,15 @@ return result;
 
 }
 
-Future<String> checkUserType(//BuildContext context
-){
+Future<String> checkUserType (//BuildContext context
+)async{
 
 String uid = getCurrentUserID();
+print(uid);
 print("check user type method");
 //dynamic userType =
- return DatabaseService().getUserType(uid//,context
+await Future.delayed(const Duration(seconds: 4), (){});
+ return await DatabaseService().getUserType(uid//,context
  );
  
 //print("retrived user type");

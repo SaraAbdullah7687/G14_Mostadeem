@@ -65,6 +65,7 @@ _institutionCollection.doc(uid)
     .update({'status' : 'approved'})
     .then((_) => print(result='Success approve'),)
     .catchError((error) => print(result='Fail approve'),);
+    result='Success approve';
 }
 else{ // delete institution and send them email 
 /*
@@ -81,7 +82,7 @@ _institutionCollection.doc(uid)
     .update({'status' : 'disapproved'})
     .then((_) => print(result='Success disapprove'),)
     .catchError((error) => print(result='Fail disapprove'),);
-
+result='Success disapprove';
 }
 return result;
 
