@@ -208,7 +208,7 @@ TextFieldContainer(
             ),
       ),
       
-/*
+
 TextFieldContainer(
             child: TextFormField( 
                   //autofocus: false,
@@ -250,7 +250,7 @@ TextFieldContainer(
             ),
       ),
       
-*/
+
 
                       RoundedPasswordField(
                         isSignUp: true,
@@ -268,7 +268,7 @@ TextFieldContainer(
                       
 
                       RoundedButton( // when click go to auth phone number , and send data with it 
-                        text: "Next",
+                        text: "SIGN UP",
                         press: () async{ 
                            if(_formKey.currentState.validate()){
                             //  setState(() => loading = true);
@@ -291,6 +291,9 @@ TextFieldContainer(
 
                                 } 
                               else{print("req is not null");
+                              print("pass go to pin page");
+
+
                             /*  setState(() {
                                   loading = false;
                                 });*/

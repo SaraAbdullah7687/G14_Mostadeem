@@ -28,7 +28,7 @@ class Wrapper extends StatelessWidget {
       future: _authService.checkUserType(),
       builder: (BuildContext context, AsyncSnapshot<String> text) { // add code to wait for data
         print("inside builder");
-        if(text.connectionState == ConnectionState.done && text.data != null){
+        if(text.connectionState == ConnectionState.done ){
           print("inside if connection stm");
           if (!text.hasData) {
             print("inside hasData");
@@ -45,17 +45,39 @@ class Wrapper extends StatelessWidget {
           return Home();}
         else{ return BodyLogin();}} 
       }
-      return BodyLogin(); // يجي هنا بعد الساين اب
+      print("still loading !!!");
+      return Loading(); // يجي هنا بعد الساين اب
       }
       
       );
-    
-    }// end of else
+ /*   
+dynamic userType= checkType();
+if ( userType=="admin"){
+return AdminHome(); 
+}
+else if (userType=="contributor"){
+  print("entered home");
+          return Home();
+}
 
+    }// end of else
+return Loading();*/
   }// method build
 
     
   }
+
+
+dynamic checkType()async{
+
+AuthService _auth = AuthService();
+dynamic result= await _auth.checkUserType();
+return result;
+
+}
+
+
+
      checkRole( DocumentSnapshot snapshot) {
     if (snapshot.data == null) {
       return Center(
@@ -73,4 +95,5 @@ class Wrapper extends StatelessWidget {
  // print(userType);
   return ViewInstitution();
   }
+}
 }
