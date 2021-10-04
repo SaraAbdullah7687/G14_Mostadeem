@@ -109,7 +109,6 @@ class _LocationAppState extends State<LocationApp> {
   /* to add marker*/
   Set<Marker> _markers = {};
   BitmapDescriptor? mapMarker;
-
   // when page first open this will show
   static final CameraPosition _initialCameraPosition = CameraPosition(
       target: LatLng(24.724797214237658, 46.63837971603376), zoom: 14.4746);
@@ -213,11 +212,11 @@ class _LocationAppState extends State<LocationApp> {
               borderRadius: new BorderRadius.circular(25.0),
             ),
             backgroundColor: Color.fromRGBO(48, 126, 80, 1),
-            child: Text("Use This Location",
+            child: Text("Use this location",
                 // ${currentLocation.latitude} , ${currentLocation.longitude}",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   //fontWeight: FontWeight.bold,
                   color: Colors.white,
                 )),
@@ -255,10 +254,10 @@ class _LocationAppState extends State<LocationApp> {
       _markers.add(
         Marker(
           markerId: MarkerId('id-1'),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-              (true) ? BitmapDescriptor.hueGreen : BitmapDescriptor.hueRed),
+          icon: mapMarker!,
+          // icon: BitmapDescriptor.defaultMarkerWithHue(
+          //    (true) ? BitmapDescriptor.hueGreen : BitmapDescriptor.hueRed),
           position: LatLng(position.latitude, position.longitude),
-          //  icon: Icons.fmd_good_outlined,
           infoWindow: InfoWindow(
             title: 'Your current location',
             snippet: '${position.latitude}, ${position.longitude}',
@@ -266,6 +265,17 @@ class _LocationAppState extends State<LocationApp> {
         ),
       );
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setCustomMarker();
+  }
+
+  void setCustomMarker() async {
+    mapMarker = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), 'assets/marker.png');
   }
 
 /*
