@@ -9,10 +9,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
 import 'package:test_project/components/google_auth_api.dart';
+import 'package:test_project/models/emailMessage.dart';
 //import 'package:flutter_svg/svg.dart';
 ////import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 //import 'package:test_project/Screens/background.dart';
 import 'package:test_project/services/auth.dart';
+import 'package:test_project/services/database.dart';
 import 'package:test_project/shared/loading.dart';
 //import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -384,7 +386,7 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid,Docum
                  String result= _auth.updateInstitutionStatus(status,uid);
                  if(result=='Success approve'){ // show another pop up 
                    print('status has changed to approved');
-                   sendEmail("YOU'VE BEEN APPROVED!!","Congratulations you've been approved to use Mostadeem app",context,document);
+                   sendEmail("approveEmail",context,document);
 
                  }
                  else if(result=='Fail approve'){print('could not update status, procces failed');}
@@ -397,7 +399,7 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid,Docum
                   String result= _auth.updateInstitutionStatus(status,uid);
                  if(result=='Success disapprove'){ // show another pop up 
                    print('intitution has been deleted'); // may change it
-                   sendEmail("YOU'VE BEEN DISAPPROVED!!","Sorry you've been disapproved to use Mostadeem app",context,document);
+                   sendEmail("disapproveEmail",context,document);
 
                  }
                  else if(result=='Fail disapprove') {print('could not delete institution, procces failed');}
@@ -414,30 +416,36 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid,Docum
   );
 }
 
-Future sendEmail(String subject, String text,BuildContext context,DocumentSnapshot document) async{
-
+ sendEmail(String uid,BuildContext context,DocumentSnapshot document) async{
+FirebaseFirestore.instance.collection('sendEmail').doc(uid).get().then((DocumentSnapshot emailMess) async{
 final user  = await GoogleAuthApi.signIn();
-
+print('inside sendEmail method');
 if (user ==null) return;
-
+print('inside sendEmail method after user check');
 final email = user.email;
 final auth= await user.authentication;
 final token=auth.accessToken;
+//GoogleAuthApi.signOut();
 
 print('Authenticated: $email');
 final smtpServer = gmailSaslXoauth2(email, token);
 final message= Message()
 ..from = Address(email, 'Mostadeem team')
 ..recipients= [document.get("email")]
-..subject= subject
-..text= text;
+..subject= emailMess['subject']
+..text= '\n'+emailMess['text'] + 
+'\n\n'+emailMess['details']+ 
+'\n\n\n'+ emailMess['moreInfo'];
 
 try{
   await send(message, smtpServer);
+
 }on MailerException catch (e){
   print(e);
+  
 }
-
+});
+    
 }
 
  _checkCR(String CR, BuildContext context){
