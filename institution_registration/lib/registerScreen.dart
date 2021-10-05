@@ -1,10 +1,22 @@
 import 'dart:core';
+
+
+
 //import 'dart:js';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:inst_registration/home.dart';
 import 'package:inst_registration/services/auth.dart';
+import 'package:inst_registration/services/popUp.dart';
 import 'package:inst_registration/toOTP.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_pw_validator/flutter_pw_validator.dart';
+import 'package:encrypt/encrypt.dart';
+
+
 
 
 
@@ -126,11 +138,22 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
       onChanged: (value) => setState(() => password = value),
       obscureText: true,
     );
+    
 void _togglePasswordView() {
     setState(() {
       _isHidden = !_isHidden;
     });}
 
+  /*  FlutterPwValidator({
+    controller: _passwordController,
+    minLength: 6,
+    uppercaseCharCount: 2,
+    numericCharCount: 3,
+    specialCharCount: 1,
+    width: 400,
+    height: 150,
+    onSuccess: buildPassword()}
+)*/
 
 
 
@@ -157,7 +180,7 @@ void _togglePasswordView() {
 
         ),
       ),
-      onChanged: (value) => setState(() => socialM = value),
+      onChanged: (value) => setState(() => twitter = value),
       
     );
 
@@ -199,7 +222,7 @@ void _togglePasswordView() {
 
         ),
       ),
-      onChanged: (value) => setState(() => CR = value),
+      onChanged: (value) => setState(() => cr = value),
       
     );
 
@@ -218,42 +241,12 @@ void _togglePasswordView() {
     );
 
 
-Column buildAllCategories(){
-  return Column(
-    children:[ 
-      Row (
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-       children: [
-      buildSingleCateg('assets/images/grey_paper.png', 'Paper',0),
-      buildSingleCateg('assets/images/grey_cardboard.png', 'Cardboard',1),
-      buildSingleCateg('assets/images/grey_glass.png', 'Glass',2),
-      buildSingleCateg('assets/images/grey_plastic.png', 'Plastic',3),
 
 
-    ],),
-    SizedBox(height: 20),
-    Row (
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-       children: [
-        buildSingleCateg('assets/images/grey_metal.png', 'Metals',4),
-      buildSingleCateg('assets/images/grey_electronic.png', 'Electronics',5),
-      buildSingleCateg('assets/images/grey_nylon.png', 'Nylon',6),
-      buildSingleCateg('assets/images/grey_can.png', 'Cans',7),
 
-    ],),
-     SizedBox(height: 20),
-    Row (
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-       children: [
-     
-      buildSingleCateg('assets/images/grey_battery.png', 'Batteries',8),
-      buildSingleCateg('assets/images/grey_sofa.png', 'Furniture',9),
-      buildSingleCateg('assets/images/grey_clothes.png', 'Clothes',10),
-      buildSingleCateg('assets/images/grey_pizza.png', 'Food',11),
+Container buildAllCategories(){
 
-    ],),
-   
-    ]);
+   return Container (child: DemoToggleButtons());
 }
     
 
@@ -262,33 +255,7 @@ Column buildAllCategories(){
 
     
 
-     Container buildSingleCateg(String IconName, String category, int index) {
-       return Container(
-         child: Column(
-          
-           children:[
-             InkWell(
-             child: Container(
-                
-
-               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-               decoration: BoxDecoration(
-               border: Border.all(color: Colors.grey),
-               
-               borderRadius: BorderRadius.circular(10),
-               ),
-               child: Image.asset(IconName, width: 60,)
-             ),onTap: () {
-               print('s');
-               _color=Colors.red; 
-               })
-
-             ]
-         )
-       );
-       
-     }
-
+     
 
 
 
@@ -302,10 +269,30 @@ Column buildAllCategories(){
           onPressed: () async{
          String Email = _emailController.text.trim();
          String Pass = _passwordController.text.trim();
+         
+         bool check=hasSelected();
+
+          if (!check){
 
 
-          if(formKey.currentState!.validate()){
-          dynamic result=  await _auth.createUserWithEmailAndPassword(Email, Pass);}
+            showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AdvanceCustomAlert(
+                              icon: Icons.error,
+                              msgTitle: 'Error',
+                              msgContent: 'Please select at least 1 category.',
+                              btnContent: 'Ok',
+                            );
+                          });
+
+          }
+          
+          if(formKey.currentState!.validate())
+          {
+          dynamic result=  await _auth.registerInstitution(Email, Pass, phone, name, twitter, cr, categ );
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context)=>Home(),));}
           else
           return;
             //Navigator.push(
@@ -362,6 +349,10 @@ Column buildAllCategories(){
 
 
 
+
+
+
+
   
   
     final formKey = GlobalKey<FormState>();
@@ -370,8 +361,10 @@ Column buildAllCategories(){
     String name = '';
     String email = '';
     String password = '';
-    String socialM = '';
-    String CR = '';
+    String twitter = '';
+    String cr = '';
+    String phone='phone';
+
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -397,6 +390,7 @@ Column buildAllCategories(){
       child: ListView(
       padding: EdgeInsets.all(16),
       children: [
+        
         buildName(),
         const SizedBox(height: 16),
         buildEmail(),
@@ -409,7 +403,6 @@ Column buildAllCategories(){
         const SizedBox(height: 32),
         buildTitle(),
         buildAllCategories(),
-        buildSpace(),
         buildNext(),
       ],
       ),
@@ -425,4 +418,128 @@ Column buildAllCategories(){
 
 
     
+final firestoreInstance = FirebaseFirestore.instance;
+
+
+
+
+
+List<bool> isSelected = [false, false, false, false, false, false,false, false, false, false, false, false]; 
+String categ ='';
+List<String> categories = ['Paper', 'Cardboard', 'Glass', 'Plastic', 'Metals', 'Electronics','Nylon', 'Cans', 'Batteries', 'Furniture', 'Clothes', 'Food']; // retrirve from database
+
   
+
+class DemoToggleButtons extends StatefulWidget {
+  
+  @override
+  _DemoToggleButtonsState createState() => _DemoToggleButtonsState();
+}
+
+class _DemoToggleButtonsState extends State<DemoToggleButtons> {
+  //set the initial state of each button whether it is selected or not
+  List<IconData> iconList = [Icons.ac_unit, Icons.call, Icons.cake, Icons.mic_external_off, Icons.cake, Icons.dangerous, Icons.safety_divider,Icons.ac_unit,Icons.qr_code,Icons.face,Icons.e_mobiledata,Icons.h_mobiledata];
+  
+  @override
+  Widget build(BuildContext context) {
+
+
+
+
+
+    //wrap the GridView wiget in an Ink wiget and set the width and height, 
+    //otherwise the GridView widget will fill up all the space of its parent widget
+    return  Container(
+      height: 300,
+      width: double.infinity,
+      child: Ink(
+      width: 380,
+      height: 60, 
+      color: Colors.white,
+      child: GridView.count(
+        primary: true,
+        padding: const EdgeInsets.all(20),
+        
+        crossAxisCount: 4, //set the number of buttons in a row
+        crossAxisSpacing: 10, //set the spacing between the buttons
+        mainAxisSpacing: 8, 
+        childAspectRatio: 1, //set the width-to-height ratio of the button, 
+                             //>1 is a horizontal rectangle
+        children: List.generate(isSelected.length, (index) {
+          //using Inkwell widget to create a button
+          return InkWell( 
+              splashColor: Colors.grey, //the default splashColor is grey
+              onTap: () {
+                //set the toggle logic
+                setState(() { 
+                  for (int indexBtn = 0;
+                      indexBtn < isSelected.length;
+                      indexBtn++) {
+                    if (indexBtn == index) {
+                      isSelected[index]=!isSelected[index];
+                  }
+                }});
+              },
+              child: Ink(
+                decoration: BoxDecoration(
+               //set the background color of the button when it is selected/ not selected
+                  color: isSelected[index] ? Color.fromRGBO(48, 126, 80, 0.7) : Colors.white, 
+                  // here is where we set the rounded corner
+                  borderRadius: BorderRadius.circular(8), 
+                  //don't forget to set the border, 
+                  //otherwise there will be no rounded corner
+                  border: Border.all(color: Colors.grey), 
+                ),
+                child:  Image.asset("assets/images/"+categories[index]+'.png')
+                    //set the color of the icon when it is selected/ not selected
+                    
+              ));
+        }),
+      ),
+      
+    )
+    
+    );
+  
+    
+  }}
+
+
+
+
+  bool hasSelected(){
+
+  bool check=false;
+
+ for (int i=0; i<isSelected.length; i++){
+   check = check||isSelected[i];
+ }
+ if (check){
+ print ('has selected');
+
+ int selectedItems = 0; 
+ categ ='';
+
+
+
+
+
+ for (int i=0; i<isSelected.length; i++){
+    if (isSelected[i]==true)
+    categ+=categories[i]+', ';
+ }
+ categ = categ.substring(0,categ.length-2); // To remove the last comma
+ print (categ); // Just to check
+ }
+
+ else
+ print ('did not select');
+
+
+  return check;
+}
+
+
+
+
+ 
