@@ -39,7 +39,8 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
   TextEditingController _controller = TextEditingController();
   TextEditingController _emailController = TextEditingController(); //add it in rounded input class
   TextEditingController _passwordController = TextEditingController();
-  
+  TextEditingController _phoneController = TextEditingController();
+
 
 
     Color _color = Colors.white;
@@ -114,7 +115,7 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
   Widget buildPassword() => TextFormField(
       validator: (value) {
     if (value == null || value.isEmpty) {
-      return 'required';
+      return 'Required';
     }
     return null;
   },
@@ -136,7 +137,7 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
       ),
       controller: _passwordController,
       onChanged: (value) => setState(() => password = value),
-      obscureText: true,
+      obscureText: _isHidden,
     );
     
 void _togglePasswordView() {
@@ -159,10 +160,57 @@ void _togglePasswordView() {
 
 
 
+
+
+  Widget buildPhone() => TextFormField(
+     
+
+    decoration: InputDecoration(
+        
+        prefixIcon: Padding(
+         padding: EdgeInsets.all(0.0),
+         child: Icon(
+          Icons.phone,
+           color: Color.fromRGBO(48, 126, 80, 1)),
+            ), 
+        labelText: '05xxxxxxxx',
+        
+       border: OutlineInputBorder(
+       borderRadius: BorderRadius.circular(15.0),
+
+        ),
+      ),
+       controller: _phoneController, 
+
+      onChanged: (value) => setState(() => phone = value),
+      validator: (value){
+
+     if(value==null){
+      return 'Required';
+    } 
+    String pattern =
+       "(05|5)(5|0|3|6|4|9|1|8|7)([0-9]{7})";
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value) || value == null)
+      return 'Invalid phone number';
+    else if(value.length <10 || value.length>10)
+    return 'Invalid phone number';
+     else return null;
+  }
+
+
+  );
+
+    
+
+
+
+
+
      Widget buildSocialM() => TextFormField(
        validator: (value) {
     if (value == null || value.isEmpty) {
-      return 'required';
+      return 'Required';
     }
     return null;
   },
@@ -203,7 +251,7 @@ void _togglePasswordView() {
 
       if (value == null || value.isEmpty) {
 
-      return 'required';
+      return 'Required';
     }
      else if (value.length<10)
     return 'Commercial record length should be 10';
@@ -397,6 +445,8 @@ Container buildAllCategories(){
         const SizedBox(height: 32),
         buildPassword(),
         const SizedBox(height: 32),
+        buildPhone(),
+        const SizedBox(height: 32),
         buildSocialM(),
         const SizedBox(height: 32),
         buildCR(),
@@ -451,6 +501,7 @@ class _DemoToggleButtonsState extends State<DemoToggleButtons> {
     //otherwise the GridView widget will fill up all the space of its parent widget
     return  Container(
       height: 300,
+      margin: EdgeInsets.only(top: 200),
       width: double.infinity,
       child: Ink(
       width: 380,
