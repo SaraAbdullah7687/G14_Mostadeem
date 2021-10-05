@@ -264,10 +264,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'home3.dart';
+import 'package:mostadeem/screens/request.dart';
 import 'locatin.dart';
+import 'package:mostadeem/globals/global.dart'
+    as global; //==================================================================================
 
-Future main() async {
+/*Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -284,7 +286,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
         debugShowCheckedModeBanner: false,
         title: title,
-         theme: ThemeData(
+        theme: ThemeData(
           primarySwatch: Colors.green,
         ),
         home: MainPage(
@@ -293,7 +295,7 @@ class MyApp extends StatelessWidget {
 
         ///PARAMETER
       );
-}
+}*/
 
 class MainPage extends StatefulWidget {
   String category; //FINAL ?
@@ -306,65 +308,112 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  //========================METHODS================================
+  // when onPressed: BACK- take the cats and go to calendar screens
+  void _goToCategory(BuildContext context) async {
+    //AFNAN
+    Navigator.of(context).pop();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => requestScreen()),
+    );
+  }
+
+  // when onPressed: take the cats and go to calendar screens
+  void _goToLocation(BuildContext context, String thisCategory, String thisDate,
+      String thisTime) async {
+    // AFNAN
+    Navigator.of(context).pop();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => LocationApp(
+                category: thisCategory,
+                date:
+                    thisDate, // ERROR HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRREEEEEEEEEEEEEEE : we fix it
+                time: thisTime,
+              )),
+    );
+  }
+
+  //======================================================
+
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: Text('Date & Time'),
-            backgroundColor: Color.fromRGBO(48, 126, 80, 1),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(18),
+  Widget build(BuildContext context) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: "Data & Time",
+        theme: ThemeData(
+          primarySwatch: Colors.green,
+        ),
+        home: Scaffold(
+          body: Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              title: Text('Date & Time'),
+              backgroundColor: Color.fromRGBO(48, 126, 80, 1),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(18),
+                ),
               ),
-            ),
-            actions: <Widget>[
-              IconButton(
+              actions: <Widget>[
+                IconButton(
+                  icon: const Icon(
+                    Icons.arrow_forward_rounded,
+                    color: Colors.white,
+                  ),
+                  tooltip: 'Show Snackbar',
+                  onPressed: () {
+                    if (global.globalDate == null ||
+                        global.globalTime == null) {
+                      // ERROR msg **********************************************************************************HERE****************************
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AdvanceCustomAlert(
+                              icon: Icons.error,
+                              msgTitle: 'Error',
+                              msgContent: 'Please select Date & Time.',
+                              btnContent: 'Ok',
+                            );
+                          });
+                    } else {
+                      _goToLocation(
+                        context,
+                        widget.category,
+                        global.globalDate.toString(),
+                        global.globalTime.toString(),
+                      );
+                    }
+
+                    /// PASS dateTIME ====================================================
+                  },
+                ),
+              ],
+              leading: IconButton(
                 icon: const Icon(
-                  Icons.arrow_forward_rounded,
+                  Icons.arrow_back_rounded,
                   color: Colors.white,
                 ),
                 tooltip: 'Show Snackbar',
                 onPressed: () {
-                  /*   Navigator.of(context).pop();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => LocationApp(
-                              category: widget.category,
-                              dateTime:
-                                  dateTime, // ERROR HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRREEEEEEEEEEEEEEE
-                            )),
-                  );*/
+                  _goToCategory(
+                      context); //===================================================================
                 },
               ),
-            ],
-            leading: IconButton(
-              icon: const Icon(
-                Icons.arrow_back_rounded,
-                color: Colors.white,
-              ),
-              tooltip: 'Show Snackbar',
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => home3()),
-                );
-              },
+              toolbarHeight: 80.0,
             ),
-            toolbarHeight: 50.0,
-          ),
-          //      backgroundColor: Colors.white10,
-          body: Padding(
-            padding:
-                const EdgeInsets.only(left: 40.0, right: 40.0, bottom: 100),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TimePickerWidget(),
-                DatePickerWidget(),
-              ],
+            //      backgroundColor: Colors.white10,
+            body: Padding(
+              padding:
+                  const EdgeInsets.only(left: 40.0, right: 40.0, bottom: 100),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TimePickerWidget(),
+                  DatePickerWidget(),
+                ],
+              ),
             ),
           ),
         ),
@@ -377,19 +426,20 @@ class DatePickerWidget extends StatefulWidget {
 }
 
 class _DatePickerWidgetState extends State<DatePickerWidget> {
-  DateTime? date;
+  // DateTime? date;
 
   String getText() {
-    if (date == null) {
+    if (global.globalDate == null) {
       return 'Select Date';
     } else {
-      return DateFormat('MM/dd/yyyy').format(date!);
+      return DateFormat('MM/dd/yyyy').format(global
+          .globalDate!); // NULLABLE ###################################################################
     }
   }
 
   @override
   Widget build(BuildContext context) => ButtonHeaderWidget(
-        title: 'Date',
+        title: '',
         text: getText(),
         onClicked: () => pickDate(context),
       );
@@ -398,14 +448,18 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
     final initialDate = DateTime.now();
     final newDate = await showDatePicker(
       context: context,
-      initialDate: date ?? initialDate,
-      firstDate: DateTime(DateTime.now().year - 5),
-      lastDate: DateTime(DateTime.now().year + 5),
+      initialDate: global.globalDate ?? initialDate,
+      firstDate: DateTime.now(),
+//DateTime(DateTime.now().year),
+      lastDate: DateTime(DateTime.now().year + 1),
     );
 
     if (newDate == null) return;
+    //if (newDate.isAfter(DateTime.now().add(Duration(days: 1)))) {} // ???????????????????????????????????????????????????????????????????????????
 
-    setState(() => date = newDate);
+    // setState(() => date = newDate);
+    setState(() => global.globalDate =
+        newDate); //================================================================================
   }
 }
 
@@ -415,14 +469,15 @@ class TimePickerWidget extends StatefulWidget {
 }
 
 class _TimePickerWidgetState extends State<TimePickerWidget> {
-  TimeOfDay? time;
+//  TimeOfDay? time;
 
   String getText() {
-    if (time == null) {
+    if (global.globalTime == null) {
       return 'Select Time';
     } else {
-      final hours = time!.hour.toString().padLeft(2, '0');
-      final minutes = time!.minute.toString().padLeft(2, '0');
+      final hours = global.globalTime!.hour.toString().padLeft(2,
+          '0'); // NULLABLE ###################################################################
+      final minutes = global.globalTime!.minute.toString().padLeft(2, '0');
 
       return '$hours:$minutes';
     }
@@ -430,7 +485,7 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
 
   @override
   Widget build(BuildContext context) => ButtonHeaderWidget(
-        title: 'Time',
+        title: '',
         text: getText(),
         onClicked: () => pickTime(context),
       );
@@ -439,12 +494,14 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
     final initialTime = TimeOfDay(hour: 9, minute: 0);
     final newTime = await showTimePicker(
       context: context,
-      initialTime: time ?? initialTime,
+      initialTime: global.globalTime ?? initialTime,
     );
 
     if (newTime == null) return;
 
-    setState(() => time = newTime);
+    // setState(() => time = newTime);
+    setState(() => global.globalTime =
+        newTime); //========================================================================
   }
 }
 
@@ -485,7 +542,7 @@ class ButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) => ElevatedButton(
         style: ElevatedButton.styleFrom(
           minimumSize: Size.fromHeight(40),
-          primary: Color.fromRGBO(236, 232, 201, 0.7),
+          primary: Color.fromRGBO(48, 126, 80, 1),
           shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(25.0),
           ),
@@ -493,7 +550,7 @@ class ButtonWidget extends StatelessWidget {
         child: FittedBox(
           child: Text(
             text,
-            style: TextStyle(fontSize: 20, color: Colors.black),
+            style: TextStyle(fontSize: 20, color: Colors.white),
           ),
         ),
         onPressed: onClicked,
@@ -527,4 +584,3 @@ class HeaderWidget extends StatelessWidget {
         ],
       );
 }
-
