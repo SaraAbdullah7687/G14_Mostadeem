@@ -1,167 +1,165 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_application_xd/models/requestModel.dart';
-import 'package:flutter_application_xd/models/appointmentModel.dart';
+// ignore_for_file: avoid_print, avoid_function_literals_in_foreach_calls
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:mostadeem/models/requestModel.dart';
+import 'package:path/path.dart' as Path;
+import 'package:flutter/material.dart';
+import 'dart:io';
 import 'dart:developer';
 
-void main() {
-  runApp(database());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  FirebaseApp LocationApp = await Firebase.initializeApp();
+  runApp(db());
 }
 
-class database extends StatelessWidget {
+class db extends StatefulWidget {
+  // const db({Key? key, required this.title}) : super(key: key);
+
+  @override
+  State<db> createState() => database();
+}
+
+class database extends State<db> {
+  //FirebaseFirestore.initializeApp();
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 //    String day, GeoPoint location, String state, String time
   /* void initState() {
     findCategory("jjjjjjjjj");
   }*/
 
-  // Add request to database *call it in location page*
-  Future<String> addRequest(String contribId, requestModel request) async {
+  //addRequest
+  Future<String> addRequest(String contId, requestModel request) async {
     String retVal = "error";
-
+    print("DB 22########################################################");
     try {
-      DocumentReference _docRef = await _firestore
+      CollectionReference _docRef = _firestore
           .collection("contributor")
-          .doc(contribId)
-          .collection("request")
-          .add({
-        'day': "WED", //request.day!.trim(),
+          .doc("NK9m5Zwe40aIAo722ulq")
+          .collection("request");
+      print("DB 28 ########################################################" +
+          _docRef.toString());
 
-        ///****NULL CHECk '!' */
-        'location':
-            "37.4219983 -122.084", // request.location, //NO NULL CHECK!!
-        'state': "NEW", //request.state!.trim(),
-        'time': "00:00 am" //request.time!.trim
+      _docRef.add({
+        'category': request.category.trim(),
+        'date': request.date.trim(),
+        'location': request.location.data,
+        'status': request.status.trim(),
+        'time': request.time.trim()
       });
-      //////=================================
-      /* to be reviewd *why?  AZ *
-    QuerySnapshot query = await _firestore  /* is it fine to acess appioments collection direct? AZ */
-          .collection("appointment")
-          .doc(appId).set("state: unavalible");*/
-      ///===========
+      print("DB 35########################################################");
+
+// ADD appointment to suitble instituations
+      addAppointment("NK9m5Zwe40aIAo722ulq", request);
       retVal = "success";
     } catch (e) {
+      print("DB 41########################################################");
+
       print(e);
+      print("DB 44########################################################");
     }
     return retVal;
   }
 
-  // Find institutions that has the selected category  ----------------------------------------------------------------
-  Future<List<String>> findCategory(String categories) async {
-    List<String> insIDs = []; //list(); /* i changed varible name AZ */
+  // ADD appointment to instituations
+  Future<String> addAppointment(String contribId, requestModel request) async {
+    String retVal = "error";
+    print("DB 52########################################################");
 
-// string formalition
-    List<String>? userCat = null;
-    int catLength = categories.length;
-    for (var i = 0; i < catLength; i++) {
-      userCat = categories.split(",");
+    try {
+      // first get the instituations that accept this categories
+      List<String> insIDs = await findCategory(request.category);
+      print("DB 57########################################################");
+
+      insIDs.forEach((element) async {
+        DocumentReference _docRef = await _firestore
+            .collection("institution")
+            .doc(element)
+            .collection("appointment")
+            .add({
+          'contribId':
+              contribId, ////----------------------------------------------------------------NEW ADDED
+
+          'category': request.category.trim(),
+          'date': request.date.trim(),
+          'location': request.location.data,
+          //  'status': request.status.trim(),
+          'time': request.time.trim(),
+        });
+      }); // END outer foreach
+      print("DB 74########################################################");
+
+      retVal = "success";
+    } catch (e) {
+      print("DB 78########################################################");
+
+      print(e);
+      print("DB 81########################################################");
     }
+    return retVal;
+  }
+  // END ADD appointment to instituations
 
-    QuerySnapshot query = await _firestore.collection("instituation").get();
-    /* log('data: $query');
-    print(query);*/
-
-    bool flag = true;
-    query.docs.forEach((element) {
-      // retVal.add(BookModel.fromDocumentSnapshot(doc: element));
-      //==============
-      int count = userCat!.length; /* what do u mean by "!" AZ */
-      int indexIDs = 0;
-      for (var i = 0; i < count; i++) {
-        if (!element.get("category").contains(userCat[i])) {
-          flag = false;
-        }
-      } // inner loop
-
-      if (flag)
-      {
-        insIDs[indexIDs] = element.id; // .add ####################
+  // Find institutions that has the selected category ----------------------------------------------------------------
+  Future<List<String>> findCategory(String categories) async {
+    List<String> ids = []; //list();
+    try {
+// string formalition
+      List<String>? userCat = null;
+      int catLength = categories.length;
+      for (var i = 0; i < catLength; i++) {
+        userCat = categories.split(",");
       }
-      
-      //===========
-    } //outer loop
-        );
-    return insIDs;
-  }
+      /*  print("DB 97########################################################" +
+          userCat!.length.toString() +
+          "");*/
 
-  
-  Future<List<String>> findAvailable(List<String> insIDs) async {
-    //// علامة الاستفهام في الاوتبوت
-    List<String> appIDs = [];
+      QuerySnapshot query = await _firestore.collection("institution").get();
+      print("DB 119########################################################");
+      bool flag = true;
+      query.docs.forEach((element) {
+        print("DB 122########################################################" +
+            element.toString());
 
-    insIDs.forEach((element) async {
-      QuerySnapshot query = await _firestore
-          .collection("instituation")
-          .doc(element)
-          .collection("appointments")
-          .get();
+        // retVal.add(BookModel.fromDocumentSnapshot(doc: element));
+        //==============
+        int count = userCat!
+            .length; // NULLABLE ###################################################################
+        int indexIDs = 0;
+        for (var i = 0; i < count; i++) {
+          if (!element.get("category").contains(userCat[i])) {
+            flag = false;
+          }
+        } // inner loop
 
-      query.docs.forEach((appoint) {
-        //  retVal.add(BookModel.fromDocumentSnapshot(doc: element2));
-        if (appoint.get("state").equals("available")) {
-          // available SPELLING#################################################
-          appIDs.add(appoint.id);
+        if (flag) {
+          ids.add(element.id);
         }
-      }); // inner foreach
-    }); // END outer foreach
+        print("DB 117########################################################" +
+            flag.toString());
 
-    return appIDs;
-  } // END findAvailable
-
-// CHANGE
-Future<String> changeStateAndLocation(String appId /* OR insId */) async {
-  /*  QuerySnapshot query = await _firestore
-        .collection("instituation")
-        .doc(
-        .collection("appointment")
-        .doc(appId)
-        .update({"state": "unavalible"});
-*/
-    return "";
+        //===========
+      } //outer loop
+          );
+    } catch (e) {
+      print(
+          "CATCH333333333333333333333333333333333333333333333333333333333333333");
+      print(e);
+    }
+    return ids;
   }
 
-   Future<List<appointmentModel>?> displayApps(DateTime date) async {
-    //// في الواجهة
-//_firestore.collection("appointments").whereEqualTo("appointment_date",your_date).whereEqualTo("speciallist_id",your_speccialist_id)
-//_firestore.
-    ////////////////////////////////
-    ///
-    /* to get all instituation docs*/
-    QuerySnapshot allInst = await _firestore.collection("instituation").get();
+  /*@override
+  void initState() {
+    addRequest();
+    super.initState();
+  }*/
 
-    allInst.docs.forEach((element) async {
-      //outer loop te rech spicific instituation apps
-      String id = element.toString();
-      //QuerySnapshot query = await
-      _firestore
-          .collection("instituation")
-          .doc(id)
-          .collection("appointments")
-          .whereEqualTo("date", date)
-          .whereEqualTo("isAvailabe", true)
-          .then((query) {
-            query
-          });
-
-      // inner loop te rech spicific app and check if is the same date
-      /*  query.docs.forEach((appoint) {
-        if (appoint.get("date").equals(date) && appoint.get("isAvailabe")== true) {// date is the passed argument from user
-
-        }
-      }); // inner foreach
-*/
-    }); // outer foreach
-    return null;
-  }
+//=============================================================================================================== DELETE BUILD
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return MaterialApp();
   }
-
-  /*Future<String> checkNoCurrentRequest(String contId) async {} 
-
-    return "";
-  }*/
 } // END CLASS
