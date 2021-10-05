@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:test_project/Screens/authenticate/bodyLogin.dart'; 
 import 'package:test_project/Screens/Login/components/backgroundReset.dart';
+import 'package:test_project/components/advanceAlert.dart';
 import 'package:test_project/components/rounded_button.dart';
 import 'package:test_project/components/text_field_container.dart';
 import 'package:test_project/services/auth.dart';
@@ -146,13 +147,33 @@ if(result == "pass"){
                     ),
                   );*/
                   Navigator.of(context).pop();
-                  showTopSnackBar(context, "Success","A reset password message has been sent to your email",);
+                  showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AdvanceCustomAlert(
+                      icon: Icons.celebration_outlined,
+                      msgTitle: 'Success',
+                      msgContent: 'A link has been sent to your email',
+                      btnContent: 'Ok',
+                    );
+                  });
+                //  showTopSnackBar(context, "Success","A reset password message has been sent to your email",);
                    }
 
                  else if(result=="fail"){ setState(() { 
                           loading = false;
                         });
-                   showTopSnackBar(context, "Fail", "please make sure you entered the correct email");
+                        showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AdvanceCustomAlert(
+                      icon: Icons.error,
+                      msgTitle: 'Fail',
+                      msgContent: 'Please enter a correct email',
+                      btnContent: 'Ok',
+                    );
+                  });
+                  // showTopSnackBar(context, "Fail", "please make sure you entered the correct email");
                  }
                     }
                 },

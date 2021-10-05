@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:test_project/Screens/Login/components/resetPassword.dart';
 import 'package:test_project/Screens/background.dart';
+import 'package:test_project/components/advanceAlert.dart';
 import 'package:test_project/components/already_have_an_account_acheck.dart';
 import 'package:test_project/components/rounded_button.dart';
 import 'package:test_project/components/rounded_password_field.dart';
@@ -165,28 +166,48 @@ TextFieldContainer(
                 text: "SIGN IN",
                 press: () async{ 
                 if(_formKey.currentState.validate()){
-                      setState(() => loading = true);
+                     // setState(() => loading = true);
                       dynamic result = await _auth.signInWithEmailAndPassword(_authData['email'], _authData['password']); // see the bookclub
                       
                       if(result == null) {
                         print("req returend null");
                         error = 'Please supply a valid email';
-                        setState(() {
+                       /* setState(() {
                           loading = false;
-                        });
+                        });*/
                       }else if(result == "No-user-found")
                       {print("No user found in if");
-                      setState(() {
+                    /*  setState(() {
                           loading = false;
-                        });
-                        showTopSnackBar(context);
+                        });*/
+                        showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AdvanceCustomAlert(
+                      icon: Icons.error,
+                      msgTitle: 'INVALID',
+                      msgContent: 'Email or password incorrect',
+                      btnContent: 'Ok',
+                    );
+                  });
+                        //showTopSnackBar(context);
 
                         } else if(result == "Wrong-password")
                       {print("Wrong passwordin if");
-                      setState(() {
+                     /* setState(() {
                           loading = false;
-                        });
-                        showTopSnackBar(context);
+                        });*/
+                        showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AdvanceCustomAlert(
+                      icon: Icons.error,
+                      msgTitle: 'INVALID',
+                      msgContent: 'Email or password incorrect',
+                      btnContent: 'Ok',
+                    );
+                  });
+                       // showTopSnackBar(context);
 
                         } 
                       else{print("req is not null");

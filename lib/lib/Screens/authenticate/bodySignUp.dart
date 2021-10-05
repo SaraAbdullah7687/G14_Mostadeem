@@ -5,6 +5,7 @@ import 'package:test_project/Screens/Welcome/welcome_screen.dart';
 import 'package:test_project/Screens/authenticate/bodyLogin.dart';
 import 'package:test_project/Screens/background.dart';
 import 'package:test_project/Screens/home/home.dart';
+import 'package:test_project/components/advanceAlert.dart';
 //import 'package:flutter_auth/Screens/Signup/components/or_divider.dart';
 //import 'package:flutter_auth/Screens/Signup/components/social_icon.dart';
 import 'package:test_project/components/already_have_an_account_acheck.dart';
@@ -50,7 +51,7 @@ Map<String, String> _authData = { // can use variables instead of map
 
   //TextEditingController _emailController = TextEditingController(); //add it in rounded input class
   TextEditingController _passwordController = TextEditingController();
- // TextEditingController _phoneController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // added it
  
 
@@ -196,7 +197,9 @@ TextFieldContainer(
                             },*/
                   validator: MultiValidator([
                   RequiredValidator(errorText: "Required"),
-                  EmailValidator(errorText: "Not a valid email"),]),
+                  EmailValidator(errorText: "Not a valid email"),
+                 // validateEmail(_emailController.text),
+                  ]),
                   onSaved: (value) {
                   // _emailController.text = value!;
                   _email=value; // choose one of them 
@@ -213,7 +216,7 @@ TextFieldContainer(
             child: TextFormField( 
                   //autofocus: false,
                   keyboardType: TextInputType.number, // or phone
-                 // controller: _phoneController, 
+                  controller: _phoneController, 
                   cursorColor: kPrimaryColor,
                   textInputAction: TextInputAction.next, // added it
                   decoration: InputDecoration(
@@ -234,11 +237,11 @@ TextFieldContainer(
                               }
                               return null;
                             },*/
-                  validator: MultiValidator([
+                  validator: _validatePhone,/*MultiValidator([
                   RequiredValidator(errorText: "Required"),
                    MaxLengthValidator(10, errorText: "At most 10 numbers"),
                    MinLengthValidator(10, errorText: "At least 10 numbers"),
-                  ]),
+                  ]),*/
                   onSaved: (value) {
                   // _emailController.text = value!;
                   _email=value; // choose one of them 
@@ -279,15 +282,26 @@ TextFieldContainer(
                               if(result == null) {
                                 print("req returend null");
                                 error = 'Please supply a valid email';
-                                setState(() {
+                               /* setState(() {
                                   loading = false;
-                                });
+                                });*/
                               }else if(result == "email exists")
                               {print("email exists in if");
-                              setState(() {
+                             /* setState(() {
                                   loading = false;
-                                });
-                                showTopSnackBar(context);
+                                });*/
+
+                                 showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AdvanceCustomAlert(
+                      icon: Icons.error,
+                      msgTitle: 'INVALID',
+                      msgContent: 'Email already exists, please sign in',
+                      btnContent: 'Ok',
+                    );
+                  });
+                                //showTopSnackBar(context);
 
                                 } 
                               else{print("req is not null");
@@ -300,12 +314,7 @@ TextFieldContainer(
                               }
                            
                             } 
-                           /*if (!_formKey.currentState.validate()) {
-                             print("validation doesn't works");// delete it 
-                                return;
-                              }
-print("validation works"); // delete it 
-                              _formKey.currentState.save();*/
+                           
                         },
                       ),
 
@@ -340,6 +349,32 @@ print("validation works"); // delete it
   
   
   } // works but shows an error in the console
+
+  String _validateEmail(String value) {
+    if(value.length == 0){
+      return 'Required';
+    } 
+    Pattern pattern =
+       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value) || value == null)
+      return 'Enter a valid email address';
+    else
+      return null;
+  }
+    String _validatePhone(String value) {
+    if(value.length == 0){
+      return 'Required';
+    } 
+    Pattern pattern =
+       "(05|5)(5|0|3|6|4|9|1|8|7)([0-9]{7})";
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value) || value == null)
+      return 'Invalid phone number';
+    else if(value.length <10 || value.length>10)
+    return 'Invalid phone number';
+     else return null;
+  }
        void showTopSnackBar(BuildContext context) => show(
         context,
         Flushbar(
