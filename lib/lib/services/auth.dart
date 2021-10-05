@@ -45,7 +45,7 @@ class AuthService {
    try {
      print("before registering contributor");
       UserCredential _result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-     await _auth.currentUser.reload(); //delete it
+     //await _auth.currentUser.reload(); //delete it
       User user = _result.user; // was FirebaseUser instead of User
       print("contributor registered");
        ContributorModel _userCont = ContributorModel(
@@ -118,7 +118,7 @@ String uid = getCurrentUserID();
 print(uid);
 print("check user type method");
 //dynamic userType =
-await Future.delayed(const Duration(seconds: 4), (){});
+await Future.delayed(const Duration(seconds: 3), (){});
  return await DatabaseService().getUserType(uid//,context
  );
  

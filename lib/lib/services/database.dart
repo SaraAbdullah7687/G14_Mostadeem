@@ -7,6 +7,7 @@ import 'package:test_project/Admin/adminHome.dart';
 import 'package:test_project/Admin/viewInstitution.dart';
 import 'package:test_project/Screens/home/home.dart';
 import 'package:test_project/models/ContributorModel.dart';
+import 'package:test_project/models/emailMessage.dart';
 
 class DatabaseService {
 
@@ -17,12 +18,12 @@ class DatabaseService {
   // collection reference
   final CollectionReference _contributorCollection = FirebaseFirestore.instance.collection('contributor'); // was Firestore instead of FirebaseFirestore
   final CollectionReference _institutionCollection = FirebaseFirestore.instance.collection('institution'); // was Firestore instead of FirebaseFirestore
-   final CollectionReference _usersCollection = FirebaseFirestore.instance.collection('users'); // was Firestore instead of FirebaseFirestore
+  final CollectionReference _usersCollection = FirebaseFirestore.instance.collection('users'); // was Firestore instead of FirebaseFirestore
   // get institution stream
+  final CollectionReference _sendEmailCollection = FirebaseFirestore.instance.collection('sendEmail'); // was Firestore instead of FirebaseFirestore
   Stream<QuerySnapshot> get brews {
     return _institutionCollection.snapshots();
   }
-
 
 Future<String> createUserContributor(ContributorModel user) async {
     String retVal = "error";
@@ -55,7 +56,6 @@ Future<String> createUserContributor(ContributorModel user) async {
 
     return retVal;
   }
-
 
 String updateInstitution(String uid, String status){
 String result="nothing changed";
@@ -97,38 +97,9 @@ print("after getting type");
 print (snapshot['userType']+" in database method");
  String userType = snapshot['userType'];
  return userType;
-/*
-if(userType.toString()=='admin'){
-  print("user is admin");
-       Navigator.push(
-                context,
-                new MaterialPageRoute(
-                    builder: (BuildContext context) => new AdminHome()));
-       // return AdminHome();      
-             }
-
-else if (userType=='contributor') {
-  print("user is contributor");
-  Navigator.push(
-                context,
-                new MaterialPageRoute(
-                    builder: (BuildContext context) => new Home()));
-           //return Home();                            
-            }     
-else {
-  print("could not configure");
-  print(userType);
-  Navigator.push(
-                context,
-                new MaterialPageRoute(
-                    builder: (BuildContext context) => new ViewInstitution()));
-                    
-      //return   ViewInstitution();        
-          }*/
     }
 
 //return userType;
-
 
 }
 
