@@ -7,14 +7,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:inst_registration/home.dart';
+import 'package:inst_registration/Screens/home.dart';
 import 'package:inst_registration/services/auth.dart';
 import 'package:inst_registration/services/popUp.dart';
 import 'package:inst_registration/toOTP.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
-import 'package:encrypt/encrypt.dart';
 
 
 
@@ -40,6 +39,11 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
   TextEditingController _emailController = TextEditingController(); //add it in rounded input class
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
+    TextEditingController _twitterController = TextEditingController();
+        TextEditingController _nameController = TextEditingController();
+
+
+  String message='';
 
 
 
@@ -50,9 +54,12 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
 
 
   Widget buildName() => TextFormField(
+  cursorColor: Color.fromRGBO(48, 126, 80, 1),
+   maxLength: 15,
+    controller: _nameController,
     validator: (value) {
     if (value == null || value.isEmpty) {
-      return 'required';
+      return 'Required';
     }
     return null;
   },
@@ -79,6 +86,7 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
 
     Widget buildEmail() => TextFormField(
      
+  cursorColor: Color.fromRGBO(48, 126, 80, 1),
 
     decoration: InputDecoration(
         
@@ -112,7 +120,14 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
 
       bool _isHidden = true;
 
-  Widget buildPassword() => TextFormField(
+  Widget buildPassword() => Column(
+    children: [
+          
+          Container(
+            margin: EdgeInsets.only(bottom: 6),
+            child: TextFormField(
+  cursorColor: Color.fromRGBO(48, 126, 80, 1),
+
       validator: (value) {
     if (value == null || value.isEmpty) {
       return 'Required';
@@ -122,7 +137,8 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
       decoration: InputDecoration(
         suffix: InkWell(
          onTap: _togglePasswordView,
-        child: Icon(Icons.visibility),),
+        child: Icon(Icons.visibility,
+        color: Color.fromRGBO(48, 126, 80, 1)),),
         prefixIcon: Padding(
          padding: EdgeInsets.all(0.0),
          child: Icon(
@@ -138,7 +154,20 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
       controller: _passwordController,
       onChanged: (value) => setState(() => password = value),
       obscureText: _isHidden,
-    );
+    )),
+    
+    new FlutterPwValidator(
+    controller: _passwordController,
+    minLength: 8,
+    uppercaseCharCount: 1,
+    numericCharCount: 1,
+    specialCharCount: 1,
+    width: 400,
+    height: 150,
+    onSuccess: (){},/// do something
+)
+
+    ]);
     
 void _togglePasswordView() {
     setState(() {
@@ -163,8 +192,8 @@ void _togglePasswordView() {
 
 
   Widget buildPhone() => TextFormField(
-     
-
+     cursorColor: Color.fromRGBO(48, 126, 80, 1),
+    maxLength:10,
     decoration: InputDecoration(
         
         prefixIcon: Padding(
@@ -173,7 +202,8 @@ void _togglePasswordView() {
           Icons.phone,
            color: Color.fromRGBO(48, 126, 80, 1)),
             ), 
-        labelText: '05xxxxxxxx',
+        labelText: 'Phone',
+        hintText:'05xxxxxxxx',
         
        border: OutlineInputBorder(
        borderRadius: BorderRadius.circular(15.0),
@@ -183,6 +213,7 @@ void _togglePasswordView() {
        controller: _phoneController, 
 
       onChanged: (value) => setState(() => phone = value),
+      keyboardType: TextInputType.number,
       validator: (value){
 
      if(value==null){
@@ -191,7 +222,7 @@ void _togglePasswordView() {
     String pattern =
        "(05|5)(5|0|3|6|4|9|1|8|7)([0-9]{7})";
     RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(value) || value == null)
+    if (!regex.hasMatch(value))
       return 'Invalid phone number';
     else if(value.length <10 || value.length>10)
     return 'Invalid phone number';
@@ -208,12 +239,9 @@ void _togglePasswordView() {
 
 
      Widget buildSocialM() => TextFormField(
-       validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Required';
-    }
-    return null;
-  },
+       controller: _twitterController,
+     
+      cursorColor: Color.fromRGBO(48, 126, 80, 1),
   
       decoration: InputDecoration(
         prefixIcon: Padding(
@@ -223,13 +251,23 @@ void _togglePasswordView() {
            color: Color.fromRGBO(48, 126, 80, 1)),
             ), 
         labelText: 'Twitter Account',
+        hintText: "@XXXX",
         border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15.0),
 
         ),
       ),
       onChanged: (value) => setState(() => twitter = value),
-      
+        validator: (value) {
+    if(value==null){
+      return 'Required';
+    } 
+    String pattern =
+       "@[A-Za-z0-9_]{1,15}";
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value))
+      return 'Invalid Twitter Account';
+        }
     );
 
 
@@ -243,6 +281,7 @@ void _togglePasswordView() {
 
 
     Widget buildCR() => TextFormField(
+  cursorColor: Color.fromRGBO(48, 126, 80, 1),
 
       maxLength: 10,
       
@@ -311,7 +350,7 @@ Container buildAllCategories(){
   
 
     Widget buildNext() => ElevatedButton(
-           child: Text('Next',
+           child: Text('Sign Up',
           style: TextStyle(fontSize: 20, color: Colors.white)
           ),
           onPressed: () async{
@@ -320,7 +359,7 @@ Container buildAllCategories(){
          
          bool check=hasSelected();
 
-          if (!check){
+         /* if (!check){
 
 
             showDialog(
@@ -334,15 +373,18 @@ Container buildAllCategories(){
                             );
                           });
 
-          }
-          
+          }*/
           if(formKey.currentState!.validate())
+          if(hasSelected())
+
           {
           dynamic result=  await _auth.registerInstitution(Email, Pass, phone, name, twitter, cr, categ );
           Navigator.of(context).push(
-              MaterialPageRoute(builder: (context)=>Home(),));}
+              MaterialPageRoute(builder: (context)=>Home(),));} //change to wrapper
           else
-          return;
+          {
+          setState(() => message = 'Please Select at least one category');     
+                    return;}
             //Navigator.push(
           //  context,
           // MaterialPageRoute(builder: (context) => WelcomeScreen()),
@@ -369,6 +411,7 @@ Container buildAllCategories(){
           
            
             style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
             primary: Color.fromRGBO(48, 126, 80, 1),
             shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(25.0),
@@ -376,11 +419,6 @@ Container buildAllCategories(){
             ),
   
        ));
-
-
-
-
-
 
 
  
@@ -397,8 +435,13 @@ Container buildAllCategories(){
 
 
 
+ Widget categValid() => SizedBox(
+       height: 17,
+       child: Text(
 
-
+        message, style: TextStyle (color: Colors.red, fontSize: 14 )
+       )
+    );
 
 
   
@@ -424,8 +467,10 @@ Container buildAllCategories(){
         bottom: Radius.circular(20))),
 
   leading: IconButton(
-    icon: Icon(Icons.arrow_back, color: Colors.black),
-    onPressed: (){},),
+    icon: Icon(Icons.arrow_back, color: Colors.white),
+    onPressed: (){
+      Navigator.pop(context);
+    },),
 
   backgroundColor: Color.fromRGBO(48, 126, 80, 1),
   ),
@@ -433,7 +478,7 @@ Container buildAllCategories(){
 
 
     body: Form(
-      autovalidate: true,
+      autovalidateMode: AutovalidateMode.always,
       key: formKey,
       child: ListView(
       padding: EdgeInsets.all(16),
@@ -443,15 +488,17 @@ Container buildAllCategories(){
         const SizedBox(height: 16),
         buildEmail(),
         const SizedBox(height: 32),
-        buildPassword(),
-        const SizedBox(height: 32),
+        
         buildPhone(),
         const SizedBox(height: 32),
         buildSocialM(),
         const SizedBox(height: 32),
         buildCR(),
         const SizedBox(height: 32),
+        buildPassword(),
+        const SizedBox(height: 32),
         buildTitle(),
+        categValid(),
         buildAllCategories(),
         buildNext(),
       ],
@@ -501,7 +548,6 @@ class _DemoToggleButtonsState extends State<DemoToggleButtons> {
     //otherwise the GridView widget will fill up all the space of its parent widget
     return  Container(
       height: 300,
-      margin: EdgeInsets.only(top: 200),
       width: double.infinity,
       child: Ink(
       width: 380,
