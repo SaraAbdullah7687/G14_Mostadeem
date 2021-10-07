@@ -1,21 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 
 class requestModel {
-// category array
-  String? day;
-  GeoPoint? location;
-  String? state;
-  String? time;
+//  String? reqId; =========================== DO WE NEED IT?
+
+  String contId;
+  String category;
+  String date; // غيرته--------------------------------------------------------
+  String time;
+  GeoFirePoint location;
+  String status;
 
   requestModel({
-    this.day,
-    this.location,
-    this.state,
-    this.time,
+    //  this.reqId, ================================================
+
+    required this.contId,
+    required this.category,
+    required this.date,
+    required this.time,
+    required this.location,
+    required this.status,
   });
 
   /*requestModel.fromDocumentSnapshot({DocumentSnapshot doc}) {
-    // id = doc.documentID;
+    reqId = doc.documentID;
+    category= doc.data["category"]
     day = doc.data["day"];
     location = doc.data["location"];
     state = doc.data["state"];
