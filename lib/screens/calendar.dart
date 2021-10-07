@@ -439,7 +439,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
 
   @override
   Widget build(BuildContext context) => ButtonHeaderWidget(
-        title: '',
+        title: 'Date',
         text: getText(),
         onClicked: () => pickDate(context),
       );
@@ -485,13 +485,13 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
 
   @override
   Widget build(BuildContext context) => ButtonHeaderWidget(
-        title: '',
+        title: 'Time',
         text: getText(),
         onClicked: () => pickTime(context),
       );
 
   Future pickTime(BuildContext context) async {
-    final initialTime = TimeOfDay(hour: 9, minute: 0);
+    final initialTime = TimeOfDay.now();
     final newTime = await showTimePicker(
       context: context,
       initialTime: global.globalTime ?? initialTime,
@@ -538,11 +538,43 @@ class ButtonWidget extends StatelessWidget {
     required this.onClicked,
   }) : super(key: key);
 
+/*
+  @override
+  Widget build(BuildContext context) => ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          side: BorderSide(
+            width: 1.0,
+            color: Color.fromRGBO(48, 126, 80, 1),
+          ),
+          minimumSize: Size.fromHeight(150),
+          primary: //Color.fromRGBO(48, 126, 80, 1),
+              Colors.white,
+          shape: new RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(25.0),
+          ),
+        ),
+        icon: Icon(
+          Icons.access_time_rounded,
+          color: Color.fromRGBO(48, 126, 80, 1),
+        ),
+        label: FittedBox(
+          child: Text(
+            text,
+            style: TextStyle(fontSize: 20, color: Colors.grey),
+          ),
+        ),
+        onPressed: onClicked,
+      );*/
+
   @override
   Widget build(BuildContext context) => ElevatedButton(
         style: ElevatedButton.styleFrom(
-          minimumSize: Size.fromHeight(40),
-          primary: Color.fromRGBO(48, 126, 80, 1),
+          side: BorderSide(
+            width: 1.0,
+            color: Color.fromRGBO(48, 126, 80, 1),
+          ),
+          minimumSize: Size.fromHeight(120),
+          primary: Colors.white,
           shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(25.0),
           ),
@@ -550,7 +582,7 @@ class ButtonWidget extends StatelessWidget {
         child: FittedBox(
           child: Text(
             text,
-            style: TextStyle(fontSize: 20, color: Colors.white),
+            style: TextStyle(fontSize: 20, color: Colors.black),
           ),
         ),
         onPressed: onClicked,
@@ -571,15 +603,27 @@ class HeaderWidget extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+          Container(
+            margin: EdgeInsets.only(top: 80),
+            child: Text(
+              title,
+              style: TextStyle(
+                color: Color.fromRGBO(48, 126, 80, 1),
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-          const SizedBox(height: 8),
+          /*  Icon(Icons.time_to_leave_rounded,
+               title == 'Time' ? Color.fromRGBO(48, 126, 80, 1)
+                  : Colors.white10),
+          Icon(Icons.calendar_today,
+              color: title == 'Date'
+                  ? Color.fromRGBO(48, 126, 80, 1)
+                  : Colors.white10),*/
+          const SizedBox(
+            height: 8,
+          ),
           child,
         ],
       );

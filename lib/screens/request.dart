@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:mostadeem/screens/calendar.dart';
-import 'package:mostadeem/screens/home.dart';
+import 'package:mostadeem/main.dart';
 import 'package:adobe_xd/pinned.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mostadeem/screens/locatin.dart';
+
+import 'locatin.dart';
 
 class requestScreen extends StatefulWidget {
   //static String tag = '/BookAppointmentScreen';
@@ -113,19 +114,20 @@ class requestScreenState extends State<requestScreen> {
         ],
       ),
       body: Container(
-          height: 300,
+          height: 600,
+          margin: EdgeInsets.only(top: 80),
           width: double.infinity,
           child: Ink(
             width: 380,
             height: 60,
-            color: Colors.white,
+            color: Colors.white10,
             child: GridView.count(
               primary: true,
               padding: const EdgeInsets.all(20),
 
-              crossAxisCount: 4, //set the number of buttons in a row
-              crossAxisSpacing: 10, //set the spacing between the buttons
-              mainAxisSpacing: 8,
+              crossAxisCount: 3, //set the number of buttons in a row
+              crossAxisSpacing: 30, //set the spacing between the buttons
+              mainAxisSpacing: 20,
               childAspectRatio:
                   1, //set the width-to-height ratio of the button,
               //>1 is a horizontal rectangle
@@ -149,13 +151,14 @@ class requestScreenState extends State<requestScreen> {
                         decoration: BoxDecoration(
                           //set the background color of the button when it is selected/ not selected
                           color: isSelected[index]
-                              ? Color.fromRGBO(48, 126, 80, 0.7)
+                              ? Color.fromRGBO(48, 126, 80, 0.3)
                               : Colors.white,
                           // here is where we set the rounded corner
                           borderRadius: BorderRadius.circular(8),
                           //don't forget to set the border,
                           //otherwise there will be no rounded corner
-                          border: Border.all(color: Colors.grey),
+                          border:
+                              Border.all(color: Color.fromRGBO(48, 126, 80, 1)),
                         ),
                         child: Image.asset(
                             "assets/images/" + categories[index] + '.png')
