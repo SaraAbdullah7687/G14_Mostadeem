@@ -1,55 +1,60 @@
 //import 'package:mustadeem/screens/home/brew_list.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:test_project/Admin/viewAdvices.dart';
 import 'package:test_project/Admin/viewInstitution.dart';
+import 'package:test_project/Admin/viewins.dart';
+import 'package:test_project/Screens/home/home.dart';
+import 'package:test_project/components/google_auth_api.dart';
 import 'package:test_project/services/auth.dart';
 import 'package:test_project/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class AdminHome extends StatelessWidget {
+import 'addAdvices.dart';
 
-  final AuthService _auth = AuthService();
+class AdminHome extends StatefulWidget {
 
   @override
+  _AdminHomeState createState() => _AdminHomeState();
+}
 
-/*
-  Widget build(BuildContext context) {
-    return StreamProvider<QuerySnapshot>.value(
-      value: DatabaseService().brews,
-      initialData: null,
-      child: Scaffold(
-        backgroundColor: Colors.blue[50],
-        appBar: AppBar(
-          title: Text('MOSTADEEM'),
-          backgroundColor: Colors.blue[900],
-          elevation: 0.0,
-          actions: <Widget>[
-            FlatButton.icon(
-              icon: Icon(Icons.person),
-              label: Text('logout'),
-              onPressed: () async {
-                await _auth.signOut();
-              },
-            ),
-          ],
-        ),
-       // body: BrewList(),
-      ),
-    );
+class _AdminHomeState extends State<AdminHome> {
+  final AuthService _auth = AuthService();
+
+  int _selectedIndex = 0;
+  List<Widget> _widgetOptions = <Widget>[
+    AdminHome(),
+    institutionView(),
+    Text('Advices'),
+  ];
+
+  void _onItemTap(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
-*/
 
+final screens=[ // indexes Sensitive
+  //AdminHome(), // no need
+  institutionView(), // this is the home
+  AddAdvices(),
+  ViewAdvices(),
+];
+int index =0;
+final items =<Widget>[
+Icon(Icons.home, size:30),
+Icon(Icons.add, size:30),
+Icon(Icons.info, size:30),
+];
 
+  @override
  Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-       /* appBar: AppBar(
-          backgroundColor: Color.fromRGBO(103, 145, 61, 1),
-          centerTitle: true,
-          title: const Text('MOSTADEEM'),
-        ),*/
-         appBar: AppBar(
+      extendBody: true, // for nav bar , can be deleted
+   /*      appBar: AppBar(
 
            shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
@@ -67,24 +72,22 @@ class AdminHome extends StatelessWidget {
         backgroundColor: Color.fromRGBO(48, 126, 80, 1),//Color.fromRGBO(103, 145, 61, 1),
         elevation: 0.0,
           actions: <Widget>[
-            FlatButton.icon(
-              icon: Icon(Icons.person , size: 30.0,
+            IconButton(
+              padding: EdgeInsets.only(right: 15),
+              icon: Icon(Icons.logout , size: 25.0,
             color: Colors.white,),
-              label: Text(
-          "Logout",
-          style: TextStyle(color: Colors.white,
-          ),
-        ),
+            
               onPressed: () async {
                 await _auth.signOut();
+                GoogleAuthApi.signOut();
               },
             ),
           ],
           toolbarHeight:80.0,
         ),
 
-
-        //  backgroundColor: Colors.white10,
+*/
+/*        //  backgroundColor: Colors.white10,
         body: Stack(
           children: [
             Positioned(
@@ -126,7 +129,7 @@ class AdminHome extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return ViewInstitution(); // the general signup screen from nouf
+                        return institutionView();//ViewInstitution(); // the general signup screen from nouf
                       },
                     ),
                   );}),
@@ -145,6 +148,60 @@ class AdminHome extends StatelessWidget {
                 ))
           ],
         ));
+  */
+   /* bottomNavigationBar: BottomNavigationBar(
+      backgroundColor: Color.fromRGBO(48, 126, 80, 1),
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+            ),
+            title: Text(
+              'Home',
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.add,
+            ),
+            title: Text(
+              'Info',
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+            ),
+            title: Text(
+              'Profile',
+            ),
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTap,
+        selectedFontSize: 13.0,
+        unselectedFontSize: 13.0,
+      ),
+  */
+  body: screens[index],
+  bottomNavigationBar:
+  Theme(
+    data: Theme.of(context).copyWith(
+      iconTheme: IconThemeData(color: Colors.white),
+    ) ,
+    child: CurvedNavigationBar(
+      color: Color.fromRGBO(48, 126, 80, 1),
+     // buttonBackgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
+      height:60 , // decreced nav height
+      items: items,
+  index: index,
+  animationDuration:Duration(microseconds: 5000) ,
+  onTap:(index)=> setState(()=> this.index=index) ,
+    ),
+  ) ,
+    );
+  
   }
 }
 

@@ -5,25 +5,39 @@
 
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-//import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
-import 'package:test_project/components/advanceAlert.dart';
+import 'package:test_project/Admin/viViewModel.dart';
 import 'package:test_project/components/google_auth_api.dart';
-import 'package:test_project/models/emailMessage.dart';
-//import 'package:flutter_svg/svg.dart';
-////import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-//import 'package:test_project/Screens/background.dart';
 import 'package:test_project/services/auth.dart';
-import 'package:test_project/services/database.dart';
 import 'package:test_project/shared/loading.dart';
-//import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'components/social_icon.dart';
 
+
+class institutionView extends StatelessWidget { 
+   @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<ViewInstitutionViewModel>(
+        create: (_) => ViewInstitutionViewModel(),
+        child: Container(
+            height: 1200,
+            width: 450,
+            child: ViewInstitution())
+    );
+  }
+}
+
+
+
 class ViewInstitution extends StatefulWidget {
+ const ViewInstitution({
+    Key key,
+  }) : super(key: key);
+
   @override
   _ViewInstitutionState createState() => _ViewInstitutionState();
 }
@@ -31,29 +45,47 @@ class ViewInstitution extends StatefulWidget {
 class _ViewInstitutionState extends State<ViewInstitution> {
   final AuthService _auth = AuthService();
   final List<Flushbar> flushBars = []; 
-
  WebViewController controller;
+
+final ViewInstitutionViewModel ourViewMode=ViewInstitutionViewModel();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(
+        Duration.zero, () => setState(() {
+      setup();
+    }));
+  }
+
+    setup() async {
+    await Provider.of<ViewInstitutionViewModel>(context, listen: false)
+        .fetchInstitutions();
+  }
 
   @override
   Widget build(BuildContext context) {
+    Stream<QuerySnapshot<Map<String, dynamic>>> institutions = Provider.of<ViewInstitutionViewModel>(context, listen: false)
+        .institutions;
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-
            shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         bottom: Radius.circular(18),
       ),
     ),
-      /*  title: Text(
-          "MOSTADEEM",
-          style: TextStyle(
-            fontSize: 28.0,
-            fontWeight: FontWeight.bold,
-          ),
-        ),*/
         backgroundColor: Color.fromRGBO(48, 126, 80, 1),
         elevation: 0.0,
+        /* title: Text(
+            'Home',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+              fontSize: 24,
+            ),
+          ),*/
         actions: <Widget>[
             IconButton(
               padding: EdgeInsets.only(right: 15),
@@ -66,13 +98,13 @@ class _ViewInstitutionState extends State<ViewInstitution> {
               },
             ),
           ],
-         leading: IconButton(
+       /*  leading: IconButton(
           icon: Icon(Icons.arrow_back_outlined, color: Colors.green[50], size: 30.0,),
           onPressed: () {
             // passing this to our root
             Navigator.of(context).pop();
           },
-        ),
+        ),*/
        /*   actions: <Widget>[
             FlatButton.icon(
               icon: Icon(Icons.person , size: 30.0,
@@ -88,10 +120,10 @@ class _ViewInstitutionState extends State<ViewInstitution> {
               },
             ),
           ],*/
-          toolbarHeight:80.0,
+          toolbarHeight:60.0, // was 80 
         ),
         
-      body: Container( // ممكن ينشال
+      body: /*Container( // ممكن ينشال
 
  decoration: BoxDecoration(
                   color: Colors.white,
@@ -101,8 +133,10 @@ class _ViewInstitutionState extends State<ViewInstitution> {
                   ),),
 
             margin: EdgeInsets.symmetric(vertical: 20, horizontal: 10), // shouldn't the bellow line be aysnc?
-             child: StreamBuilder(stream: FirebaseFirestore.instance.collection("institution").where("status", isEqualTo: "pending").orderBy("dateCreated" ).snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
+             child: */
+             StreamBuilder(
+               stream: institutions,
+               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
           if (!snapshot.hasData) return Loading();
          return //Container( height: 50, width: 50,child: 
          new ListView.builder( 
@@ -113,7 +147,7 @@ class _ViewInstitutionState extends State<ViewInstitution> {
         }
     
       ),
-    ),
+   // ),
 
     
     );
@@ -192,7 +226,8 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
           icon: const Icon(Icons.mail_outline),
           color: Colors.lightGreen[900],
           tooltip: 'Send email',
-          onPressed: ()=> _sendingMails(document.get("email")),
+          onPressed: ()=>  ourViewMode.sendingMails(document.get("email")),
+         // _sendingMails(document.get("email")),
           
           ),),
     SizedBox(width: 5),
@@ -200,14 +235,14 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
           SocalIcon(
                   iconSrc: "assets/icons/twitter.svg",
                   color: Colors.lightGreen[900],
-                  press: ()=> _goToTwitter(document.get("twitter")),
+                  press: ()=> ourViewMode.goToTwitter(document.get("twitter")),
                 ),),
     SizedBox(width: 6),
     Flexible( child:
                 IconButton(
           icon: const Icon(Icons.phone),
           color: Colors.lightGreen[900],
-          onPressed: ()=> _goToWhatsapp(document.get("phone")),),),
+          onPressed: ()=> ourViewMode.goToWhatsapp(document.get("phone")),),),
   ],),//),
   );
 }
@@ -264,35 +299,6 @@ GestureDetector( onTap: (){_showMyDialog("Disapprove", context,document.id,docum
     ], ),
    );
 
-}
-
-Future _sendingMails(String email) async {
-  String url = 'mailto:$email'; // specify mail from snapchot
-  if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
-  }
-}
-
-Future _goToTwitter(String account) async {
-  String url = 'https://twitter.com/$account';
-if (await canLaunch(url)) {
-    await launch(url,forceWebView: true,enableJavaScript: true,
-    enableDomStorage: true,);
-  } else {
-    throw 'Could not launch $url';
-  }
-}
-
-Future _goToWhatsapp(String phone) async {
- String newPhone= phone.substring(1);
-String url ="whatsapp://send?phone=+966$newPhone"; // maybe needs to be modified to api?
-if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
-  }
 }
 
 Future<void> _showMyDialog(String status, BuildContext context, String uid,DocumentSnapshot document) async {
@@ -411,7 +417,7 @@ controller.evaluateJavascript("document.getElementById('ctl00_ctl74_g_3aefad74_1
 
 }
 
-       void showTopSnackBar(BuildContext context ,String title,String message) => show(
+void showTopSnackBar(BuildContext context ,String title,String message) => show(
         context,
         Flushbar(
           icon: Icon(Icons.error, size: 32, color: Colors.white),
@@ -427,7 +433,7 @@ controller.evaluateJavascript("document.getElementById('ctl00_ctl74_g_3aefad74_1
         ),
       );
 
-          Future show(BuildContext context, Flushbar newFlushBar) async {
+Future show(BuildContext context, Flushbar newFlushBar) async {
     await Future.wait(flushBars.map((flushBar) => flushBar.dismiss()).toList());
     flushBars.clear();
 
