@@ -1,24 +1,52 @@
 //import 'package:mustadeem/screens/home/brew_list.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:test_project/Admin/viewInstitution.dart';
+import 'package:test_project/Screens/home/home0.dart';
+import 'package:test_project/Screens/home/profile.dart';
 import 'package:test_project/services/auth.dart';
 import 'package:test_project/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Home extends StatelessWidget {
+// add package at yaml
+class Home extends StatefulWidget {
 
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   final AuthService _auth = AuthService();
+
+final screens=[ // indexes Sensitive
+  HomeZero(),
+  //requestScreen(); // for request
+  ViewInstitution(), // for testing delete it 
+  Profile(),
+ 
+];
+
+int index =0;
+
+final items =<Widget>[
+Icon(Icons.home, size:30),
+Icon(Icons.add, size:30),
+Icon(Icons.person, size:30),
+];
 
   @override
  Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+      extendBody: true,
        /* appBar: AppBar(
           backgroundColor: Color.fromRGBO(103, 145, 61, 1),
           centerTitle: true,
           title: const Text('MOSTADEEM'),
         ),*/
+        /*
          appBar: AppBar(
 
            shape: RoundedRectangleBorder(
@@ -52,62 +80,28 @@ class Home extends StatelessWidget {
           ],
           toolbarHeight:80.0,
         ),
-
+*/
 
         //  backgroundColor: Colors.white10,
-        body: Stack(
-          children: [
-            Positioned(
-                bottom: 0,
-                left: 0,
-                child: Container(
-                  width: size.width,
-                  height: 80,
-                  child: Stack(
-                    children: [
-                      CustomPaint(
-                        size: Size(size.width, 80),
-                        painter: BNBCustomPainter(),
-                      ),
-                      Center(
-                        heightFactor: 0.6,
-                        child: FloatingActionButton(
-                          onPressed: () {},
-                          backgroundColor: Color.fromRGBO(48, 126, 80, 1),//Color.fromRGBO(103, 145, 61, 1),
-                          child: Icon(Icons.add_circle),
-                          elevation: 0.1,
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(
-                            left: 10, right: 30, bottom: 20),
-                        width: size.width,
-                        height: 80,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            IconButton(
-                                icon: Icon(
-                                  Icons.house_rounded,
-                                  color: Color.fromRGBO(48, 126, 80, 1),
-                                  size: 50,
-                                ),
-                                onPressed: () {}),
-                            IconButton(
-                                icon: Icon(
-                                  Icons.person_rounded,
-                                  color: Color.fromRGBO(48, 126, 80, 1),
-                                  size: 50,
-                                ),
-                                onPressed: () {}),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ))
-          ],
-        ));
+        body: screens[index],
+  bottomNavigationBar:
+  Theme(
+    data: Theme.of(context).copyWith(
+      iconTheme: IconThemeData(color: Colors.white),
+    ) ,
+    child: CurvedNavigationBar(
+      color: Color.fromRGBO(48, 126, 80, 1),
+     // buttonBackgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
+      height:60 , // decreced nav height
+      items: items,
+  index: index,
+  animationDuration:Duration(microseconds: 5000) ,
+  onTap:(index)=> setState(()=> this.index=index) ,
+    ),
+  ) ,
+    );
+    
   }
 }
 
