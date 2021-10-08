@@ -8,12 +8,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:inst_registration/Screens/home.dart';
+import 'package:inst_registration/Screens/logIn.dart';
 import 'package:inst_registration/services/auth.dart';
 import 'package:inst_registration/services/popUp.dart';
 import 'package:inst_registration/toOTP.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+
 
 
 
@@ -39,19 +43,16 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
   TextEditingController _emailController = TextEditingController(); //add it in rounded input class
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
-    TextEditingController _twitterController = TextEditingController();
-        TextEditingController _nameController = TextEditingController();
+  TextEditingController _twitterController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
 
 
   String message='';
 
 
 
-    Color _color = Colors.white;
 
-
-
-
+// Name .....................................
 
   Widget buildName() => TextFormField(
   cursorColor: Color.fromRGBO(48, 126, 80, 1),
@@ -72,9 +73,17 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
             ), 
 
         labelText: 'Name',
-        border: OutlineInputBorder(
-       borderRadius: BorderRadius.circular(15.0),
 
+        labelStyle: TextStyle(
+          color: 
+        Color.fromRGBO(48, 126, 80, 1)),
+
+        border: OutlineInputBorder(
+         borderRadius: BorderRadius.circular(15)
+        ),
+        focusedBorder: OutlineInputBorder(
+       borderSide: const BorderSide(color: Color.fromRGBO(48, 126, 80, 1)),
+       borderRadius: BorderRadius.circular(15.0),
         ),
       ),
       onChanged: (value) => setState(() => name = value),
@@ -82,6 +91,7 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
 
 
 
+// Email .....................................
 
 
     Widget buildEmail() => TextFormField(
@@ -98,9 +108,15 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
             ), 
         labelText: 'Email',
         
-       border: OutlineInputBorder(
+       labelStyle: TextStyle(
+          color: 
+        Color.fromRGBO(48, 126, 80, 1)),
+        border: OutlineInputBorder(
+         borderRadius: BorderRadius.circular(15)
+        ),
+        focusedBorder: OutlineInputBorder(
+       borderSide: const BorderSide(color: Color.fromRGBO(48, 126, 80, 1)),
        borderRadius: BorderRadius.circular(15.0),
-
         ),
       ),
        controller: _emailController, 
@@ -116,9 +132,10 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
 
 
 
+// Password .....................................
 
 
-      bool _isHidden = true;
+    bool _isHidden = true;
 
   Widget buildPassword() => Column(
     children: [
@@ -146,9 +163,15 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
            color: Color.fromRGBO(48, 126, 80, 1)),
             ), 
         labelText: 'Password',
+        labelStyle: TextStyle(
+          color: 
+        Color.fromRGBO(48, 126, 80, 1)),
         border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15.0),
-
+         borderRadius: BorderRadius.circular(15)
+        ),
+        focusedBorder: OutlineInputBorder(
+       borderSide: const BorderSide(color: Color.fromRGBO(48, 126, 80, 1)),
+       borderRadius: BorderRadius.circular(15.0),
         ),
       ),
       controller: _passwordController,
@@ -174,21 +197,10 @@ void _togglePasswordView() {
       _isHidden = !_isHidden;
     });}
 
-  /*  FlutterPwValidator({
-    controller: _passwordController,
-    minLength: 6,
-    uppercaseCharCount: 2,
-    numericCharCount: 3,
-    specialCharCount: 1,
-    width: 400,
-    height: 150,
-    onSuccess: buildPassword()}
-)*/
 
 
 
-
-
+// Phone  .....................................
 
 
   Widget buildPhone() => TextFormField(
@@ -205,9 +217,15 @@ void _togglePasswordView() {
         labelText: 'Phone',
         hintText:'05xxxxxxxx',
         
-       border: OutlineInputBorder(
+       labelStyle: TextStyle(
+          color: 
+        Color.fromRGBO(48, 126, 80, 1)),
+        border: OutlineInputBorder(
+         borderRadius: BorderRadius.circular(15)
+        ),
+        focusedBorder: OutlineInputBorder(
+       borderSide: const BorderSide(color: Color.fromRGBO(48, 126, 80, 1)),
        borderRadius: BorderRadius.circular(15.0),
-
         ),
       ),
        controller: _phoneController, 
@@ -237,6 +255,7 @@ void _togglePasswordView() {
 
 
 
+// Twitter .....................................
 
      Widget buildSocialM() => TextFormField(
        controller: _twitterController,
@@ -252,8 +271,15 @@ void _togglePasswordView() {
             ), 
         labelText: 'Twitter Account',
         hintText: "@XXXX",
+        labelStyle: TextStyle(
+          color: 
+        Color.fromRGBO(48, 126, 80, 1)),
         border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15.0),
+         borderRadius: BorderRadius.circular(15)
+        ),
+        focusedBorder: OutlineInputBorder(
+       borderSide: const BorderSide(color: Color.fromRGBO(48, 126, 80, 1)),
+       borderRadius: BorderRadius.circular(15.0),
 
         ),
       ),
@@ -278,6 +304,7 @@ void _togglePasswordView() {
 
 
 
+// CR .....................................
 
 
     Widget buildCR() => TextFormField(
@@ -304,7 +331,14 @@ void _togglePasswordView() {
            color: Color.fromRGBO(48, 126, 80, 1)),
             ), 
         labelText: 'Commercial Record',
+        labelStyle: TextStyle(
+          color: 
+        Color.fromRGBO(48, 126, 80, 1)),
         border: OutlineInputBorder(
+         borderRadius: BorderRadius.circular(15)
+        ),
+        focusedBorder: OutlineInputBorder(
+       borderSide: const BorderSide(color: Color.fromRGBO(48, 126, 80, 1)),
        borderRadius: BorderRadius.circular(15.0),
 
         ),
@@ -319,6 +353,7 @@ void _togglePasswordView() {
 
 
 
+// Titlw .....................................
 
     Widget buildTitle() => Container(
        
@@ -330,6 +365,7 @@ void _togglePasswordView() {
 
 
 
+// Categories .....................................
 
 Container buildAllCategories(){
 
@@ -348,8 +384,10 @@ Container buildAllCategories(){
 
 
   
+// Button .....................................
 
-    Widget buildNext() => ElevatedButton(
+    Widget buildNext(BuildContext context) => ElevatedButton(
+      
            child: Text('Sign Up',
           style: TextStyle(fontSize: 20, color: Colors.white)
           ),
@@ -359,57 +397,60 @@ Container buildAllCategories(){
          
          bool check=hasSelected();
 
-         /* if (!check){
+         final snackBar=SnackBar(content: Text('You already registered, please log in'));
 
 
-            showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AdvanceCustomAlert(
-                              icon: Icons.error,
-                              msgTitle: 'Error',
-                              msgContent: 'Please select at least 1 category.',
-                              btnContent: 'Ok',
-                            );
-                          });
 
-          }*/
           if(formKey.currentState!.validate())
           if(hasSelected())
 
           {
-          dynamic result=  await _auth.registerInstitution(Email, Pass, phone, name, twitter, cr, categ );
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context)=>Home(),));} //change to wrapper
-          else
-          {
-          setState(() => message = 'Please Select at least one category');     
-                    return;}
-            //Navigator.push(
-          //  context,
-          // MaterialPageRoute(builder: (context) => WelcomeScreen()),
-          // );
-           
+              try{
+              dynamic result=  await _auth.registerInstitution(Email, Pass, phone, name, twitter, cr, categ );
+              Navigator.of(context).push(
+              MaterialPageRoute(builder: (context)=>Home(),));}    //change to wrapper
+              
+               catch (signUpError){
+               if(signUpError is PlatformException) 
+               if(signUpError.code == 'ERROR_EMAIL_ALREADY_IN_USE')
 
-          /*print("validate form,sending signup req"); // maybe beacuse it's dunamic?
-                    dynamic result = await _auth.registerWithEmailAndPassword(_authData['email'].trim(), _authData['password'], _authData['name'].trim());
-                    print("req sent");
-                    if(result == null) {
-                      print("req returend null");
-                      error = 'Please supply a valid email';
-                      setState(() {
-                        loading = false;
-                      });
-                    }else {print("req is not null");} 
-*/
-         /*Navigator.push(
-         context,
-         MaterialPageRoute(builder: (context) => firstBackground(child: Scaffold())));
-*/
+               Navigator.of(context).pop(
+              MaterialPageRoute(builder: (context)=>logIn(),));
+
+               Navigator.pop(context);
+               showDialog(context: context, builder: (BuildContext context){
+               return AdvanceCustomAlert(icon: Icons.check, msgTitle: 'Please log in', 
+               msgContent: 'You have already registered', btnContent: 'Ok');
+ 
+
+
+              
+            
+
+
+
+               }
+               
+               
+               
+               
+               
+               );
+
+              
+                            
+                        
+               }
+               }
+
+               
+              else
+              {
+              setState(() => message = 'Please Select at least one category');     
+                    return;}
+            
           
           },
-          
-           
             style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
             primary: Color.fromRGBO(48, 126, 80, 1),
@@ -417,23 +458,19 @@ Container buildAllCategories(){
             borderRadius: new BorderRadius.circular(25.0),
             
             ),
+          
+           
+            
   
-       ));
+            ),
+          
+                  );
 
 
  
 
 
-
-
-  
-    Widget buildSpace() => Container(
-       
-       child: Text(
-            '\n', )
-    );
-
-
+// Category message .....................................
 
  Widget categValid() => SizedBox(
        height: 17,
@@ -456,15 +493,15 @@ Container buildAllCategories(){
     String cr = '';
     String phone='phone';
 
-
   @override
   Widget build(BuildContext context) => Scaffold(
      backgroundColor: Colors.white, 
-    appBar: AppBar(
+     appBar: AppBar(
+     centerTitle: true,
       title:  Text('Institution Registration'),
       shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
-        bottom: Radius.circular(20))),
+     bottom: Radius.circular(20))),
 
   leading: IconButton(
     icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -488,7 +525,6 @@ Container buildAllCategories(){
         const SizedBox(height: 16),
         buildEmail(),
         const SizedBox(height: 32),
-        
         buildPhone(),
         const SizedBox(height: 32),
         buildSocialM(),
@@ -500,7 +536,7 @@ Container buildAllCategories(){
         buildTitle(),
         categValid(),
         buildAllCategories(),
-        buildNext(),
+        buildNext(context),
       ],
       ),
     ),
@@ -536,7 +572,7 @@ class DemoToggleButtons extends StatefulWidget {
 class _DemoToggleButtonsState extends State<DemoToggleButtons> {
   //set the initial state of each button whether it is selected or not
   List<IconData> iconList = [Icons.ac_unit, Icons.call, Icons.cake, Icons.mic_external_off, Icons.cake, Icons.dangerous, Icons.safety_divider,Icons.ac_unit,Icons.qr_code,Icons.face,Icons.e_mobiledata,Icons.h_mobiledata];
-  
+
   @override
   Widget build(BuildContext context) {
 
