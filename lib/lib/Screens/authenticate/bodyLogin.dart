@@ -6,6 +6,7 @@ import 'package:test_project/Screens/background.dart';
 import 'package:test_project/components/advanceAlert.dart';
 import 'package:test_project/components/already_have_an_account_acheck.dart';
 import 'package:test_project/components/rounded_button.dart';
+import 'package:test_project/components/rounded_input_field.dart';
 import 'package:test_project/components/rounded_password_field.dart';
 import 'package:test_project/components/text_field_container.dart';
 import 'package:test_project/services/auth.dart';
@@ -43,215 +44,220 @@ Map<String, String> _authData = { // can use variables instead of map
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(
-      shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-      bottom: Radius.circular(18),
-      ),
-    ),
-        backgroundColor: Color.fromRGBO(48, 126, 80, 1),
-        elevation: 4.0,
-          toolbarHeight:80.0,
-        
+    return GestureDetector(
+      onTap: ()=> FocusManager.instance.primaryFocus.unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+        shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+        bottom: Radius.circular(18),
         ),
-
-      body: loading ? Loading(): 
-      Background(
-        child: SingleChildScrollView(
-          child: Container(
-          //  height: MediaQuery.of(context).size.height,
-     // width: MediaQuery.of(context).size.width,
-            margin: EdgeInsets.all(24),
-       //  padding: EdgeInsets.all(50.0), // this is why the fields looks smaller
+      ),
+          backgroundColor: Color.fromRGBO(48, 126, 80, 1),
+          elevation: 4.0,
+            toolbarHeight:80.0,
+          
+          ),
+    
+        body: loading ? Loading(): 
+        Background(
+          child: SingleChildScrollView(
+            child: Container(
+            //  height: MediaQuery.of(context).size.height,
+       // width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.all(24),
+         //  padding: EdgeInsets.all(50.0), // this is why the fields looks smaller
+       
+           child: Form( // added it
+           key: _formKey, // added it
+             autovalidateMode: AutovalidateMode.always, // added it
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+    //SizedBox(height: size.height * 0.03),
+    
+           //  SizedBox(height: size.height * 0.03),
+               SizedBox(
+                 height: 250, // change the number to make the logo bigger     
+                width:size.width,
+                 child: Image.asset("assets/images/logo.png",
+                  fit: BoxFit.contain,
+                  alignment: Alignment.topCenter,)),
      
-         child: Form( // added it
-         key: _formKey, // added it
-           autovalidateMode: AutovalidateMode.always, // added it
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-//SizedBox(height: size.height * 0.03),
+                SizedBox(height: size.height * 0.03),
+    
+    TextFieldContainer(
+          child: TextFormField( 
+            autofocus: false,
+            keyboardType: TextInputType.emailAddress, 
+            controller: _emailController, 
+            cursorColor: kPrimaryColor,
+            textInputAction: TextInputAction.next, // added it
+           // keyboardType: TextInputType.number, //for phone there's one for email
+    
+            decoration: InputDecoration(
+              prefixIcon: Icon( Icons.mail, color: kPrimaryColor,
+              ),
+              hintText: "Email",
+              // contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15), // make it smaller
+           //  border: InputBorder.none,
+           
+            border: new OutlineInputBorder(
+              borderRadius: const BorderRadius.all(
+                const Radius.circular(15.0),
+              ),
 
-         //  SizedBox(height: size.height * 0.03),
-             SizedBox(
-               height: 250, // change the number to make the logo bigger     
-              width:size.width,
-               child: Image.asset("assets/images/logo.png",
-                fit: BoxFit.contain,
-                alignment: Alignment.topCenter,)),
- 
-              SizedBox(height: size.height * 0.03),
-
-TextFieldContainer(
-        child: TextFormField( 
-          autofocus: false,
-          keyboardType: TextInputType.emailAddress, 
-          controller: _emailController, 
-          cursorColor: kPrimaryColor,
-          textInputAction: TextInputAction.next, // added it
-         // keyboardType: TextInputType.number, //for phone there's one for email
-
-          decoration: InputDecoration(
-            prefixIcon: Icon( Icons.mail, color: kPrimaryColor,
+              borderSide: new BorderSide(
+                color: Colors.black,
+                width: 1.0,
+              ),
             ),
-            hintText: "Email",
-            // contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15), // make it smaller
-         //  border: InputBorder.none,
-          border: new OutlineInputBorder(
-            borderRadius: const BorderRadius.all(
-              const Radius.circular(15.0),
             ),
-            borderSide: new BorderSide(
-              color: Colors.black,
-              width: 1.0,
-            ),
-          ),
-          ),
- /*validator: (value) {
-                      if (value.isEmpty || !value.contains('@')) {
-                        return 'Invalid email!';
-                      }
-                      return null;
-                    },*/
-           onSaved: (value) {
-             // or _emailController.text = value!;
-                      _authData['email'] = value;
+     /*validator: (value) {
+                        if (value.isEmpty || !value.contains('@')) {
+                          return 'Invalid email!';
+                        }
+                        return null;
+                      },*/
+             onSaved: (value) {
+               // or _emailController.text = value!;
+                        _authData['email'] = value;
+                      },
+                      onChanged: (val) {
+                      setState(() => _authData['email'] = val);
                     },
-                    onChanged: (val) {
-                    setState(() => _authData['email'] = val);
-                  },
-        validator: MultiValidator([
-        RequiredValidator(errorText: "Required"),
-        EmailValidator(errorText: "Not a valid email"), // WRONG don't generlize all fields as email
-        ]
-        ),
-        ),
-      ),
-      
-              /*RoundedInputField(
-                hintText: "Email",
-                icon: Icons.mail, 
-                errorTextForValidation: "Not a valid email",// added it
-                textController: _emailController,
-                onSaved: (value) {},
-              ),*/
-              
-              RoundedPasswordField(
-                controllerPw: _passwordController,
-                isSignUp: false,
-                onSaved: (value) {
-                  // or  _passwordController.text = value!;
-                      _authData['password'] = value;
-                    }, // change it to onSaved
-              //textInputAction: TextInputAction.done,
-              onChanged: (val) {
-                    setState(() => _authData['password'] = val);
-                  },
-
-                  press: () {
-                    Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return ResetPassword(); // the general signup screen from nouf
-                      },
-                    ),
-                  );
-                  }
-              
-              ),
-              
-              RoundedButton(
-                text: "SIGN IN",
-                press: () async{ 
-                if(_formKey.currentState.validate()){
-                     // setState(() => loading = true);
-                      dynamic result = await _auth.signInWithEmailAndPassword(_authData['email'], _authData['password']); // see the bookclub
-                      
-                      if(result == null) {
-                        print("req returend null");
-                        error = 'Please supply a valid email';
-                       /* setState(() {
-                          loading = false;
-                        });*/
-                      }else if(result == "No-user-found")
-                      {print("No user found in if");
-                    /*  setState(() {
-                          loading = false;
-                        });*/
-                        showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AdvanceCustomAlert(
-                      icon: Icons.error,
-                      msgTitle: 'INVALID',
-                      msgContent: 'Email or password incorrect',
-                      btnContent: 'Ok',
-                    );
-                  });
-                        //showTopSnackBar(context);
-
-                        } else if(result == "Wrong-password")
-                      {print("Wrong passwordin if");
-                     /* setState(() {
-                          loading = false;
-                        });*/
-                        showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AdvanceCustomAlert(
-                      icon: Icons.error,
-                      msgTitle: 'INVALID',
-                      msgContent: 'Email or password incorrect',
-                      btnContent: 'Ok',
-                    );
-                  });
-                       // showTopSnackBar(context);
-
-                        } 
-                      else{print("req is not null");
-                      setState(() { // added delete it 
-                          loading = false;
-                        });}
-                    }
-                  /* context.read<AuthenticationService>().signIn(
-                      email: _emailController.text.trim(),
-                      password: _passwordController.text.trim(),
-                    );*/
-
-
-                 // signIn(_emailController.text, _passwordController.text);
-                  
-                  /* if (!_formKey.currentState.validate()) {
-                     print("validation doesn't works");// delete it 
-                        return;
-                      }
-                print("validation works"); // delete it 
-                      _formKey.currentState.save();*/
-                },
-              ),
-
-
-              SizedBox(height: size.height * 0.03),
-              AlreadyHaveAnAccountCheck(
-                press: () {
-                  widget.toggleView();
-                  
-                 /* Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return WelcomeScreen(); // the general signup screen from nouf
-                      },
-                    ),
-                  );*/
-                },
-              ),
-            ],
+          validator: MultiValidator([
+          RequiredValidator(errorText: "Required"),
+          EmailValidator(errorText: "Not a valid email"), // WRONG don't generlize all fields as email
+          ]
           ),
-          ), // form
+          ),
         ),
+        
+                /*RoundedInputField(
+                  hintText: "Email",
+                  icon: Icons.mail, 
+                  errorTextForValidation: "Not a valid email",// added it
+                  textController: _emailController,
+                  onSaved: (value) {},
+                ),*/
+                
+                RoundedPasswordField(
+                  controllerPw: _passwordController,
+                  isSignUp: false,
+                  onSaved: (value) {
+                    // or  _passwordController.text = value!;
+                        _authData['password'] = value;
+                      }, // change it to onSaved
+                //textInputAction: TextInputAction.done,
+                onChanged: (val) {
+                      setState(() => _authData['password'] = val);
+                    },
+    
+                    press: () {
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return ResetPassword(); // the general signup screen from nouf
+                        },
+                      ),
+                    );
+                    }
+                
+                ),
+                
+                RoundedButton(
+                  text: "SIGN IN",
+                  press: () async{ 
+                  if(_formKey.currentState.validate()){
+                       // setState(() => loading = true);
+                        dynamic result = await _auth.signInWithEmailAndPassword(_authData['email'], _authData['password']); // see the bookclub
+                        
+                        if(result == null) {
+                          print("req returend null");
+                          error = 'Please supply a valid email';
+                         /* setState(() {
+                            loading = false;
+                          });*/
+                        }else if(result == "No-user-found")
+                        {print("No user found in if");
+                      /*  setState(() {
+                            loading = false;
+                          });*/
+                          showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AdvanceCustomAlert(
+                        icon: Icons.error,
+                        msgTitle: 'INVALID',
+                        msgContent: 'Email or password incorrect',
+                        btnContent: 'Ok',
+                      );
+                    });
+                          //showTopSnackBar(context);
+    
+                          } else if(result == "Wrong-password")
+                        {print("Wrong passwordin if");
+                       /* setState(() {
+                            loading = false;
+                          });*/
+                          showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AdvanceCustomAlert(
+                        icon: Icons.error,
+                        msgTitle: 'INVALID',
+                        msgContent: 'Email or password incorrect',
+                        btnContent: 'Ok',
+                      );
+                    });
+                         // showTopSnackBar(context);
+    
+                          } 
+                        else{print("req is not null");
+                        setState(() { // added delete it 
+                            loading = false;
+                          });}
+                      }
+                    /* context.read<AuthenticationService>().signIn(
+                        email: _emailController.text.trim(),
+                        password: _passwordController.text.trim(),
+                      );*/
+    
+    
+                   // signIn(_emailController.text, _passwordController.text);
+                    
+                    /* if (!_formKey.currentState.validate()) {
+                       print("validation doesn't works");// delete it 
+                          return;
+                        }
+                  print("validation works"); // delete it 
+                        _formKey.currentState.save();*/
+                  },
+                ),
+    
+    
+                SizedBox(height: size.height * 0.03),
+                AlreadyHaveAnAccountCheck(
+                  press: () {
+                    widget.toggleView();
+                    
+                   /* Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return WelcomeScreen(); // the general signup screen from nouf
+                        },
+                      ),
+                    );*/
+                  },
+                ),
+              ],
+            ),
+            ), // form
+          ),
+          ),
         ),
       ),
     );
