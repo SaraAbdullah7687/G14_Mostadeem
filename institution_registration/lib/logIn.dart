@@ -4,6 +4,7 @@ import 'dart:core';
 
 //import 'dart:js';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -40,6 +41,8 @@ class _logIn extends State<logIn> {
 
 
 
+
+final fb = FirebaseDatabase.instance;
 
 
 
@@ -202,41 +205,63 @@ Widget buildText(BuildContext context)=> Container(
            child: Text('Log In',
           style: TextStyle(fontSize: 20, color: Colors.white)
           ),
+
           onPressed: () async{
          String Email = _emailController.text.trim();
          String Pass = _passwordController.text.trim();
          
 
      
-          if(formKey.currentState!.validate());
-
-          
-            //Navigator.push(
-          //  context,
-          // MaterialPageRoute(builder: (context) => WelcomeScreen()),
-          // );
+          if(formKey.currentState!.validate());{
+         //  getUser(context);
+/////////////////////////
            
+           try{
+                dynamic result = await _auth.signInWithEmailAndPassword(Email, Pass); 
 
-          /*print("validate form,sending signup req"); // maybe beacuse it's dunamic?
-                    dynamic result = await _auth.registerWithEmailAndPassword(_authData['email'].trim(), _authData['password'], _authData['name'].trim());
-                    print("req sent");
-                    if(result == null) {
-                      print("req returend null");
-                      error = 'Please supply a valid email';
-                      setState(() {
-                        loading = false;
-                      });
-                    }else {print("req is not null");} 
-*/
-         /*Navigator.push(
-         context,
-         MaterialPageRoute(builder: (context) => firstBackground(child: Scaffold())));
-*/
+                  Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context)=>Home(),));} // change to wrapper
+
+
+               catch (signUpError){
+               print('password or email incorrect');
+               ScaffoldMessenger.of(context).showSnackBar(
+               const SnackBar(
+                backgroundColor: Colors.red,
+
+               content: Text('Email or password are incorrect'),
+          ));
+               }
+
+
+
+                    
+         } 
+
+          }
           
-          },
+          /*
+ try{
+              dynamic result=  await _auth.registerInstitution(Email, Pass, phone, name, twitter, cr, categ );
+              Navigator.of(context).push(
+              MaterialPageRoute(builder: (context)=>Home(),));}    //change to wrapper
+              
+               catch (signUpError){
+               if(signUpError is PlatformException) 
+               if(signUpError.code == 'ERROR_EMAIL_ALREADY_IN_USE')
+
+
+
+              Navigator.of(context).push(
+              MaterialPageRoute(builder: (context)=>logIn(),));
+                            
+                        
+               }
+
+          */
           
            
-            style: ElevatedButton.styleFrom(
+           , style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
             primary: Color.fromRGBO(48, 126, 80, 1),
             shape: new RoundedRectangleBorder(
@@ -256,16 +281,15 @@ Widget buildText(BuildContext context)=> Container(
     final formKey = GlobalKey<FormState>();
   
 
-    String email = '';
-    String password = '';
+   
  
-
 
   @override
   Widget build(BuildContext context) => Scaffold(
+
      backgroundColor: Colors.white, 
-    appBar: AppBar(
-      centerTitle: true,
+     appBar: AppBar(
+     centerTitle: true,
 
       title:  Text('Institution Log In'),
       shape: RoundedRectangleBorder(
@@ -278,7 +302,9 @@ Widget buildText(BuildContext context)=> Container(
 
 
 
-    body: Form(
+    body: 
+    
+     Form(
       autovalidateMode: AutovalidateMode.always,
       key: formKey,
       child: ListView(
@@ -293,21 +319,34 @@ Widget buildText(BuildContext context)=> Container(
         const SizedBox(height: 25),
         buildNext(),
         buildBackground(context)
+        
       ],
       ),
-    ),
-      );
+    ));}
+   
     
 
-
-    
-
-  }
+ String email = '';
+    String password = '';
 
 
 
  
 
+Widget getUser(BuildContext context) {
+  return new StreamBuilder(
+      stream: FirebaseFirestore.instance.collection("institution").where("email", isEqualTo: email).snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) {
+          return new Text("Loading");
+        }
+        int index=snapshot.data!.docs.length;
 
+        var userDocument = snapshot.data!.docs[index];
+        print (userDocument['status']);
+        return new Text(userDocument['status']);
+      }
+  );
+}
 
  
