@@ -4,15 +4,15 @@ import 'dart:core';
 
 //import 'dart:js';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:inst_registration/Screens/home.dart';
-import 'package:inst_registration/Screens/registerScreen.dart';
-import 'package:inst_registration/services/auth.dart';
-import 'package:inst_registration/services/popUp.dart';
-import 'package:inst_registration/toOTP.dart';
+import 'package:inst_trial/Screens/home.dart';
+import 'package:inst_trial/Screens/authenticate/registerScreen.dart';
+import 'package:inst_trial/services/auth.dart';
+import 'package:inst_trial/services/popUp.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
@@ -23,8 +23,15 @@ import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 
 
 
+
 class logIn extends StatefulWidget {
   
+final Function toggleView; 
+
+ const logIn({
+    Key key, 
+    this.toggleView,
+  }) : super(key: key);
 
   @override
   _logIn createState() => _logIn();
@@ -176,8 +183,6 @@ Widget buildText(BuildContext context)=> Container(
             style: TextStyle(color: Color.fromRGBO(48, 126, 80, 1)),
           ),
           GestureDetector(
-            onTap: ()=>Navigator.of(context).push(
-              MaterialPageRoute(builder: (context)=>regScreen(),)),
             child: Text(
                "Sign Up" ,
               style: TextStyle(
@@ -185,7 +190,16 @@ Widget buildText(BuildContext context)=> Container(
                 fontWeight: FontWeight.bold,
              ),
             ),
-          )
+            onTap: (){
+              Navigator.of(context).push(
+             MaterialPageRoute(builder: (context)=>regScreen(),));
+            //widget.toggleView();
+            }
+            
+
+            
+            
+      )
         ],
 
       ));
@@ -198,7 +212,6 @@ Widget buildText(BuildContext context)=> Container(
 
 
 
-
   
 
     Widget buildNext() => ElevatedButton(
@@ -206,59 +219,56 @@ Widget buildText(BuildContext context)=> Container(
           style: TextStyle(fontSize: 20, color: Colors.white)
           ),
 
-          onPressed: () async{
+              onPressed: () async{
          String Email = _emailController.text.trim();
          String Pass = _passwordController.text.trim();
          
 
      
-          if(formKey.currentState!.validate());{
-         //  getUser(context);
+          if(formKey.currentState.validate());{
 /////////////////////////
            
            try{
+                
                 dynamic result = await _auth.signInWithEmailAndPassword(Email, Pass); 
+                getStatus(context);
+                 bool appr=approved;
+                if(appr)
+                 Navigator.of(context).push(
+                 MaterialPageRoute(builder: (context)=>Home(),));
 
-                  Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context)=>Home(),));} // change to wrapper
-
+                 
+                
+                  
+                 
+                }// change to wrapper
+           
 
                catch (signUpError){
-               print('password or email incorrect');
-               ScaffoldMessenger.of(context).showSnackBar(
-               const SnackBar(
-                backgroundColor: Colors.red,
+               showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AdvanceCustomAlert(
+                        icon: Icons.error,
+                        msgTitle: 'INVALID',
+                        msgContent: 'Email or password incorrect',
+                        btnContent: 'Ok',
+                      );
 
-               content: Text('Email or password are incorrect'),
-          ));
+                    });
                }
+               
+                 }
+                 
 
 
 
                     
-         } 
+         
 
           }
           
-          /*
- try{
-              dynamic result=  await _auth.registerInstitution(Email, Pass, phone, name, twitter, cr, categ );
-              Navigator.of(context).push(
-              MaterialPageRoute(builder: (context)=>Home(),));}    //change to wrapper
-              
-               catch (signUpError){
-               if(signUpError is PlatformException) 
-               if(signUpError.code == 'ERROR_EMAIL_ALREADY_IN_USE')
-
-
-
-              Navigator.of(context).push(
-              MaterialPageRoute(builder: (context)=>logIn(),));
-                            
-                        
-               }
-
-          */
+   
           
            
            , style: ElevatedButton.styleFrom(
@@ -274,6 +284,35 @@ Widget buildText(BuildContext context)=> Container(
 
 
 
+
+
+
+
+
+
+Widget isPending(BuildContext context){
+   
+showDialog(context: context, builder: (BuildContext context){
+               return AdvanceCustomAlert(icon: Icons.lock_clock, msgTitle: "Pending", 
+               msgContent: "Your account is being revised, Please wait for approval", btnContent: 'Ok');
+                 });   
+                 }
+
+
+
+
+void disapproved(){
+  showDialog(context: context, builder: (BuildContext context){
+               return AdvanceCustomAlert(icon: Icons.lock_clock, msgTitle: "Disapproved", 
+               msgContent: "Account disapproved. Contact sara@gmail.com for more information", btnContent: 'Ok');
+                 });   
+                  }
+
+
+
+
+     
+   
 
 
   
@@ -312,11 +351,11 @@ Widget buildText(BuildContext context)=> Container(
       children: [
         buildLogo(),
         buildEmail(),
-        const SizedBox(height: 32),
+        const SizedBox(height: 20),
         buildPassword(),
-        const SizedBox(height: 32),
+        const SizedBox(height: 20),
         buildText(context),
-        const SizedBox(height: 25),
+        const SizedBox(height: 20),
         buildNext(),
         buildBackground(context)
         
@@ -328,10 +367,12 @@ Widget buildText(BuildContext context)=> Container(
 
  String email = '';
     String password = '';
+                 bool approved=false;
 
 
 
  
+
 
 Widget getUser(BuildContext context) {
   return new StreamBuilder(
@@ -340,13 +381,47 @@ Widget getUser(BuildContext context) {
         if (!snapshot.hasData) {
           return new Text("Loading");
         }
-        int index=snapshot.data!.docs.length;
+        int index=snapshot.data.docs.length;
 
-        var userDocument = snapshot.data!.docs[index];
+        var userDocument = snapshot.data.docs[index];
         print (userDocument['status']);
         return new Text(userDocument['status']);
       }
   );
 }
+String mess='';
+
+Widget getStatus(BuildContext context){
+  var firebaseUser =  FirebaseAuth.instance.currentUser;
+    firestoreInstance.collection("institution").doc(firebaseUser.uid).get().then((value){
+      print(value.data()['status']);
+
+      String status=value.data()['status'];
+      bool pending =(status=='pending');
+
+      if (status=='pending'){
+                var snack=SnackBar(content: Text('Account pending, please wait for approval'));
+                ScaffoldMessenger.of(context).showSnackBar(snack);  }               
+
+                 if (status=='approved'){
+                var snack=SnackBar(content: Text('Hello'));
+                ScaffoldMessenger.of(context).showSnackBar(snack);
+
+                 setState()=> approved= true; mess="hello"; 
+                 Navigator.of(context).push(
+                 MaterialPageRoute(builder: (context)=>Home(),));
+                 
+                 }
+
+                if (status=='disapproved'){
+                var snack=SnackBar(content: Text('Account disapproved. Contact sara@gmail.com'));
+                ScaffoldMessenger.of(context).showSnackBar(snack);
+
+                 }
+    
+    });
+    
+
+  }
 
  
