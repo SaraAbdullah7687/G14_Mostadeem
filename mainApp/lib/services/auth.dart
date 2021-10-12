@@ -123,7 +123,7 @@ class AuthService {
     print(uid);
     print("check user type method");
 //dynamic userType =
-    await Future.delayed(const Duration(seconds: 3), () {});
+    await Future.delayed(const Duration(seconds: 2), () {});
     return await DatabaseService().getUserType(uid //,context
         );
 
