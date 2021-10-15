@@ -145,6 +145,7 @@ class _LocationAppState extends State<LocationApp> {
             mapType: MapType.normal,
             onMapCreated: (controller) => _controller.complete(controller),
             markers: _markers,
+            onTap: _handelTap,
 
             /* to move camera*/
             onCameraMove: (CameraPosition newPos) {
@@ -174,10 +175,7 @@ class _LocationAppState extends State<LocationApp> {
               //======================================================================================================================
               // Init firestore and geoFlutterFire
               final geo = Geoflutterfire();
-              var pos = await Geolocator.getCurrentPosition(
-                  desiredAccuracy: LocationAccuracy.high);
-              GeoFirePoint point =
-                  geo.point(latitude: pos.latitude, longitude: pos.longitude);
+              GeoFirePoint point = geo.point(latitude: lat, longitude: lng);
 
               // make request obj
               requestModel request = requestModel(
@@ -186,7 +184,7 @@ class _LocationAppState extends State<LocationApp> {
                 category: widget.category,
                 date: widget.date,
                 time: widget.time,
-                location: point,
+                location: geo.point(latitude: lat, longitude: lng),
                 status: 'new',
               );
 
@@ -242,11 +240,12 @@ class _LocationAppState extends State<LocationApp> {
     controller.animateCamera(CameraUpdate.newCameraPosition(_cameraPosition));
     // controller.showMarkerInfoWindow(MarkerId('id-1'));
     // markerMethod(position);
-    _onMapCreated(controller, position);
+    LatLng moveableLocation = LatLng(position.latitude, position.longitude);
+    _handelTap(moveableLocation);
+    // _onMapCreated(controller, position);
   }
 
-  static const double hueGreen = 120.0;
-  void _onMapCreated(GoogleMapController controller, Position position) {
+  /*void _onMapCreated(GoogleMapController controller, Position position) {
     /// Convenience hue value representing green.
     setState(() {
       _markers.add(
@@ -263,7 +262,7 @@ class _LocationAppState extends State<LocationApp> {
         ),
       );
     });
-  }
+  }*/
 
   @override
   void initState() {
@@ -275,6 +274,34 @@ class _LocationAppState extends State<LocationApp> {
   void setCustomMarker() async {
     mapMarker = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(), 'assets/images/marker.png');
+  }
+
+  double lat;
+  double lng;
+  void _handelTap(LatLng tappedPoint) {
+    final posi = tappedPoint;
+    setState(() {
+      _markers.add(Marker(
+        markerId: MarkerId('id-1'),
+        icon: mapMarker,
+        // icon: BitmapDescriptor.defaultMarkerWithHue(
+        //    (true) ? BitmapDescriptor.hueGreen : BitmapDescriptor.hueRed),
+        position: tappedPoint,
+        draggable: true,
+        onDragEnd: (dragEndPosition) {
+          print(dragEndPosition);
+        },
+        infoWindow: InfoWindow(
+          title: 'Your current location',
+          snippet: '${tappedPoint.latitude}, ${tappedPoint.longitude}',
+        ),
+      ));
+    });
+
+    lat = posi.latitude;
+    lng = posi.longitude;
+
+    // posi = tappedPoint as Position;
   }
 
 /*
