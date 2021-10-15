@@ -210,7 +210,7 @@ class _LocationAppState extends State<LocationApp> {
               borderRadius: new BorderRadius.circular(25.0),
             ),
             backgroundColor: Color.fromRGBO(48, 126, 80, 1),
-            child: Text("Use this location",
+            child: Text("Submit The Request",
                 // ${currentLocation.latitude} , ${currentLocation.longitude}",
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -268,6 +268,7 @@ class _LocationAppState extends State<LocationApp> {
   @override
   void initState() {
     super.initState();
+    getCurrentLocation();
     setCustomMarker();
   }
 
