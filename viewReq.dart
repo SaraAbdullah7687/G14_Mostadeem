@@ -14,12 +14,16 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:mostadeem/components/google_auth_api.dart';
 
+import 'home.dart';
+
 class ViewRequest extends StatefulWidget {
   @override
   _viewRequestState createState() => _viewRequestState();
 }
 
 class _viewRequestState extends State<ViewRequest> {
+  ViewRequestViewModel obj = new ViewRequestViewModel();
+
   final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext contexts) {
@@ -41,36 +45,17 @@ class _viewRequestState extends State<ViewRequest> {
           ),
           tooltip: 'Show Snackbar',
           onPressed: () async {
-            await _auth.signOut();
-            // GoogleAuthApi.signOut();
+            Navigator.of(context).pop();
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Home(),
+              ),
+            );
           },
         ),
         toolbarHeight: 60.0,
       ),
-      /*  body: ListView(
-        scrollDirection: Axis.vertical,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Container(
-              child: FittedBox(
-                child: Material(
-                    color: Colors.white,
-                    elevation: 14,
-                    borderRadius: BorderRadius.circular(24),
-                    shadowColor: Color(0x802196F3),
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          child: requestDetailsContainer(context, document),
-                        )
-                      ],
-                    )),
-              ),
-            ),
-          ),
-        ],
-      ),*/
       body: Container(
         child: ListView.builder(
           padding: EdgeInsets.all(10),
@@ -111,7 +96,14 @@ class _viewRequestState extends State<ViewRequest> {
                         style: TextButton.styleFrom(
                             padding: EdgeInsets.only(right: 20),
                             alignment: Alignment.center),
-                        onPressed: () {},
+                        onPressed: () {
+                          obj.cancelRequest(index);
+
+                          Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                  builder: (context) => ViewRequest()),
+                              (Route<dynamic> route) => false);
+                        },
                         child: Text(
                           'Cancel',
                           style: TextStyle(color: Colors.red),
@@ -145,9 +137,8 @@ class _viewRequestState extends State<ViewRequest> {
   }
 
   bool isPendding(int index) {
-    if (userRequestList[index]['status'] == ('pendding'))
-      return true;
-    else
-      return false;
+    if (userRequestList[index]['status'] == ('pending')) return true;
+
+    return false;
   }
 }
