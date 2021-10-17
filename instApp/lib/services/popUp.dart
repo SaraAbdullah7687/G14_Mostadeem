@@ -58,10 +58,11 @@ class AdvanceCustomAlert extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            msgContent, // var
+                            msgContent,
+                            textAlign: TextAlign.center, // var
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 11,
+                              fontSize: 14,
                             ),
                           ),
                           RaisedButton(
