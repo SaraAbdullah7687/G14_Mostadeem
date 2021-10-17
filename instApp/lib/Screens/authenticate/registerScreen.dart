@@ -442,8 +442,8 @@ Container buildAllCategories(){
               MaterialPageRoute(builder: (context)=>logIn(),));
                getName();
                showDialog(context: context, builder: (BuildContext context){
-               return AdvanceCustomAlert(icon: Icons.check, msgTitle: 'Registration sent', 
-               msgContent: 'Your registration has been sent to the admin. Please wait for approval', btnContent: 'Ok');
+               return AdvanceCustomAlert(icon: Icons.check, msgTitle: 'Registration sent\n', 
+               msgContent: 'Your registration has been sent. Please wait for approval', btnContent: 'Ok');
               });}    
               
                catch (signUpError){
@@ -455,8 +455,8 @@ Container buildAllCategories(){
 
                Navigator.pop(context);
                showDialog(context: context, builder: (BuildContext context){
-               return AdvanceCustomAlert(icon: Icons.check, msgTitle: 'Please log in', 
-               msgContent: 'You have already registered', btnContent: 'Ok');
+               return AdvanceCustomAlert(icon: Icons.check, msgTitle: 'Please log in\n', 
+               msgContent: 'You have already registered\n', btnContent: 'Ok');
  
 
 
@@ -572,6 +572,7 @@ Container buildAllCategories(){
         const SizedBox(height: 16),
         buildTitle(),
         categValid(),
+        const SizedBox(height: 12),
         buildAllCategories(),
         buildNext(context),
       ],
