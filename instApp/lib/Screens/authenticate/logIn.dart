@@ -16,7 +16,7 @@ import 'package:inst_trial/services/popUp.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
-
+import 'package:inst_trial/services/globals.dart' as globals;
 
 
 
@@ -188,6 +188,7 @@ Widget buildText(BuildContext context)=> Container(
             child: Text(
                "Sign Up" ,
               style: TextStyle(
+                decoration: TextDecoration.underline,
                 color: Color.fromRGBO(48, 126, 80, 1),
                 fontWeight: FontWeight.bold,
              ),
@@ -233,11 +234,11 @@ Widget buildText(BuildContext context)=> Container(
            try{
                 
                 dynamic result = await _auth.signInWithEmailAndPassword(Email, Pass); 
+                 getName();
+
+               
                 getStatus(context);
-                 bool appr=approved;
-                if(appr)
-                 Navigator.of(context).push(
-                 MaterialPageRoute(builder: (context)=>Home(),));
+                
 
                  
                 
@@ -382,8 +383,11 @@ Widget getStatus(BuildContext context){
                  }  );}             
 
                  if (status=='approved'){
-                   
-                var snack=SnackBar(content: Text('Hello'));
+                getName();
+                getPhone();
+                getTwitter();
+                getCategory();
+                var snack=SnackBar(content: Text('Hello '+globals.userName));
                 ScaffoldMessenger.of(context).showSnackBar(snack);
 
                  setState()=> approved= true; mess="hello"; 
@@ -402,4 +406,41 @@ Widget getStatus(BuildContext context){
 
      }} );}
 
- 
+ void getName(){
+  var firebaseUser =  FirebaseAuth.instance.currentUser;
+
+    firestoreInstance.collection("institution").doc(firebaseUser.uid).get().then((value){
+      String name =(value.data()['name']);
+      //print (name);
+      globals.userName=name;
+      }) ;
+      }
+
+
+      void getPhone(){
+   
+  var firebaseUser =  FirebaseAuth.instance.currentUser;
+    firestoreInstance.collection("institution").doc(firebaseUser.uid).get().then((value){
+      String phone =(value.data()['phone']);
+      globals.userPhone=phone;
+      }) 
+      ;}  
+
+
+      void getTwitter(){
+  var firebaseUser =  FirebaseAuth.instance.currentUser;
+    firestoreInstance.collection("institution").doc(firebaseUser.uid).get().then((value){
+      String twitter=(value.data()['twitterAccount']);
+      globals.userTwitter=twitter;
+
+      //return value.data()['twitterAccount'];
+      }) 
+      ;}  
+
+      void getCategory(){
+  var firebaseUser =  FirebaseAuth.instance.currentUser;
+    firestoreInstance.collection("institution").doc(firebaseUser.uid).get().then((value){
+      String categ=(value.data()['category']);
+      globals.userCateg=categ;
+      }) 
+      ;} 
