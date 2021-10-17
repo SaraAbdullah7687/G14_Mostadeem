@@ -61,7 +61,7 @@ static final RegExp nameRegExp = RegExp('[a-zA-Z]');
 // Name .....................................
 
   Widget buildName(){
-    getName();
+    String un=getName();
 
       //print (name);
      return TextFormField(
@@ -110,39 +110,7 @@ static final RegExp nameRegExp = RegExp('[a-zA-Z]');
 // Email .....................................
 
 
-    Widget buildEmail() => TextFormField(
-     
-  cursorColor: Color.fromRGBO(48, 126, 80, 1),
-
-    decoration: InputDecoration(
-    contentPadding: const EdgeInsets.symmetric(vertical: 15), 
-        prefixIcon: Padding(
-         padding: EdgeInsets.all(0.0),
-         child: Icon(
-          Icons.email,
-           color: Color.fromRGBO(48, 126, 80, 1)),
-            ), 
-        labelText: 'Email',
-        
-       labelStyle: TextStyle(
-          color: 
-        Color.fromRGBO(48, 126, 80, 1)),
-        border: OutlineInputBorder(
-         borderRadius: BorderRadius.circular(15)
-        ),
-        focusedBorder: OutlineInputBorder(
-       borderSide: const BorderSide(color: Color.fromRGBO(48, 126, 80, 1)),
-       borderRadius: BorderRadius.circular(15.0),
-        ),
-      ),
-       controller: _emailController, 
-
-      onChanged: (value) => setState(() => email = value),
-      validator: MultiValidator([
-  RequiredValidator(errorText: "Required"),
-  EmailValidator(errorText: "Enter a valid email"),
-])
-    );
+   
 
 
 
@@ -156,6 +124,7 @@ static final RegExp nameRegExp = RegExp('[a-zA-Z]');
 
 
   Widget buildPhone() => TextFormField(
+    initialValue: globals.userPhone,
      cursorColor: Color.fromRGBO(48, 126, 80, 1),
     maxLength:10,
     decoration: InputDecoration(
@@ -180,7 +149,6 @@ static final RegExp nameRegExp = RegExp('[a-zA-Z]');
        borderRadius: BorderRadius.circular(15.0),
         ),
       ),
-       controller: _phoneController, 
 
       onChanged: (value) => setState(() => phone = value),
       keyboardType: TextInputType.number,
@@ -209,8 +177,7 @@ static final RegExp nameRegExp = RegExp('[a-zA-Z]');
 // Twitter .....................................
 
      Widget buildSocialM() => TextFormField(
-       controller: _twitterController,
-     
+    initialValue: globals.userTwitter ,    
       cursorColor: Color.fromRGBO(48, 126, 80, 1),
   
       decoration: InputDecoration(
@@ -282,22 +249,107 @@ Container buildAllCategories(){
 
     
 
-     
+  
+ 
 
 
+ 
+
+
+// Category message .....................................
+
+ Widget categValid() => SizedBox(
+       height: 17,
+       child: Text(
+
+        message, style: TextStyle (color: Colors.red, fontSize: 14 )
+       )
+       
+    );
 
 
   
-// Button .....................................
+  
+    final formKey = GlobalKey<FormState>();
+  
 
-    Widget buildSave(BuildContext context) => ElevatedButton(
+    String name = globals.userName;
+    String twitter = globals.userTwitter;
+    String phone=globals.userPhone;
+
+  @override
+  Widget build(BuildContext context) { 
+      getCategory();
+return Scaffold(
+     backgroundColor: Colors.white, 
+     appBar: AppBar(
+     centerTitle: true,
+      title:  Text('Edit Profile'),
+      shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+     bottom: Radius.circular(20))),
+
+  leading: IconButton(
+    icon: Icon(Icons.arrow_back, color: Colors.white),
+    onPressed: (){
+      Navigator.pop(context);
+        
+    },),
+
+  backgroundColor: Color.fromRGBO(48, 126, 80, 1),
+  ),
+
+
+
+    body: Form(
+      autovalidateMode: AutovalidateMode.always,
+      key: formKey,
+      child: ListView(
+      padding: EdgeInsets.all(16),
+      children: [
+        
+        buildName(),
+        const SizedBox(height: 16),
+        buildPhone(),
+        const SizedBox(height: 16),
+        buildSocialM(),
+        const SizedBox(height: 16),
+        buildTitle(),
+        categValid(),
+        const SizedBox(height: 12),
+        buildAllCategories(),
+        ListTile(
+
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+            
+            ElevatedButton(
+      
+           child: Text('Cancel',
+          style: TextStyle(fontSize: 20, color: Colors.grey[100])
+          ),
+          onPressed: () {Navigator.of(context).pop(
+              MaterialPageRoute(builder: (context)=>Home(),));},
+            style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+            primary: Colors.grey,
+            shape: new RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(25.0),
+            
+            ),
+          
+           
+            
+  
+            ),
+                  ),
+                  ElevatedButton(
       
            child: Text('Save',
           style: TextStyle(fontSize: 20, color: Colors.white)
           ),
-          onPressed: () async{
-         String Email = _emailController.text.trim();
-         String Pass = _passwordController.text.trim();
+          onPressed: () {
          
          bool check=hasSelected();
 
@@ -309,26 +361,29 @@ Container buildAllCategories(){
 
           {
               try{
-              dynamic result=  await _auth.registerInstitution(Email, Pass, phone, name, twitter, cr, categ );
+              FirebaseFirestore.instance.collection('institution').doc(FirebaseAuth.instance.currentUser.uid).update({'name': name,'phone': phone, 'twitterAccount':twitter, 'category':categ});
+              print ('update should be okay');
+              getName();
+              getPhone();
+              getTwitter();
+              getCategory();
               Navigator.of(context).pop(
-              MaterialPageRoute(builder: (context)=>logIn(),));
-
-               showDialog(context: context, builder: (BuildContext context){
-               return AdvanceCustomAlert(icon: Icons.check, msgTitle: 'Registration sent', 
-               msgContent: 'Your registration has been sent to the admin. Please wait for approval', btnContent: 'Ok');
-              });}    //change to wrapper
+              MaterialPageRoute(builder: (context)=>Home(),));
+              showDialog(context: context, builder: (BuildContext context){
+               return AdvanceCustomAlert(icon: Icons.check, msgTitle: 'Profile updated\n', 
+               msgContent: 'Your profile has been updated successfuly\n', btnContent: 'Ok');
+              }
+              );
+              }   
               
-               catch (signUpError){
-               if(signUpError is PlatformException) 
-               if(signUpError.code == 'ERROR_EMAIL_ALREADY_IN_USE')
-
+               catch (e){
                Navigator.of(context).pop(
-              MaterialPageRoute(builder: (context)=>logIn(),));
+              MaterialPageRoute(builder: (context)=>Home(),));
 
                Navigator.pop(context);
                showDialog(context: context, builder: (BuildContext context){
-               return AdvanceCustomAlert(icon: Icons.check, msgTitle: 'Please log in', 
-               msgContent: 'You have already registered', btnContent: 'Ok');
+               return AdvanceCustomAlert(icon: Icons.cancel, msgTitle: 'Could''nt update profile', 
+               msgContent: 'An error occured while updating your profile, please try again later', btnContent: 'Ok');
  
 
 
@@ -372,81 +427,16 @@ Container buildAllCategories(){
   
             ),
           
-                  );
+                  ),
+          
+             ],
+          ),
+        )
 
-
- 
-
-
-// Category message .....................................
-
- Widget categValid() => SizedBox(
-       height: 17,
-       child: Text(
-
-        message, style: TextStyle (color: Colors.red, fontSize: 14 )
-       )
-       
-    );
-
-
-  
-  
-    final formKey = GlobalKey<FormState>();
-  
-
-    String name = '';
-    String email = '';
-    String password = '';
-    String twitter = '';
-    String cr = '';
-    String phone='phone';
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-     backgroundColor: Colors.white, 
-     appBar: AppBar(
-     centerTitle: true,
-      title:  Text('Edit Profile'),
-      shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-     bottom: Radius.circular(20))),
-
-  leading: IconButton(
-    icon: Icon(Icons.arrow_back, color: Colors.white),
-    onPressed: (){
-      Navigator.pop(context);
-        
-    },),
-
-  backgroundColor: Color.fromRGBO(48, 126, 80, 1),
-  ),
-
-
-
-    body: Form(
-      autovalidateMode: AutovalidateMode.always,
-      key: formKey,
-      child: ListView(
-      padding: EdgeInsets.all(16),
-      children: [
-        
-        buildName(),
-        const SizedBox(height: 16),
-        buildEmail(),
-        const SizedBox(height: 16),
-        buildPhone(),
-        const SizedBox(height: 16),
-        buildSocialM(),
-        const SizedBox(height: 16),
-        buildTitle(),
-        categValid(),
-        buildAllCategories(),
-        buildSave(context),
       ],
       ),
     ),
-      );
+      );}
     
 
 
@@ -457,6 +447,7 @@ Container buildAllCategories(){
 
 @override
 Widget build(BuildContext context){
+getCategory();
 Size size=MediaQuery.of(context).size;
 return GestureDetector(
   onTap: ()=> FocusManager.instance.primaryFocus.unfocus(),
@@ -485,12 +476,9 @@ class DemoToggleButtons extends StatefulWidget {
 
 class _DemoToggleButtonsState extends State<DemoToggleButtons> {
   //set the initial state of each button whether it is selected or not
-List<bool> isSelectIn = [false, false, false, false, false, false,false, false, false, false, false, false]; 
 
   @override
   Widget build(BuildContext context) {
-
-
 
 
 
@@ -512,7 +500,7 @@ List<bool> isSelectIn = [false, false, false, false, false, false,false, false, 
         mainAxisSpacing: 8, 
         childAspectRatio: 1, //set the width-to-height ratio of the button, 
                              //>1 is a horizontal rectangle
-        children: List.generate(isSelectIn.length, (index) {
+        children: List.generate(isSelected.length, (index) {
           //using Inkwell widget to create a button
           return InkWell( 
               splashColor: Colors.grey, //the default splashColor is grey
@@ -520,10 +508,9 @@ List<bool> isSelectIn = [false, false, false, false, false, false,false, false, 
                 //set the toggle logic
                 setState(() { 
                   for (int indexBtn = 0;
-                      indexBtn < isSelectIn.length;
+                      indexBtn < isSelected.length;
                       indexBtn++) {
                     if (indexBtn == index) {
-                      isSelectIn[index]=!isSelectIn[index];
                        isSelected[index]=!isSelected[index];
 
                   }
@@ -532,7 +519,7 @@ List<bool> isSelectIn = [false, false, false, false, false, false,false, false, 
               child: Ink(
                 decoration: BoxDecoration(
                //set the background color of the button when it is selected/ not selected
-                  color: isSelectIn[index] ? Color.fromRGBO(48, 126, 80, 0.7) : Colors.white, 
+                  color: isSelected[index] ? Color.fromRGBO(48, 126, 80, 0.7) : Colors.white, 
                   // here is where we set the rounded corner
                   borderRadius: BorderRadius.circular(8), 
                   //don't forget to set the border, 
@@ -591,7 +578,7 @@ List<bool> isSelectIn = [false, false, false, false, false, false,false, false, 
 
 
 
- void getName(){
+ String getName(){
   var firebaseUser =  FirebaseAuth.instance.currentUser;
 
     firestoreInstance.collection("institution").doc(firebaseUser.uid).get().then((value){
@@ -600,33 +587,25 @@ List<bool> isSelectIn = [false, false, false, false, false, false,false, false, 
       }) 
       ;
       
+      return globals.userName;
 
-      }
-
-
-
- void getEmail(){
-  var firebaseUser =  FirebaseAuth.instance.currentUser;
-    firestoreInstance.collection("institution").doc(firebaseUser.uid).get().then((value){
-      print(value.data()['email']);
-      //return value.data()['email'];
-      }) 
-      ;}     
+      } 
 
  void getPhone(){
    
   var firebaseUser =  FirebaseAuth.instance.currentUser;
     firestoreInstance.collection("institution").doc(firebaseUser.uid).get().then((value){
-      print(value.data()['phone']);
-      //return value.data()['phone'];
+      String phone =(value.data()['phone']);
+      globals.userPhone=phone;
       }) 
       ;}  
 
  void getTwitter(){
   var firebaseUser =  FirebaseAuth.instance.currentUser;
     firestoreInstance.collection("institution").doc(firebaseUser.uid).get().then((value){
-      print(value.data()['twitterAccount']);
-      
+      String twitter=(value.data()['twitterAccount']);
+      globals.userTwitter=twitter;
+
       //return value.data()['twitterAccount'];
       }) 
       ;}  
@@ -634,7 +613,60 @@ List<bool> isSelectIn = [false, false, false, false, false, false,false, false, 
 void getCategory(){
   var firebaseUser =  FirebaseAuth.instance.currentUser;
     firestoreInstance.collection("institution").doc(firebaseUser.uid).get().then((value){
-      print(value.data()['category']);
-      //return value.data()['category'];
-      }) 
+      String categ=(value.data()['category']);
+      globals.userCateg=categ;
+      }) ;
+      
+      if (globals.userCateg.contains('Paper'))
+      isSelected[0]=true;
+      else
+      isSelected[0]=false;
+      if (globals.userCateg.contains('Cardboard'))
+      isSelected[1]=true;
+      else
+      isSelected[1]=false;
+      if (globals.userCateg.contains('Glass'))
+      isSelected[2]=true;
+      else
+      isSelected[2]=false;
+      if (globals.userCateg.contains('Plastic'))
+      isSelected[3]=true;
+      else
+      isSelected[3]=false;
+      if (globals.userCateg.contains('Metals'))
+      isSelected[4]=true;
+      else
+      isSelected[4]=false;
+      if (globals.userCateg.contains('Electronics'))
+      isSelected[5]=true;
+      else
+      isSelected[5]=false;
+      if (globals.userCateg.contains('Nylon'))
+      isSelected[6]=true;
+      else
+      isSelected[6]=false;
+      if (globals.userCateg.contains('Cans'))
+      isSelected[7]=true;
+      else
+      isSelected[7]=false;
+      if (globals.userCateg.contains('Batteries'))
+      isSelected[8]=true;
+      else
+      isSelected[8]=false;
+      if (globals.userCateg.contains('Furniture'))
+      isSelected[9]=true;
+      else
+      isSelected[9]=false;
+      if (globals.userCateg.contains('Clothes'))
+      isSelected[10]=true;
+      else
+      isSelected[10]=false;
+      if (globals.userCateg.contains('Food'))
+      isSelected[11]=true;
+      else
+      isSelected[11]=false;
+      print (isSelected);
+      
+
       ;} 
+
