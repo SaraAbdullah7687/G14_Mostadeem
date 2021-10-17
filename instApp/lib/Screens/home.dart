@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:inst_trial/Screens/authenticate/logIn.dart';
+import 'package:inst_trial/Screens/editProfile.dart';
 import 'package:inst_trial/main.dart';
 import 'package:inst_trial/Screens/authenticate/registerScreen.dart';
 import 'package:inst_trial/services/auth.dart';
@@ -30,21 +31,27 @@ class _HomeState extends State<Home> {
    height: 55,
    width: 55,),
      actions: [
-      IconButton(
+      
+        
+        
+        IconButton(
+        icon: Icon(Icons.person),
+        onPressed: (){Navigator.of(context).push(
+                 MaterialPageRoute(builder: (context)=>editProfile(),));
+                 },)
+
+     ],
+     leading: IconButton(
         icon: Icon(Icons.logout),
         onPressed: () async {
           await AuthService().signOut();
-
-          // LOGOUT 
           
           Navigator.pushAndRemoveUntil(
             
-            context, MaterialPageRoute(builder: (context) => logIn()),// Log in scree
-             (route) => false);
-        },
-        )
+            context, MaterialPageRoute(builder: (context) => logIn()),
+             (route) => false);}),
+        
 
-     ],
 shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         bottom: Radius.circular(20))),
