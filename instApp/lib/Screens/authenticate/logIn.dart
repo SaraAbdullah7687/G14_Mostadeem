@@ -377,8 +377,8 @@ Widget getStatus(BuildContext context){
 
       if (status=='pending'){
         showDialog(context: context, builder: (BuildContext context){
-               return AdvanceCustomAlert(icon: Icons.lock_clock ,msgTitle: 'Account pending', 
-               msgContent: 'Your account pending, please wait for approval', btnContent: 'Ok');
+               return AdvanceCustomAlert(icon: Icons.lock_clock ,msgTitle: 'Account pending\n', 
+               msgContent: 'Your account is pending, please wait for approval\n', btnContent: 'Ok');
     
                  }  );}             
 
@@ -398,7 +398,7 @@ Widget getStatus(BuildContext context){
 
                 if (status=='disapproved'){
                showDialog(context: context, builder: (BuildContext context){
-               return AdvanceCustomAlert(icon: Icons.cancel_outlined ,msgTitle: 'Account disapproved', 
+               return AdvanceCustomAlert(icon: Icons.cancel_outlined ,msgTitle: 'Account disapproved\n', 
                msgContent: 'Your account has beed disapproved, please contact Sara@gmail.com for more information', btnContent: 'Ok');
     
     });
