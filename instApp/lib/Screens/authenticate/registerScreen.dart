@@ -4,6 +4,7 @@ import 'dart:core';
 
 //import 'dart:js';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,9 +15,12 @@ import 'package:inst_trial/services/auth.dart';
 import 'package:inst_trial/services/popUp.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
+
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 
+import 'package:inst_trial/services/globals.dart' as globals;
 
 
 
@@ -44,7 +48,6 @@ class _regScreenState extends State<regScreen> {
 
 
 
-var isSelected = [false,false,false,false,false,false,false,false,false,false,false,false]; 
   TextEditingController _controller = TextEditingController();
   TextEditingController _emailController = TextEditingController(); //add it in rounded input class
   TextEditingController _passwordController = TextEditingController();
@@ -55,8 +58,14 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
 
   String message='';
 
+bool _isNumeric(String result) {
+    if (result == null) {
+      return false;
+    }
+    return double.tryParse(result) != null;
+  }
 
-
+static final RegExp nameRegExp = RegExp('[a-zA-Z]'); 
 
 // Name .....................................
 
@@ -64,12 +73,13 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
   cursorColor: Color.fromRGBO(48, 126, 80, 1),
    maxLength: 15,
     controller: _nameController,
-    validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Required';
-    }
-    return null;
-  },
+    validator: (value) => value.isEmpty 
+    ? 'Required'
+    : (nameRegExp.hasMatch(value) 
+        ? null 
+        : 'Enter a Valid Name'),
+
+  
       decoration: InputDecoration(
       contentPadding: const EdgeInsets.symmetric(vertical: 15),
         prefixIcon: Padding(
@@ -187,6 +197,9 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
       obscureText: _isHidden,
     )),
     
+
+
+
     new FlutterPwValidator(
     controller: _passwordController,
     minLength: 8,
@@ -197,6 +210,10 @@ var isSelected = [false,false,false,false,false,false,false,false,false,false,fa
     height: 150,
     onSuccess: (){},/// do something
 )
+
+
+
+
 
     ]);
     
@@ -250,8 +267,7 @@ void _togglePasswordView() {
     RegExp regex = new RegExp(pattern);
     if (!regex.hasMatch(value))
       return 'Invalid phone number';
-    else if(value.length <10 || value.length>10)
-    return 'Invalid phone number';
+   
      else return null;
   }
 
@@ -322,16 +338,22 @@ void _togglePasswordView() {
       maxLength: 10,
       
        keyboardType: TextInputType.number,controller: _controller,
-      validator: (value) {
 
-      if (value == null || value.isEmpty) {
 
+       validator: (value){
+
+     if(value==null){
       return 'Required';
-    }
-     else if (value.length<10)
+    } 
+    else if (value.length<10)
     return 'Commercial record length should be 10';
-    else return null;
+    else if (_isNumeric(value) == false)
+    return "Commercial record should be numeric";
+     else return null;
   },
+
+
+
       decoration: InputDecoration(
   contentPadding: const EdgeInsets.symmetric(vertical: 15),
         prefixIcon: Padding(
@@ -418,11 +440,11 @@ Container buildAllCategories(){
               dynamic result=  await _auth.registerInstitution(Email, Pass, phone, name, twitter, cr, categ );
               Navigator.of(context).pop(
               MaterialPageRoute(builder: (context)=>logIn(),));
-
+               getName();
                showDialog(context: context, builder: (BuildContext context){
                return AdvanceCustomAlert(icon: Icons.check, msgTitle: 'Registration sent', 
                msgContent: 'Your registration has been sent to the admin. Please wait for approval', btnContent: 'Ok');
-              });}    //change to wrapper
+              });}    
               
                catch (signUpError){
                if(signUpError is PlatformException) 
@@ -564,7 +586,15 @@ Container buildAllCategories(){
   }
 
 
+@override
+Widget build(BuildContext context){
+Size size=MediaQuery.of(context).size;
+return GestureDetector(
+  onTap: ()=> FocusManager.instance.primaryFocus.unfocus(),
+  child: Scaffold());
 
+
+}
     
 final firestoreInstance = FirebaseFirestore.instance;
 
@@ -586,7 +616,7 @@ class DemoToggleButtons extends StatefulWidget {
 
 class _DemoToggleButtonsState extends State<DemoToggleButtons> {
   //set the initial state of each button whether it is selected or not
-  List<IconData> iconList = [Icons.ac_unit, Icons.call, Icons.cake, Icons.mic_external_off, Icons.cake, Icons.dangerous, Icons.safety_divider,Icons.ac_unit,Icons.qr_code,Icons.face,Icons.e_mobiledata,Icons.h_mobiledata];
+List<bool> isSelectIn = [false, false, false, false, false, false,false, false, false, false, false, false]; 
 
   @override
   Widget build(BuildContext context) {
@@ -606,14 +636,14 @@ class _DemoToggleButtonsState extends State<DemoToggleButtons> {
       color: Colors.white,
       child: GridView.count(
         primary: true,
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.only(left: 10, right: 10),
         
         crossAxisCount: 4, //set the number of buttons in a row
         crossAxisSpacing: 10, //set the spacing between the buttons
         mainAxisSpacing: 8, 
         childAspectRatio: 1, //set the width-to-height ratio of the button, 
                              //>1 is a horizontal rectangle
-        children: List.generate(isSelected.length, (index) {
+        children: List.generate(isSelectIn.length, (index) {
           //using Inkwell widget to create a button
           return InkWell( 
               splashColor: Colors.grey, //the default splashColor is grey
@@ -621,17 +651,19 @@ class _DemoToggleButtonsState extends State<DemoToggleButtons> {
                 //set the toggle logic
                 setState(() { 
                   for (int indexBtn = 0;
-                      indexBtn < isSelected.length;
+                      indexBtn < isSelectIn.length;
                       indexBtn++) {
                     if (indexBtn == index) {
-                      isSelected[index]=!isSelected[index];
+                      isSelectIn[index]=!isSelectIn[index];
+                       isSelected[index]=!isSelected[index];
+
                   }
                 }});
               },
               child: Ink(
                 decoration: BoxDecoration(
                //set the background color of the button when it is selected/ not selected
-                  color: isSelected[index] ? Color.fromRGBO(48, 126, 80, 0.7) : Colors.white, 
+                  color: isSelectIn[index] ? Color.fromRGBO(48, 126, 80, 0.7) : Colors.white, 
                   // here is where we set the rounded corner
                   borderRadius: BorderRadius.circular(8), 
                   //don't forget to set the border, 
@@ -691,3 +723,15 @@ class _DemoToggleButtonsState extends State<DemoToggleButtons> {
 
 
  
+ String getName(){
+  var firebaseUser =  FirebaseAuth.instance.currentUser;
+
+    firestoreInstance.collection("institution").doc(firebaseUser.uid).get().then((value){
+      String name =(value.data()['name']);
+      globals.userName=name;
+      }) 
+      ;
+      
+      return globals.userName;
+
+      } 
