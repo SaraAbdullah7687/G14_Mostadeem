@@ -45,13 +45,7 @@ class _viewRequestState extends State<ViewRequest> {
           ),
           tooltip: 'Show Snackbar',
           onPressed: () async {
-            Navigator.of(context).pop();
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Home(),
-              ),
-            );
+            await _auth.signOut();
           },
         ),
         toolbarHeight: 60.0,
@@ -78,7 +72,7 @@ class _viewRequestState extends State<ViewRequest> {
                           color: Color.fromRGBO(48, 126, 80, 1),
                           size: 40,
                         ),
-                        title: Text('Request'),
+                        title: Text((userRequestList[index]['category'] ?? '')),
                         subtitle: Text(userRequestList[index]['date'] ?? ''),
                       ),
                     if (!isPendding(index))
@@ -88,10 +82,10 @@ class _viewRequestState extends State<ViewRequest> {
                           color: Color.fromRGBO(48, 126, 80, 1),
                           size: 40,
                         ),
-                        title: Text('Request'),
+                        title: Text((userRequestList[index]['category'] ?? '')),
                         subtitle: Text(userRequestList[index]['date'] ?? ''),
                       ),
-                    if (isPendding(index))
+                    /*    if (isPendding(index))
                       TextButton(
                         style: TextButton.styleFrom(
                             padding: EdgeInsets.only(right: 20),
@@ -108,7 +102,7 @@ class _viewRequestState extends State<ViewRequest> {
                           'Cancel',
                           style: TextStyle(color: Colors.red),
                         ),
-                      ),
+                      ),*/
                   ],
                 ));
           },
