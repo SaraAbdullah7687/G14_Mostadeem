@@ -66,7 +66,7 @@ class requestScreenState extends State<requestScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Category'),
+        title: Text('Categories'),
         backgroundColor: Color.fromRGBO(48, 126, 80, 1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
