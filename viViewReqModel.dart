@@ -14,7 +14,7 @@ class ViewRequestViewModel {
 
   final CollectionReference requestList = FirebaseFirestore.instance
       .collection('contributor')
-      .doc('1jJuO9tixUnDamCYf6Hx')
+      .doc('HjwkryLRi4loaSunp9Pv')
       .collection('request');
 
 /* To retrive requests*/
@@ -37,7 +37,7 @@ class ViewRequestViewModel {
       return null;
     }
   }
-
+/*
   Future cancelRequest(int index) async {
     var docRef = FirebaseFirestore.instance
         .collection('contributor')
@@ -48,5 +48,5 @@ class ViewRequestViewModel {
 // delete the document
     docRef.delete();
     print('WELL DONE!!!!!!');
-  }
+  }*/
 }
