@@ -100,7 +100,7 @@ class requestScreenState extends State<requestScreen> {
                     builder: (BuildContext context) {
                       return AdvanceCustomAlert(
                         icon: Icons.error,
-                        msgTitle: 'Error',
+                        msgTitle: 'Attention',
                         msgContent: 'Please select at least 1 category.',
                         btnContent: 'Ok',
                       );
