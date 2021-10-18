@@ -59,16 +59,16 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
 
     setup() async {
     await Provider.of<ViewRequestViewModel>(context, listen: false)
-        .fetchInstitutions();
+        .fetchRequests();
   }
 
   @override
   Widget build(BuildContext context) {
     Stream<QuerySnapshot<Map<String, dynamic>>> institutions = Provider.of<ViewRequestViewModel>(context, listen: false)
-        .institutions;
+        .requests;
     return Scaffold(
         backgroundColor: Colors.grey[50],
-        appBar: AppBar(
+      /*  appBar: AppBar(
           centerTitle: true,
           title: Text(
           "Requests",
@@ -99,18 +99,8 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
           ],
           toolbarHeight:60.0, // was 80 
         ),
-        
-      body: /*Container( // ممكن ينشال
-
- decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30.0),
-                    topRight: Radius.circular(30.0),
-                  ),),
-
-            margin: EdgeInsets.symmetric(vertical: 20, horizontal: 10), // shouldn't the bellow line be aysnc?
-             child: */
+        */
+      body: 
              StreamBuilder(
                stream: institutions,
                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
@@ -167,7 +157,12 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
             margin: EdgeInsets.only(top:13, left:18, ), 
             child:  Text(document['name'],
             style: TextStyle(color: Colors.green[900], fontSize: 25.0,fontWeight: FontWeight.bold),),),
-           Container( margin: const EdgeInsets.all(5),
+
+            Container( 
+            margin: EdgeInsets.only(top:13, left:18, ), 
+            child:  Text(document['category'],
+            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
+          /* Container( margin: const EdgeInsets.all(5),
               child: ElevatedButton.icon(
                 onPressed: ()=> _checkCR(document.get("CR"),context),
                 label: Text(document['CR'], style: TextStyle(color: Colors.blue[400], fontSize: 18.0,fontWeight: FontWeight.bold, decoration: TextDecoration.underline ),),
@@ -175,7 +170,7 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
                 style: ElevatedButton.styleFrom(
                   primary: Color.fromRGBO(48, 126, 80, 1) // can be changed 
                 ),
-              )),
+              )),*/
             lastRow(context,document),
   ],
     );
@@ -188,7 +183,7 @@ Widget lastRow(BuildContext context, DocumentSnapshot document){
 
 contactIcons(context,document),
 SizedBox(width: 6),
- institutionStatus(context,document),
+ requestStatus(context,document),
   ],);//,),);
 }
 
@@ -211,22 +206,22 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
           ),),
     SizedBox(width: 12),
     Flexible( child:
-          SocalIcon(
-                  iconSrc: "assets/icons/twitter.svg",
-                  color: Colors.lightGreen[900],
-                  press: ()=> ourViewMode.goToTwitter(document.get("twitter")),
-                ),),
-    SizedBox(width: 12),
-    Flexible( child:
                 IconButton(
           icon: const Icon(Icons.phone),
           color: Colors.lightGreen[900],
           onPressed: ()=> ourViewMode.goToWhatsapp(document.get("phone")),),),
+    SizedBox(width: 12),
+    Flexible( child:
+                IconButton(
+          icon: const Icon(Icons.location_on),
+          color: Colors.lightGreen[900],
+          onPressed: ()=> ourViewMode.openLocation(document.get("location")),),),
+ 
   ],),//),
   );
 }
 
-Widget institutionStatus(BuildContext context, DocumentSnapshot document){
+Widget requestStatus(BuildContext context, DocumentSnapshot document){
 return 
 
 SingleChildScrollView(
@@ -236,74 +231,19 @@ SingleChildScrollView(
  //alignment: WrapAlignment.end,
 mainAxisAlignment: MainAxisAlignment.end,
    children: <Widget>[
-  //  Flexible(  child:
-             /* Container( width:25 , 
-                child:*/
- /*GestureDetector( onTap: (){_showMyDialog("approve", context,document.id,document); },
-  child: Icon( Icons.check,
-               size: 40.0,
-               color: Colors.lightGreen[600],
-             ), 
-),
-*/
-
 ElevatedButton(
-    child: Text('Approve'),
+    child: Text('Accept'),
     style: ElevatedButton.styleFrom(
       primary: Colors.green[400],
       onPrimary: Colors.white,
       onSurface: Colors.grey,
-      padding: EdgeInsets.only(top:3 , bottom: 3, right: 10, left: 10),
+      padding: EdgeInsets.only(top:3 , bottom: 3, right: 5, left: 5),
     ),
     onPressed: () {
-      _showMyDialog("approve", context,document.id,document);
+      _showMyDialog("Accept", context,document.id,document);
     },
   ),
-SizedBox(width: 10),
-
-/*GestureDetector( onTap: (){_showMyDialog("Disapprove", context,document.id,document); },
-  child: Icon( Icons.clear,
-               size: 40.0,
-               color: Colors.red[800],
-             ), 
-),
-*/
-
-ElevatedButton(
-    child: Text('Disapprove'),
-    style: ElevatedButton.styleFrom(
-      primary: Colors.red[400],
-      onPrimary: Colors.white,
-      onSurface: Colors.grey,
-      padding: EdgeInsets.all(3)
-    ),
-    onPressed: () {
-      _showMyDialog("Disapprove", context,document.id,document);
-    },
-
-),
-/*              IconButton(
-               // padding: EdgeInsets.zero,
-                constraints: BoxConstraints(),
-               iconSize: 50.0,
-               icon: const Icon(Icons.check),
-               color: Colors.lightGreen[600],
-               onPressed: (){_showMyDialog("approve", context,document.id); },),*/ // pop up , are you sure?
-//),//),
-//SizedBox(width: 30),
-   // Flexible(  child:
-            /* Padding( padding: EdgeInsets.only(left:15),
-                child:*/
-            /*
-              IconButton(
-               // padding: EdgeInsets.zero,
-                constraints: BoxConstraints(),
-              iconSize: 50.0,
-              icon: const Icon(Icons.clear),
-              color: Colors.red[800],
-              onPressed: (){ _showMyDialog("disapprove", context,document.id);},), */// pop up , are you sure?
-//),//),
-    
+SizedBox(width: 10), 
     ], ),
    );
 
@@ -315,8 +255,8 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid,Docum
     barrierDismissible: false, // user must tap button!
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text('Institution Status'),
-        content: Text('Are you sure you want to $status this intitution?'),
+        title: const Text('Request Status'),
+        content: Text('Are you sure you want to $status this request?'),
         actions: <Widget>[
           TextButton( // nothing should happen 
               onPressed: () => Navigator.pop(context, 'Cancel'),
@@ -324,39 +264,18 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid,Docum
             ),
             TextButton(
               onPressed: (){
-                
-                if(status=="approve"){
-                  // change status to approved, then admin would not be able to see them 
-                 String result= _auth.updateInstitutionStatus(status,uid);
+                  //accepted
+                /* String result= _auth.updateInstitutionStatus(status,uid); // chsnge method
                  if(result=='Success approve'){ // show another pop up 
                    print('status has changed to approved');
                    sendEmail("approveEmail",context,document);
-                   showTopSnackBar(context,'Success','Institution has been approved' );
+                   showTopSnackBar(context,'Success','Request has been moved to appoinments' );
 
                  }
                  else if(result=='Fail approve'){print('could not update status, procces failed');
                  showTopSnackBar(context,'Fail','Approve institution failed' );
                  }
-                 else{ print(result);}
-                }
-
-                
-                else {
-                  // delete institution and send email to them to let them know 
-                  String result= _auth.updateInstitutionStatus(status,uid);
-                 if(result=='Success disapprove'){ // show another pop up 
-                   print('intitution has been deleted'); // may change it
-                   sendEmail("disapproveEmail",context,document);
-                   showTopSnackBar(context,'Success','Institution has been disapproved' );
-
-                 }
-                 else if(result=='Fail disapprove') {
-                 print('could not delete institution, procces failed');
-                 showTopSnackBar(context,'Fail','Dispprove institution failed' );
-                 
-                 }
-                  else{ print(result);}
-                }
+                 else{ print(result);}*/
                 
                 Navigator.pop(context, 'OK');},
               child: const Text('Yes'),
@@ -399,30 +318,6 @@ try{
 }
 });
     
-}
-
- _checkCR(String CR, BuildContext context){
-  // String url='https://mc.gov.sa/ar/eservices/Pages/Commercial-data.aspx';
-     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context)  =>
- WebView(
-  javascriptMode: JavascriptMode.unrestricted,
-  initialUrl: 'https://mc.gov.sa/ar/eservices/Pages/Commercial-data.aspx',
-  onWebViewCreated: (WebViewController webController) {
-   this.controller = webController;
-  },
-  
-onProgress: (url){
-controller.evaluateJavascript("document.getElementByTagName('header')[0].style.display='none'");
-controller.evaluateJavascript("document.getElementByTagName('footer')[0].style.display='none'");
-controller.evaluateJavascript("document.getElementById('ctl00_ctl74_g_3aefad74_14c7_474a_ac96_010ad3a5e1c1_ctl00_txtCRName').value='$CR'");
-  },
-
- ),),
-);
-
 }
 
 void showTopSnackBar(BuildContext context ,String title,String message) => show(

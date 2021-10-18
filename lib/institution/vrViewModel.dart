@@ -4,18 +4,18 @@ import 'package:url_launcher/url_launcher.dart';
 // import 'package:swe444/Models/request.dart';
 
 class ViewRequestViewModel with ChangeNotifier {
-  Stream<QuerySnapshot<Map<String, dynamic>>> _institutions;
+  Stream<QuerySnapshot<Map<String, dynamic>>> _requests;
 
-  fetchInstitutions() async {
+  fetchRequests() async {
     var firebase=  FirebaseFirestore.instance
-        .collection('institution');
-    _institutions =
-        firebase.where("status", isEqualTo: "pending").orderBy("dateCreated" ).snapshots();
+        .collection('requests');
+    _requests =
+        firebase.where("status", isEqualTo: "pending").snapshots(); // order by  + exclude old dates
     notifyListeners();
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> get institutions {
-    return _institutions;
+  Stream<QuerySnapshot<Map<String, dynamic>>> get requests {
+    return _requests;
   }
 
 Future sendingMails(String email) async {
@@ -28,15 +28,19 @@ Future sendingMails(String email) async {
   }
 }
 
-Future goToTwitter(String account) async {
-  print("in view model twitter ");
-  String url = 'https://twitter.com/$account';
-if (await canLaunch(url)) {
-    await launch(url,forceWebView: true,enableJavaScript: true,
-    enableDomStorage: true,);
+Future openLocation(Map location) async {
+print("in view model openLocation ");
+print(location['geopoint'].latitude);
+final String lat=location['geopoint'].latitude.toString();
+final String lng=location['geopoint'].longitude.toString();
+final String googleMapsUrl= 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+
+if (await canLaunch(googleMapsUrl)) {
+    await launch(googleMapsUrl);
   } else {
-    throw 'Could not launch $url';
+    throw 'Could not launch $googleMapsUrl';
   }
+
 }
 
 Future goToWhatsapp(String phone) async {
