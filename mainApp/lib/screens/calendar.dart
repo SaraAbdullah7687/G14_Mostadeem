@@ -372,7 +372,7 @@ class _MainPageState extends State<MainPage> {
                           builder: (BuildContext context) {
                             return AdvanceCustomAlert(
                               icon: Icons.error,
-                              msgTitle: 'Error',
+                              msgTitle: 'Attention',
                               msgContent: 'Please select Date & Time.',
                               btnContent: 'Ok',
                             );
