@@ -291,7 +291,7 @@ void _togglePasswordView() {
         prefixIcon: Padding(
          padding: EdgeInsets.all(0.0),
          child: Icon(
-          Icons.alternate_email,
+          Icons.account_box_outlined,
            color: Color.fromRGBO(48, 126, 80, 1)),
             ), 
         labelText: 'Twitter Account',
