@@ -53,5 +53,15 @@ if (await canLaunch(url)) {
   }
 }
 
+String convertDate(BuildContext context, DocumentSnapshot document){
+  String date = document['date'].toString().substring( 0,10);
+return date;
+}
+
+String convertTime(BuildContext context, DocumentSnapshot document){
+  String before = document['time'].toString().substring(10); //9
+  String time = before.substring(0,5); 
+return time;
+}
 
 }

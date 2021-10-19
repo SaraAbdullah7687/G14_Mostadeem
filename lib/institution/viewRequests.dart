@@ -16,6 +16,8 @@ import 'package:test_project/shared/loading.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../constants.dart';
+
 
 class reqestsView extends StatelessWidget { 
    @override
@@ -125,7 +127,7 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
             padding: const EdgeInsets.all(20.0),
             child: Container(
                width: 150, // 250
-               height: 160, //200
+               height: 180, //160
                decoration: BoxDecoration(
               /*  border: Border.all(
                  color: Colors.green[900],
@@ -139,7 +141,7 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
                     shadowColor: Color(0x802196F3),
                     child: Container(
                           child: Padding(
-                            padding: const EdgeInsets.only(right: 15.0), // 90
+                            padding: const EdgeInsets.only(right: 15.0), // 90 //15
                             child: myDetailsContainer1(context,document),
                           ),
                         ),
@@ -162,6 +164,48 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
             margin: EdgeInsets.only(top:13, left:18, ), 
             child:  Text(document['category'],
             style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
+
+
+            
+                 Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                   children: [
+                     Padding(
+                       padding: const EdgeInsets.only(left:12.0, top:7),
+                       child: Icon(
+                  Icons.calendar_today_sharp,
+                  size:20,
+                  color: kPrimaryColor,
+                ),
+                     ),
+                     Container( 
+            margin: EdgeInsets.only(top:10, left:10, ), 
+            child:
+            Text(ourViewMode.convertDate(context,document),
+            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
+                   ],
+                 ),
+
+  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                   children: [
+                     Padding(
+                       padding: const EdgeInsets.only(left:12.0, top:7),
+                       child: Icon(
+                  Icons.access_time,
+                  size:20,
+                  color: kPrimaryColor,
+                ),
+                     ),
+                     Container( 
+            margin: EdgeInsets.only(top:10, left:10, ), 
+            child:
+            Text(ourViewMode.convertTime(context,document),
+            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
+                   ],
+                 ),
+
+
           /* Container( margin: const EdgeInsets.all(5),
               child: ElevatedButton.icon(
                 onPressed: ()=> _checkCR(document.get("CR"),context),
@@ -234,7 +278,7 @@ mainAxisAlignment: MainAxisAlignment.end,
 ElevatedButton(
     child: Text('Accept'),
     style: ElevatedButton.styleFrom(
-      primary: Colors.green[400],
+      primary: kPrimaryColor, //Colors.green[400],
       onPrimary: Colors.white,
       onSurface: Colors.grey,
       padding: EdgeInsets.only(top:3 , bottom: 3, right: 5, left: 5),
@@ -335,6 +379,7 @@ void showTopSnackBar(BuildContext context ,String title,String message) => show(
           backgroundColor: Colors.black.withOpacity(0.5),
         ),
       );
+
 
 Future show(BuildContext context, Flushbar newFlushBar) async {
     await Future.wait(flushBars.map((flushBar) => flushBar.dismiss()).toList());
