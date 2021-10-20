@@ -9,6 +9,8 @@ import 'package:mostadeem/screens/home/home.dart';
 
 import 'locatin.dart';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 class requestScreen extends StatefulWidget {
   //static String tag = '/BookAppointmentScreen';
   @override
@@ -16,6 +18,16 @@ class requestScreen extends StatefulWidget {
 }
 
 class requestScreenState extends State<requestScreen> {
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+
+  void initState() {
+    super.initState();
+
+    _fcm.getToken().then((token) {
+      print("TOOOOOOOOOOKKKKKKKKKKKKKEN: " + token + "  END");
+    });
+  }
+
   // when onPressed -BACK-: take the cats and go to HOME screens
   void _goToHome(BuildContext context) async {
     // AFNAN
@@ -172,122 +184,137 @@ class requestScreenState extends State<requestScreen> {
   }
 }
 
-List<bool> isSelected = [false, false, false, false, false, false,false, false, false, false, false, false]; 
-String categ ='';
-List<String> categories = ['Paper', 'Cardboard', 'Glass', 'Plastic', 'Metals', 'Electronics','Nylon', 'Cans', 'Batteries', 'Furniture', 'Clothes', 'Food']; // retrirve from database
-
-  
+List<bool> isSelected = [
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false
+];
+String categ = '';
+List<String> categories = [
+  'Paper',
+  'Cardboard',
+  'Glass',
+  'Plastic',
+  'Metals',
+  'Electronics',
+  'Nylon',
+  'Cans',
+  'Batteries',
+  'Furniture',
+  'Clothes',
+  'Food'
+]; // retrirve from database
 
 class DemoToggleButtons extends StatefulWidget {
-  
   @override
   _DemoToggleButtonsState createState() => _DemoToggleButtonsState();
 }
 
 class _DemoToggleButtonsState extends State<DemoToggleButtons> {
   //set the initial state of each button whether it is selected or not
-List<bool> isSelectIn = [false, false, false, false, false, false,false, false, false, false, false, false]; 
+  List<bool> isSelectIn = [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ];
 
   @override
   Widget build(BuildContext context) {
-
-
-
-
-
-    //wrap the GridView wiget in an Ink wiget and set the width and height, 
+    //wrap the GridView wiget in an Ink wiget and set the width and height,
     //otherwise the GridView widget will fill up all the space of its parent widget
-    return  Container(
-      height: 300,
-      width: double.infinity,
-      child: Ink(
-      width: 380,
-      height: 60, 
-      color: Colors.white,
-      child: GridView.count(
-        primary: true,
-        padding: const EdgeInsets.all(20),
-        
-        crossAxisCount: 4, //set the number of buttons in a row
-        crossAxisSpacing: 10, //set the spacing between the buttons
-        mainAxisSpacing: 8, 
-        childAspectRatio: 1, //set the width-to-height ratio of the button, 
-                             //>1 is a horizontal rectangle
-        children: List.generate(isSelectIn.length, (index) {
-          //using Inkwell widget to create a button
-          return InkWell( 
-              splashColor: Colors.grey, //the default splashColor is grey
-              onTap: () {
-                //set the toggle logic
-                setState(() { 
-                  for (int indexBtn = 0;
-                      indexBtn < isSelectIn.length;
-                      indexBtn++) {
-                    if (indexBtn == index) {
-                      isSelectIn[index]=!isSelectIn[index];
-                       isSelected[index]=!isSelected[index];
+    return Container(
+        height: 300,
+        width: double.infinity,
+        child: Ink(
+          width: 380,
+          height: 60,
+          color: Colors.white,
+          child: GridView.count(
+            primary: true,
+            padding: const EdgeInsets.all(20),
 
-                  }
-                }});
-              },
-              child: Ink(
-                decoration: BoxDecoration(
-               //set the background color of the button when it is selected/ not selected
-                  color: isSelectIn[index] ? Color.fromRGBO(48, 126, 80, 0.7) : Colors.white, 
-                  // here is where we set the rounded corner
-                  borderRadius: BorderRadius.circular(8), 
-                  //don't forget to set the border, 
-                  //otherwise there will be no rounded corner
-                  border: Border.all(color: Colors.grey), 
-                ),
-                child:  Image.asset("assets/images/"+categories[index]+'.png')
-                    //set the color of the icon when it is selected/ not selected
-                    
-              ));
-        }),
-      ),
-      
-    )
-    
-    );
-  
-    
-  }}
+            crossAxisCount: 4, //set the number of buttons in a row
+            crossAxisSpacing: 10, //set the spacing between the buttons
+            mainAxisSpacing: 8,
+            childAspectRatio: 1, //set the width-to-height ratio of the button,
+            //>1 is a horizontal rectangle
+            children: List.generate(isSelectIn.length, (index) {
+              //using Inkwell widget to create a button
+              return InkWell(
+                  splashColor: Colors.grey, //the default splashColor is grey
+                  onTap: () {
+                    //set the toggle logic
+                    setState(() {
+                      for (int indexBtn = 0;
+                          indexBtn < isSelectIn.length;
+                          indexBtn++) {
+                        if (indexBtn == index) {
+                          isSelectIn[index] = !isSelectIn[index];
+                          isSelected[index] = !isSelected[index];
+                        }
+                      }
+                    });
+                  },
+                  child: Ink(
+                      decoration: BoxDecoration(
+                        //set the background color of the button when it is selected/ not selected
+                        color: isSelectIn[index]
+                            ? Color.fromRGBO(48, 126, 80, 0.7)
+                            : Colors.white,
+                        // here is where we set the rounded corner
+                        borderRadius: BorderRadius.circular(8),
+                        //don't forget to set the border,
+                        //otherwise there will be no rounded corner
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: Image.asset(
+                          "assets/images/" + categories[index] + '.png')
+                      //set the color of the icon when it is selected/ not selected
 
+                      ));
+            }),
+          ),
+        ));
+  }
+}
 
+bool hasSelected() {
+  bool check = false;
 
+  for (int i = 0; i < isSelected.length; i++) {
+    check = check || isSelected[i];
+  }
+  if (check) {
+    print('has selected');
 
-  bool hasSelected(){
+    int selectedItems = 0;
+    categ = '';
 
-  bool check=false;
-
- for (int i=0; i<isSelected.length; i++){
-   check = check||isSelected[i];
- }
- if (check){
- print ('has selected');
-
- int selectedItems = 0; 
- categ ='';
-
-
-
-
-
- for (int i=0; i<isSelected.length; i++){
-    if (isSelected[i]==true)
-    categ+=categories[i]+', ';
- }
- categ = categ.substring(0,categ.length-2); // To remove the last comma
- print (categ); // Just to check
- }
-
- else
- print ('did not select');
-
+    for (int i = 0; i < isSelected.length; i++) {
+      if (isSelected[i] == true) categ += categories[i] + ', ';
+    }
+    categ = categ.substring(0, categ.length - 2); // To remove the last comma
+    print(categ); // Just to check
+  } else
+    print('did not select');
 
   return check;
 }
-
-
-
