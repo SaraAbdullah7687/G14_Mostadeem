@@ -100,10 +100,10 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
 
  Widget buildInstitutionCard(BuildContext context, DocumentSnapshot document) {
     return  Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.only(left:20,right:20,top:20,),
             child: Container(
-               width: 150, // 250
-               height: 180, //160
+               width: 120, // 250 150
+               height: 145, //160
                decoration: BoxDecoration(
               /*  border: Border.all(
                  color: Colors.green[900],
@@ -117,7 +117,7 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
                     shadowColor: Color(0x802196F3),
                     child: Container(
                           child: Padding(
-                            padding: const EdgeInsets.only(right: 15.0), // 90 //15
+                            padding: const EdgeInsets.only(right: 7), // 90 //15
                             child: myDetailsContainer1(context,document),
                           ),
                         ),
@@ -154,8 +154,6 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
               ],
             ),
 
-
-            
                  Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                    children: [
@@ -190,36 +188,6 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
                    
                    ],
                  ),
-
- /* Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                   children: [
-                     Padding(
-                       padding: const EdgeInsets.only(left:12.0, top:7),
-                       child: Icon(
-                  Icons.access_time,
-                  size:20,
-                  color: kPrimaryColor,
-                ),
-                     ),
-                     Container( 
-            margin: EdgeInsets.only(top:10, left:10, ), 
-            child:
-            Text(ourViewMode.convertTime(context,document),
-            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
-                   ],
-                 ),
-*/
-
-          /* Container( margin: const EdgeInsets.all(5),
-              child: ElevatedButton.icon(
-                onPressed: ()=> _checkCR(document.get("CR"),context),
-                label: Text(document['CR'], style: TextStyle(color: Colors.blue[400], fontSize: 18.0,fontWeight: FontWeight.bold, decoration: TextDecoration.underline ),),
-                icon: Icon(Icons.receipt_long_rounded), // or assignment confirmation_num_sharp
-                style: ElevatedButton.styleFrom(
-                  primary: Color.fromRGBO(48, 126, 80, 1) // can be changed 
-                ),
-              )),*/
             lastRow(context,document),
   ],
     );
@@ -231,8 +199,8 @@ Widget lastRow(BuildContext context, DocumentSnapshot document){
     children: <Widget>[
 
 contactIcons(context,document),
-SizedBox(width: 6),
- //requestStatus(context,document),
+//SizedBox(width: 6),
+requestStatus(context,document),
   ],);//,),);
 }
 
@@ -276,39 +244,44 @@ return
 SingleChildScrollView(
                        scrollDirection: Axis.horizontal,
                          child:
- Row( //direction: Axis.vertical,
- //alignment: WrapAlignment.end,
+ Padding(
+   padding: const EdgeInsets.only(right:3,),
+   child: Row( //direction: Axis.vertical,
+   //alignment: WrapAlignment.end,
 mainAxisAlignment: MainAxisAlignment.end,
-   children: <Widget>[
-ElevatedButton(
-    child: Text('Accept'),
-    style: ElevatedButton.styleFrom(
-      primary: kPrimaryColor, //Colors.green[400],
-      onPrimary: Colors.white,
-      onSurface: Colors.grey,
-      padding: EdgeInsets.only(top:3 , bottom: 3, right: 5, left: 5),
-    ),
-    onPressed: () {
-      ourViewMode.showMyDialog("accept", context,document.id,document);
-    },
-  ),
-SizedBox(width: 10), 
-
-ElevatedButton(
-    child: Text('Reject'),
-    style: ElevatedButton.styleFrom(
-      primary: Colors.red[400],
-      onPrimary: Colors.white,
-      onSurface: Colors.grey,
-      padding: EdgeInsets.all(3)
-    ),
-    onPressed: () {
-     // ourViewMode.showMyDialog("reject", context,document.id,document);
-    },
-
+     children: <Widget>[
+Padding(
+    padding: const EdgeInsets.only(right: 10),
+    child: 
+    ElevatedButton(
+        child: Text('Done'),
+        style: ElevatedButton.styleFrom(
+          shape: new RoundedRectangleBorder(
+               borderRadius: new BorderRadius.circular(30.0),
+               ),
+          primary: kPrimaryColor, //Colors.green[400],
+          onPrimary: Colors.white,
+          onSurface: Colors.grey,
+          padding: EdgeInsets.only(top:3 , bottom: 3, right: 5, left: 5),
+        ),
+        onPressed: () {
+         // ourViewMode.showMyDialog("done", context,document.id,document);
+        },
+      ),
 ),
-
-    ], ),
+/*
+ElevatedButton.icon(
+                  onPressed: (){},
+                  label: Text("Done", style: TextStyle(color: Colors.white,
+                   ),),
+                  icon: Icon(Icons.check),
+                  style: ElevatedButton.styleFrom(
+                    primary: kPrimaryColor
+                  ),
+                )
+*/
+      ], ),
+ ),
    );
 
 }

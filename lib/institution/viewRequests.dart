@@ -100,10 +100,10 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
 
  Widget buildInstitutionCard(BuildContext context, DocumentSnapshot document) {
     return  Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.only(left:21,right:21,top:18,),
             child: Container(
-               width: 150, // 250
-               height: 180, //160
+               width: 140, // 250
+               height: 145, //160
                decoration: BoxDecoration(
               /*  border: Border.all(
                  color: Colors.green[900],
@@ -283,6 +283,9 @@ mainAxisAlignment: MainAxisAlignment.end,
 ElevatedButton(
     child: Text('Accept'),
     style: ElevatedButton.styleFrom(
+      shape: new RoundedRectangleBorder(
+               borderRadius: new BorderRadius.circular(22.0),
+               ),
       primary: kPrimaryColor, //Colors.green[400],
       onPrimary: Colors.white,
       onSurface: Colors.grey,
@@ -297,6 +300,9 @@ SizedBox(width: 10),
 ElevatedButton(
     child: Text('Reject'),
     style: ElevatedButton.styleFrom(
+      shape: new RoundedRectangleBorder(
+               borderRadius: new BorderRadius.circular(22.0),
+               ),
       primary: Colors.red[400],
       onPrimary: Colors.white,
       onSurface: Colors.grey,

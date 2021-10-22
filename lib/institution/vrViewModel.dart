@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:url_launcher/url_launcher.dart';
 // import 'package:swe444/Models/request.dart';
@@ -13,13 +14,14 @@ class ViewRequestViewModel with ChangeNotifier {
 
   fetchRequests() async {
     String uid= auth.getCurrentUserID();
+    DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
     print(uid+ "in view model");
     var firebase=  FirebaseFirestore.instance
         .collection("institution")
         .doc(uid)
         .collection("appointment");
     _requests =
-        firebase.where("status", isEqualTo: "pending").orderBy("date").snapshots(); // order by  + exclude old dates
+        firebase.where("status", isEqualTo: "pending").where("date", isGreaterThanOrEqualTo: dateFormat.format(DateTime.now()), ).orderBy("date").snapshots(); // order by  + exclude old dates
     notifyListeners();
   }
 
