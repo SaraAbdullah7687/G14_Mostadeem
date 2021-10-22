@@ -1,15 +1,15 @@
 //import 'package:mustadeem/screens/home/brew_list.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:test_project/Admin/viewins.dart';
-import 'package:test_project/institution/instHome.dart';
-import 'package:test_project/institution/instProfile.dart';
-import 'package:test_project/services/auth.dart';
-import 'package:test_project/services/database.dart';
+//import 'package:mostadeem/Admin/viewins.dart';
+import 'package:mostadeem/institution/instHome.dart';
+import 'package:mostadeem/institution/instProfile.dart';
+import 'package:mostadeem/services/auth.dart';
+import 'package:mostadeem/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test_project/institution/instHome.dart';
-import 'package:test_project/institution/instProfile.dart';
+import 'package:mostadeem/institution/instHome.dart';
+import 'package:mostadeem/institution/instProfile.dart';
 
 
 class StartInst extends StatefulWidget {

@@ -1,8 +1,8 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:test_project/components/google_auth_api.dart';
-import 'package:test_project/services/auth.dart';
+import 'package:mostadeem/components/google_auth_api.dart';
+import 'package:mostadeem/services/auth.dart';
 
 class InstProfile extends StatelessWidget {
 final AuthService _auth = AuthService();

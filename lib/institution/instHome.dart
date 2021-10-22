@@ -1,9 +1,10 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:test_project/Admin/ViewInstitution.dart';
-import 'package:test_project/institution/viewRequests.dart';
-import 'package:test_project/services/auth.dart';
+import 'package:mostadeem/Admin/ViewInstitution.dart';
+import 'package:mostadeem/institution/currentRequests.dart';
+import 'package:mostadeem/institution/viewRequests.dart';
+import 'package:mostadeem/services/auth.dart';
 
 class InstHome extends StatefulWidget {
   @override
@@ -42,13 +43,13 @@ final AuthService _auth = AuthService();
             //indicatorWeight:3,
             tabs: [
               Tab(child: Align(alignment: Alignment.center, child: Text('Requests'),)),
-              Tab(child: Align(alignment: Alignment.center, child: Text('Appointments'),)),
+              Tab(child: Align(alignment: Alignment.center, child: Text('Accepted requests'),)),
             ],
           ),
           ),
           body: TabBarView(children: [
             reqestsView(),
-            ViewInstitution(), // to be updated to MY appointments
+            currentRequestsView(), // to be updated to MY appointments
           ],),
       ),
     );

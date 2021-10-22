@@ -19,7 +19,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../constants.dart';
 
 
-class reqestsView extends StatelessWidget { 
+class currentRequestsView extends StatelessWidget { 
    @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ViewRequestViewModel>(
@@ -27,23 +27,23 @@ class reqestsView extends StatelessWidget {
         child: Container(
             height: 1200,
             width: 450,
-            child: ViewRequests())
+            child: ViewCurrentRequests())
     );
   }
 }
 
 
 
-class ViewRequests extends StatefulWidget {
- const ViewRequests({
+class ViewCurrentRequests extends StatefulWidget {
+ const ViewCurrentRequests({
     Key key,
   }) : super(key: key);
 
   @override
-  _ViewRequestsState createState() => _ViewRequestsState();
+  _ViewCurrentRequestsState createState() => _ViewCurrentRequestsState();
 }
 
-class _ViewRequestsState extends State<ViewRequests> {
+class _ViewCurrentRequestsState extends State<ViewCurrentRequests> {
   final AuthService _auth = AuthService();
   final List<Flushbar> flushBars = []; 
  WebViewController controller;
@@ -61,21 +61,21 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
 
     setup() async {
     await Provider.of<ViewRequestViewModel>(context, listen: false)
-        .fetchRequests();
+        .fetchCurrentRequests();
   }
 
   @override
   Widget build(BuildContext context) {
     Stream<QuerySnapshot<Map<String, dynamic>>> institutions = Provider.of<ViewRequestViewModel>(context, listen: false)
-        .requests;
+        .currentRequests;
     return Scaffold(
         backgroundColor: Colors.grey[50],
       body: 
              StreamBuilder(
                stream: institutions,
                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
-          if (!snapshot.hasData) return Loading();
-        
+          if (!snapshot.hasData) return Loading(); // no data yet
+         //return //Container( height: 50, width: 50,child: 
         if (snapshot.data.docs.length==0){
           return Center(
         child: Text(
@@ -85,7 +85,7 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
       );
         }
         
-        else return //Container( height: 50, width: 50,child: 
+        else return
          new ListView.builder( 
             itemCount: snapshot.data.docs.length,
             itemBuilder: (context, index) =>
@@ -232,7 +232,7 @@ Widget lastRow(BuildContext context, DocumentSnapshot document){
 
 contactIcons(context,document),
 SizedBox(width: 6),
- requestStatus(context,document),
+ //requestStatus(context,document),
   ],);//,),);
 }
 
