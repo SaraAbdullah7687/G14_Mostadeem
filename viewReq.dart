@@ -3,6 +3,282 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
+import 'package:mostadeem/Admin/components/social_icon.dart';
+import 'package:mostadeem/components/google_auth_api.dart';
+import 'package:mostadeem/screens/home/viViewReqModel.dart';
+import 'package:mostadeem/services/auth.dart';
+import 'package:mostadeem/shared/loading.dart';
+import 'package:provider/provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+
+class ViewRequest extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<ViewRequestViewModel>(
+        create: (_) => ViewRequestViewModel(),
+        child: Container(height: 1200, width: 450, child: ViewRequests()));
+  }
+}
+
+class ViewRequests extends StatefulWidget {
+  const ViewRequests({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _ViewRequestsState createState() => _ViewRequestsState();
+}
+
+class _ViewRequestsState extends State<ViewRequests> {
+  final AuthService _auth = AuthService();
+  final List<Flushbar> flushBars = [];
+  WebViewController controller;
+
+  final ViewRequestViewModel ourViewMode = ViewRequestViewModel();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(
+        Duration.zero,
+        () => setState(() {
+              setup();
+            }));
+  }
+
+  setup() async {
+    await Provider.of<ViewRequestViewModel>(context, listen: false)
+        .fetchRequests();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Stream<QuerySnapshot<Map<String, dynamic>>> institutions =
+        Provider.of<ViewRequestViewModel>(context, listen: false).requests;
+    return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text('Requests'),
+          backgroundColor: Color.fromRGBO(48, 126, 80, 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(18),
+            ),
+          ),
+          /* leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color: Colors.white,
+          ),
+          tooltip: 'Show Snackbar',
+          onPressed: () async {
+            await _auth.signOut();
+          },
+        ),*/
+          toolbarHeight: 60.0,
+        ),
+        backgroundColor: Colors.grey[50],
+        body: StreamBuilder(
+            stream: institutions,
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData) return Loading();
+
+              if (snapshot.data.docs.length == 0) {
+                return Center(
+                  child: Text(
+                    "You don't have any requests",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.grey,
+                    ),
+                  ),
+                );
+              } else
+                return //Container( height: 50, width: 50,child:
+                    new ListView.builder(
+                  itemCount: snapshot.data.docs.length,
+                  itemBuilder: (context, index) => buildInstitutionCard(
+                      context, snapshot.data.docs[index]), //),
+                );
+            })
+        // ),
+        );
+  }
+
+  Widget buildInstitutionCard(BuildContext context, DocumentSnapshot document) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 21,
+        right: 21,
+        top: 18,
+      ),
+      child: Container(
+        width: 100, // 250
+        height: 110, //160
+        decoration: BoxDecoration(
+          /*  border: Border.all(
+                 color: Colors.green[900],
+                ),*/
+          borderRadius: BorderRadius.circular(24.0),
+        ),
+        child: Material(
+          color: Colors.white,
+          elevation: 14.0, //14
+          borderRadius: BorderRadius.circular(24.0),
+          shadowColor: Color(0x802196F3),
+          child: Container(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 15.0), // 90 //15
+              child: myDetailsContainer1(context, document),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget myDetailsContainer1(BuildContext context, DocumentSnapshot document) {
+    bool isPendding() {
+      if (document['status'] == ('pending')) return true;
+      return false;
+    }
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            if (isPendding())
+              Padding(
+                padding: const EdgeInsets.only(left: 15.0, top: 7),
+                child: Icon(
+                  Icons.pending_actions_rounded,
+                  color: Color.fromRGBO(48, 126, 80, 1),
+                  size: 36,
+                ),
+              ),
+            if (!isPendding())
+              Padding(
+                padding: const EdgeInsets.only(left: 15.0, top: 7),
+                child: Icon(
+                  Icons.check,
+                  color: Color.fromRGBO(48, 126, 80, 1),
+                  size: 36,
+                ),
+              ),
+            Container(
+              margin: EdgeInsets.only(
+                top: 9,
+                left: 5,
+              ),
+              child: Text(
+                document['status'],
+                style: TextStyle(
+                    color: Color.fromRGBO(48, 126, 80, 1),
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            /* First icon*/
+            Padding(
+              padding: const EdgeInsets.only(left: 30.0, top: 7),
+              child: Icon(
+                Icons.calendar_today_sharp,
+                size: 20,
+                color: Color.fromRGBO(48, 126, 80, 1),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                top: 9,
+                left: 5,
+              ),
+              child: Text(
+                ourViewMode.convertDate(context, document),
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12.0,
+                ),
+              ),
+            ),
+
+            /*Sconed icon*/
+            Padding(
+              padding: const EdgeInsets.only(left: 10, top: 7),
+              child: Icon(
+                Icons.access_time,
+                size: 20,
+                color: Color.fromRGBO(48, 126, 80, 1),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                top: 10,
+                left: 5,
+              ),
+              child: Text(
+                ourViewMode.convertTime(context, document),
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12.0,
+                ),
+              ),
+            ),
+
+            /*third icon*/
+            Padding(
+              padding: const EdgeInsets.only(left: 12.0, top: 7),
+              child: Icon(
+                Icons.category,
+                size: 20,
+                color: Color.fromRGBO(48, 126, 80, 1),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                top: 7, left: 5, //left:18,
+              ),
+              child: Text(
+                document['category'],
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12.0,
+                ),
+              ),
+            ),
+
+            /*  /*fourth icon*/
+            Container(
+              margin: EdgeInsets.only(
+                top: 7, //left: 5, //left:18,
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.location_on),
+                color: Color.fromRGBO(48, 126, 80, 1),
+                onPressed: () =>
+                    ourViewMode.openLocation(document.get("location")),
+              ),
+            ),*/
+          ],
+        ),
+      ],
+    );
+  }
+} //
+
+/*
+import 'package:flushbar/flushbar.dart';
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 import 'package:mostadeem/Admin/viViewModel.dart';
 import 'package:mostadeem/components/google_auth_api.dart';
 import 'package:mostadeem/screens/home/home0.dart';
@@ -104,7 +380,7 @@ class _viewRequestState extends State<ViewRequest> {
                         ),
                       ),*/
                   ],
-                ));
+                )); 
           },
         ),
       ),
@@ -136,3 +412,4 @@ class _viewRequestState extends State<ViewRequest> {
     return false;
   }
 }
+*/
