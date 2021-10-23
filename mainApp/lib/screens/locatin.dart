@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mostadeem/models/contributorModel.dart';
@@ -39,17 +40,23 @@ class MyApp extends StatelessWidget {
   }
 }
 */
-AuthService a = new AuthService();
+//AuthService a = new AuthService();
+AuthService auth = AuthService();
+/*newly added*/
+var firebaseUser = FirebaseAuth.instance.currentUser;
 
 class LocationApp extends StatefulWidget {
+  String uid = auth.getCurrentUserID();
   //const LocationApp({Key? key, String category}) : super(key: key);
   String category; //FINAL ?
   String date;
   String time;
-  String currentUser = a.getCurrentUserID();
+  /*newly added*/
+  //String currentUser = firebaseUser.uid;
+
 //===========================================================================================
 
-  LocationApp({this.category, this.date, this.time, this.currentUser});
+  LocationApp({this.category, this.date, this.time, /*this.currentUser*/ uid});
 
   @override
   _LocationAppState createState() => _LocationAppState();
@@ -180,16 +187,16 @@ class _LocationAppState extends State<LocationApp> {
               // make request obj
               requestModel request = requestModel(
                 contId: widget
-                    .currentUser, // NULLABLE ###################################################################
+                    . /*this.currentUser*/ uid, // NULLABLE ###################################################################
                 category: widget.category,
                 date: widget.date,
                 time: widget.time,
                 location: geo.point(latitude: lat, longitude: lng),
-                status: 'new',
+                status: 'pending',
               );
 
               // ADD TO DB
-              _addRequest(context, widget.currentUser,
+              _addRequest(context, widget. /*this.currentUser*/ uid,
                   request); // NULLABLE ###################################################################
 
               /* display conformation pop up*/
