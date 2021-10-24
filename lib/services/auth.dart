@@ -1,14 +1,15 @@
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:test_project/models/ContributorModel.dart';
-import 'package:test_project/models/userMu.dart';
-import 'package:test_project/services/database.dart';
+import 'package:flutter/material.dart';
+import 'package:mostadeem/models/ContributorModel.dart';
+import 'package:mostadeem/models/userMu.dart';
+import 'package:mostadeem/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+final List<Flushbar> flushBars = [];
   // create user obj based on firebase user
   UserMu _userFromFirebaseUser(User user) { // was FirebaseUser instead of User
   print(user); // maybe wrong
@@ -23,7 +24,7 @@ class AuthService {
   }
 
   // sign in with email and password
-  Future <dynamic> signInWithEmailAndPassword(String email, String password) async {
+  Future <dynamic> signInWithEmailAndPassword(String email, String password,) async {
     try {
       UserCredential _result = await _auth.signInWithEmailAndPassword(email: email.trim(), password: password);
       User _user = _result.user; // was FirebaseUser instead of User
@@ -118,7 +119,7 @@ String uid = getCurrentUserID();
 print(uid);
 print("check user type method");
 //dynamic userType =
-await Future.delayed(const Duration(seconds: 3), (){});
+await Future.delayed(const Duration(seconds: 1), (){});
  return await DatabaseService().getUserType(uid//,context
  );
  
@@ -148,4 +149,15 @@ try {
 }
 
 }
+
+Future<String> getName() async {
+  await Future.delayed(const Duration(seconds: 4), (){});
+String uid = getCurrentUserID();
+
+String name = await DatabaseService().getUserName(uid);
+return name;
+
 }
+
+
+} // end of class
