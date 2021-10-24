@@ -1,24 +1,24 @@
 
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:test_project/Screens/Welcome/welcome_screen.dart';
-import 'package:test_project/Screens/authenticate/bodyLogin.dart';
-import 'package:test_project/Screens/background.dart';
-import 'package:test_project/Screens/home/home.dart';
-import 'package:test_project/components/advanceAlert.dart';
+import 'package:mostadeem/Screens/Welcome/welcome_screen.dart';
+import 'package:mostadeem/Screens/authenticate/bodyLogin.dart';
+import 'package:mostadeem/Screens/background.dart';
+import 'package:mostadeem/Screens/home/home.dart';
+import 'package:mostadeem/components/advanceAlert.dart';
 //import 'package:flutter_auth/Screens/Signup/components/or_divider.dart';
 //import 'package:flutter_auth/Screens/Signup/components/social_icon.dart';
-import 'package:test_project/components/already_have_an_account_acheck.dart';
-import 'package:test_project/components/rounded_button.dart';
-import 'package:test_project/components/rounded_input_field.dart';
-import 'package:test_project/components/rounded_password_field.dart';
+import 'package:mostadeem/components/already_have_an_account_acheck.dart';
+import 'package:mostadeem/components/rounded_button.dart';
+import 'package:mostadeem/components/rounded_input_field.dart';
+import 'package:mostadeem/components/rounded_password_field.dart';
 //import 'package:flutter_svg/svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:test_project/components/text_field_container.dart';
-import 'package:test_project/services/auth.dart';
-import 'package:test_project/shared/loading.dart';
+import 'package:mostadeem/components/text_field_container.dart';
+import 'package:mostadeem/services/auth.dart';
+import 'package:mostadeem/shared/loading.dart';
 import '../../constants.dart';
-import 'package:test_project/Screens/authenticate/authenticate.dart';
+import 'package:mostadeem/Screens/authenticate/authenticate.dart';
 
 class BodySignUp extends StatefulWidget {
     final Function toggleView; 
@@ -300,8 +300,8 @@ void clearText() {
                     context: context,
                     builder: (BuildContext context) {
                       return AdvanceCustomAlert(
-                        icon: Icons.error,
-                        msgTitle: 'INVALID',
+                        icon: Icons.cancel_outlined,
+                        msgTitle: 'Invalid\n',
                         msgContent: 'Email already exists, please sign in',
                         btnContent: 'Ok',
                       );
@@ -310,7 +310,7 @@ void clearText() {
     
                                   } 
                                 else{print("req is not null");
-                                print("pass go to pin page");
+                               
     
     
                               /*  setState(() {
@@ -380,13 +380,13 @@ void clearText() {
      else 
      return null;
   }
-       void showTopSnackBar(BuildContext context) => show(
+          void showTopSnackBar(BuildContext context, String title, String message) => show(
         context,
         Flushbar(
           icon: Icon(Icons.error, size: 32, color: Colors.white),
           shouldIconPulse: false,
-          title: 'INVALID',
-          message: 'Email already exists, please sign in', // change message
+          title: title,
+          message: message,
           duration: Duration(seconds: 3),
           flushbarPosition: FlushbarPosition.TOP,
           margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),

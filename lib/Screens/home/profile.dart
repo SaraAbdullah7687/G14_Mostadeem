@@ -1,8 +1,8 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:test_project/components/google_auth_api.dart';
-import 'package:test_project/services/auth.dart';
+import 'package:mostadeem/components/google_auth_api.dart';
+import 'package:mostadeem/services/auth.dart';
 
 class Profile extends StatelessWidget {
 final AuthService _auth = AuthService();
@@ -37,7 +37,7 @@ final AuthService _auth = AuthService();
       body: Center(
         child: Text(
           'profile',
-          style: TextStyle(fontSize: 60, color: Color.fromRGBO(48, 126, 80, 1),),
+          style: TextStyle(fontSize: 40, color: Color.fromRGBO(48, 126, 80, 1),),
         ),
       ),
       

@@ -1,10 +1,9 @@
-//import 'package:mustadeem/screens/home/brew_list.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:test_project/Admin/viewInstitution.dart';
-import 'package:test_project/Screens/home/home0.dart';
-import 'package:test_project/Screens/home/profile.dart';
-import 'package:test_project/services/auth.dart';
-import 'package:test_project/services/database.dart';
+import 'package:mostadeem/Admin/viewInstitution.dart';
+import 'package:mostadeem/Screens/home/home0.dart';
+import 'package:mostadeem/Screens/home/profile.dart';
+import 'package:mostadeem/services/auth.dart';
+import 'package:mostadeem/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -105,28 +104,3 @@ Icon(Icons.person, size:30),
   }
 }
 
-class BNBCustomPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = Color.fromRGBO(236, 232, 201, 0.7)
-      ..style = PaintingStyle.fill;
-    Path path = Path()..moveTo(0, 20);
-    path.quadraticBezierTo(size.width * 0.20, 0, size.width * 0.35, 0);
-    path.quadraticBezierTo(size.width * 0.40, 0, size.width * 0.40, 20);
-    path.arcToPoint(Offset(size.width * 0.60, 20),
-        radius: Radius.circular(10.0), clockwise: false);
-    path.quadraticBezierTo(size.width * 0.60, 0, size.width * 0.65, 0);
-    path.quadraticBezierTo(size.width * 0.80, 0, size.width, 20);
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
-    path.close();
-    // canvas.drawShadow(path, Colors.grey, 5, true);
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
-}

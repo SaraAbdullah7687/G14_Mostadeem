@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:test_project/Screens/authenticate/bodyLogin.dart';
-import 'package:test_project/Screens/authenticate/bodySignUp.dart';
-//import 'package:test_project/Screens/Login/login_screen.dart';
-//import 'package:test_project/Screens/Signup/signup_screen.dart';
+import 'package:mostadeem/Screens/authenticate/bodyLogin.dart';
+import 'package:mostadeem/Screens/authenticate/bodySignUp.dart';
+//import 'package:mostadeem/Screens/Login/login_screen.dart';
+//import 'package:mostadeem/Screens/Signup/signup_screen.dart';
 
 class Authenticate extends StatefulWidget {
   @override

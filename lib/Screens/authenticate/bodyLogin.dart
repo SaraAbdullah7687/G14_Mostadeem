@@ -1,16 +1,15 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:test_project/Screens/Login/components/resetPassword.dart';
-import 'package:test_project/Screens/background.dart';
-import 'package:test_project/components/advanceAlert.dart';
-import 'package:test_project/components/already_have_an_account_acheck.dart';
-import 'package:test_project/components/rounded_button.dart';
-import 'package:test_project/components/rounded_input_field.dart';
-import 'package:test_project/components/rounded_password_field.dart';
-import 'package:test_project/components/text_field_container.dart';
-import 'package:test_project/services/auth.dart';
-import 'package:test_project/shared/loading.dart';
+import 'package:mostadeem/Screens/Login/components/resetPassword.dart';
+import 'package:mostadeem/Screens/background.dart';
+import 'package:mostadeem/components/advanceAlert.dart';
+import 'package:mostadeem/components/already_have_an_account_acheck.dart';
+import 'package:mostadeem/components/rounded_button.dart';
+import 'package:mostadeem/components/rounded_password_field.dart';
+import 'package:mostadeem/components/text_field_container.dart';
+import 'package:mostadeem/services/auth.dart';
+import 'package:mostadeem/shared/loading.dart';
 import '../../constants.dart';
 
 class BodyLogin extends StatefulWidget {
@@ -189,8 +188,8 @@ Map<String, String> _authData = { // can use variables instead of map
                     context: context,
                     builder: (BuildContext context) {
                       return AdvanceCustomAlert(
-                        icon: Icons.error,
-                        msgTitle: 'INVALID',
+                        icon: Icons.cancel_outlined,
+                        msgTitle: 'Invalid\n',
                         msgContent: 'Email or password incorrect',
                         btnContent: 'Ok',
                       );
@@ -206,8 +205,8 @@ Map<String, String> _authData = { // can use variables instead of map
                     context: context,
                     builder: (BuildContext context) {
                       return AdvanceCustomAlert(
-                        icon: Icons.error,
-                        msgTitle: 'INVALID',
+                        icon: Icons.cancel_outlined,
+                        msgTitle: 'Invalid\n',
                         msgContent: 'Email or password incorrect',
                         btnContent: 'Ok',
                       );
@@ -215,25 +214,12 @@ Map<String, String> _authData = { // can use variables instead of map
                          // showTopSnackBar(context);
     
                           } 
-                        else{print("req is not null");
-                        setState(() { // added delete it 
-                            loading = false;
-                          });}
-                      }
-                    /* context.read<AuthenticationService>().signIn(
-                        email: _emailController.text.trim(),
-                        password: _passwordController.text.trim(),
-                      );*/
-    
-    
-                   // signIn(_emailController.text, _passwordController.text);
-                    
-                    /* if (!_formKey.currentState.validate()) {
-                       print("validation doesn't works");// delete it 
-                          return;
-                        }
-                  print("validation works"); // delete it 
-                        _formKey.currentState.save();*/
+                        else {print("req is not null");
+
+                      setState(() { // added delete it 
+                          loading = false;
+                        });}
+                    }
                   },
                 ),
     
@@ -243,14 +229,6 @@ Map<String, String> _authData = { // can use variables instead of map
                   press: () {
                     widget.toggleView();
                     
-                   /* Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return WelcomeScreen(); // the general signup screen from nouf
-                        },
-                      ),
-                    );*/
                   },
                 ),
               ],
@@ -264,14 +242,14 @@ Map<String, String> _authData = { // can use variables instead of map
   
   }
 // works but shows an error in the console
-       void showTopSnackBar(BuildContext context) => show(
+       void showTopSnackBar(BuildContext context, String title, String message) => show(
         context,
         Flushbar(
           icon: Icon(Icons.error, size: 32, color: Colors.white),
           shouldIconPulse: false,
-          title: 'INVALID',
-          message: 'Email or password incorrect', // change message
-          duration: Duration(seconds: 4),
+          title: title,
+          message: message,
+          duration: Duration(seconds: 3),
           flushbarPosition: FlushbarPosition.TOP,
           margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
           borderRadius: 16,
@@ -282,6 +260,7 @@ Map<String, String> _authData = { // can use variables instead of map
 
 
           Future show(BuildContext context, Flushbar newFlushBar) async {
+           // await Future.delayed(const Duration(seconds: 2), (){});
     await Future.wait(flushBars.map((flushBar) => flushBar.dismiss()).toList());
     flushBars.clear();
 

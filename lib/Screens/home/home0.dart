@@ -2,12 +2,26 @@
 
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:test_project/components/google_auth_api.dart';
-import 'package:test_project/services/auth.dart';
+import 'package:mostadeem/components/google_auth_api.dart';
+import 'package:mostadeem/services/auth.dart';
 
-class HomeZero extends StatelessWidget {
+class HomeZero extends StatefulWidget {
+  @override
+  _HomeZeroState createState() => _HomeZeroState();
+}
+
+class _HomeZeroState extends State<HomeZero> {
 final AuthService _auth = AuthService();
+
 final List<Flushbar> flushBars = [];
+
+@override
+void initState(){
+    super.initState();
+    showTopSnackBar(context,"Welcome #name", "Good to have you in Mostadeem",);
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,30 +51,28 @@ final List<Flushbar> flushBars = [];
           toolbarHeight:60.0,
         ),
         
-      body: Column(
-        children: [
-        //  showTopSnackBar(context),
+      body: 
           Center(
             child: Text(
               'Home',
-              style: TextStyle(fontSize: 60, color: Color.fromRGBO(48, 126, 80, 1),),
+              style: TextStyle(fontSize: 40, color: Color.fromRGBO(48, 126, 80, 1),),
             ),
           ),
-        ],
-      ),
+        
       
     );
   }
- void showTopSnackBar(BuildContext context) => show(
+
+ void showTopSnackBar(BuildContext context, String title, String message) => show(
         context,
         Flushbar(
-          icon: Icon(Icons.error, size: 32, color: Colors.white),
+          icon: Icon(Icons.check_circle_outline_outlined, size: 32, color: Colors.white),
           shouldIconPulse: false,
-          title: 'INVALID',
-          message: 'Email already exists, please sign in', // change message
+          title: title,
+          message: message,
           duration: Duration(seconds: 3),
           flushbarPosition: FlushbarPosition.TOP,
-          margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
+          //margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
           borderRadius: 16,
            barBlur: 20,
           backgroundColor: Colors.black.withOpacity(0.5),
@@ -74,5 +86,7 @@ final List<Flushbar> flushBars = [];
     newFlushBar.show(context);
     flushBars.add(newFlushBar);
   }
+
+
   
 }

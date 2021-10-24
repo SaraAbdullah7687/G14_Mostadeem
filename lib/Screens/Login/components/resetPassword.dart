@@ -2,13 +2,13 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:test_project/Screens/authenticate/bodyLogin.dart'; 
-import 'package:test_project/Screens/Login/components/backgroundReset.dart';
-import 'package:test_project/components/advanceAlert.dart';
-import 'package:test_project/components/rounded_button.dart';
-import 'package:test_project/components/text_field_container.dart';
-import 'package:test_project/services/auth.dart';
-import 'package:test_project/shared/loading.dart';
+import 'package:mostadeem/Screens/authenticate/bodyLogin.dart'; 
+import 'package:mostadeem/Screens/Login/components/backgroundReset.dart';
+import 'package:mostadeem/components/advanceAlert.dart';
+import 'package:mostadeem/components/rounded_button.dart';
+import 'package:mostadeem/components/text_field_container.dart';
+import 'package:mostadeem/services/auth.dart';
+import 'package:mostadeem/shared/loading.dart';
 import '../../../constants.dart';
 
 
@@ -151,9 +151,9 @@ if(result == "pass"){
                   context: context,
                   builder: (BuildContext context) {
                     return AdvanceCustomAlert(
-                      icon: Icons.celebration_outlined,
-                      msgTitle: 'Success',
-                      msgContent: 'A link has been sent to your email',
+                      icon: Icons.email,
+                      msgTitle: 'Check your email\n',
+                      msgContent: 'A link has been sent to your email\n',
                       btnContent: 'Ok',
                     );
                   });
@@ -167,10 +167,10 @@ if(result == "pass"){
                   context: context,
                   builder: (BuildContext context) {
                     return AdvanceCustomAlert(
-                      icon: Icons.error,
-                      msgTitle: 'Fail',
-                      msgContent: 'Please enter a correct email',
-                      btnContent: 'Ok',
+                      icon: Icons.cancel_outlined,
+                        msgTitle: 'Invalid\n',
+                        msgContent: 'This email has not been registered\n',
+                        btnContent: 'Ok',
                     );
                   });
                   // showTopSnackBar(context, "Fail", "please make sure you entered the correct email");
@@ -194,30 +194,7 @@ if(result == "pass"){
     );
   
   }
-// works but shows an error in the console
-       void showTopSnackBar(BuildContext context, String title, String message) => show(
-        context,
-        Flushbar(
-          icon: Icon(Icons.error, size: 32, color: Colors.white),
-          shouldIconPulse: false,
-          title: title,
-          message: message, // change message
-          duration: Duration(seconds: 5),
-          flushbarPosition: FlushbarPosition.TOP,
-          margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
-          borderRadius: 16,
-           barBlur: 20,
-          backgroundColor: Colors.black.withOpacity(0.5),
-        ),
-      );
 
-
-          Future show(BuildContext context, Flushbar newFlushBar) async {
-    await Future.wait(flushBars.map((flushBar) => flushBar.dismiss()).toList());
-    flushBars.clear();
-
-    newFlushBar.show(context);
-    flushBars.add(newFlushBar);
-  }
 }
+
 
