@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-//import 'package:test_project/constants.dart';
+//import 'package:mostadeem/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SocalIcon extends StatelessWidget {
   final String iconSrc;
-  final Function press;
+  final VoidCallback press;
   final Color color;
   const SocalIcon({
     Key key,

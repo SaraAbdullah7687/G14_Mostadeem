@@ -3,37 +3,27 @@
 
 //import 'dart:html';
 
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 //import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
-import 'package:test_project/components/advanceAlert.dart';
-import 'package:test_project/components/google_auth_api.dart';
-import 'package:test_project/models/emailMessage.dart';
+import 'package:mostadeem/components/google_auth_api.dart';
+import 'package:mostadeem/models/emailMessage.dart';
 //import 'package:flutter_svg/svg.dart';
 ////import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-//import 'package:test_project/Screens/background.dart';
-import 'package:test_project/services/auth.dart';
-import 'package:test_project/services/database.dart';
-import 'package:test_project/shared/loading.dart';
+//import 'package:mostadeem/Screens/background.dart';
+import 'package:mostadeem/services/auth.dart';
+import 'package:mostadeem/services/database.dart';
+import 'package:mostadeem/shared/loading.dart';
 //import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'components/social_icon.dart';
 
-class ViewInstitution extends StatefulWidget {
-  @override
-  _ViewInstitutionState createState() => _ViewInstitutionState();
-}
-
-class _ViewInstitutionState extends State<ViewInstitution> {
+class ViewInstitution extends StatelessWidget {
   final AuthService _auth = AuthService();
-  final List<Flushbar> flushBars = []; 
-
  WebViewController controller;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,18 +44,6 @@ class _ViewInstitutionState extends State<ViewInstitution> {
         ),*/
         backgroundColor: Color.fromRGBO(48, 126, 80, 1),
         elevation: 0.0,
-        actions: <Widget>[
-            IconButton(
-              padding: EdgeInsets.only(right: 15),
-              icon: Icon(Icons.logout , size: 25.0,
-            color: Colors.white,),
-            
-              onPressed: () async {
-                await _auth.signOut();
-                GoogleAuthApi.signOut();
-              },
-            ),
-          ],
          leading: IconButton(
           icon: Icon(Icons.arrow_back_outlined, color: Colors.green[50], size: 30.0,),
           onPressed: () {
@@ -101,7 +79,7 @@ class _ViewInstitutionState extends State<ViewInstitution> {
                   ),),
 
             margin: EdgeInsets.symmetric(vertical: 20, horizontal: 10), // shouldn't the bellow line be aysnc?
-             child: StreamBuilder(stream: FirebaseFirestore.instance.collection("institution").where("status", isEqualTo: "pending").orderBy("dateCreated" ).snapshots(),
+             child: StreamBuilder(stream: FirebaseFirestore.instance.collection("institution").where("status", isEqualTo: "pending").snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
           if (!snapshot.hasData) return Loading();
          return //Container( height: 50, width: 50,child: 
@@ -114,23 +92,16 @@ class _ViewInstitutionState extends State<ViewInstitution> {
     
       ),
     ),
-
-    
     );
   }
-
- Widget buildInstitutionCard(BuildContext context, DocumentSnapshot document) {
+    Widget buildInstitutionCard(BuildContext context, DocumentSnapshot document) {
+    //final institution = institutionList[index];
     return  Padding(
             padding: const EdgeInsets.all(16.0),
             child: Container(
                width: 250,
-               height: 200,
-               decoration: BoxDecoration(
-                border: Border.all(
-                 color: Colors.green[900],
-                ),
-               borderRadius: BorderRadius.circular(24.0),
-               ),
+                          height: 200,
+     //  child: new FittedBox(
                 child: Material(
                     color: Colors.white,
                     elevation: 14.0,
@@ -142,37 +113,82 @@ class _ViewInstitutionState extends State<ViewInstitution> {
                             child: myDetailsContainer1(context,document),
                           ),
                         ),
+ /* child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        
+                          Container(
+                            margin: EdgeInsets.only(top:15),
+                          width: 150,
+                         // height: 100,
+                          child: Column( children: <Widget>[
+                          ClipRRect(
+                            borderRadius: new BorderRadius.circular(24.0),
+                            child: //Image.asset("assets/images/logo.png",), 
+                            Image(
+                              fit: BoxFit.contain,
+                              alignment: Alignment.topLeft,
+                              image: AssetImage("assets/images/logo.png",),
+                            ),
+                          ),
+                          Spacer(),
+                          contactIcons(context,document),
+                          
+                          ],),),
+
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 90.0),
+                            child: myDetailsContainer1(context,document),
+                          ),
+                        ),
+
+                        
+                      ],),*/
                 ),
               ),
+           // ),
           );
     }
-
  Widget myDetailsContainer1(BuildContext context, DocumentSnapshot document) {
  return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+     // mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-           Container( 
-            margin: EdgeInsets.only(top:13, left:18, ), 
-            child:  Text(document['name'],
-            style: TextStyle(color: Colors.green[900], fontSize: 30.0,fontWeight: FontWeight.bold),),),
-           Container( margin: const EdgeInsets.all(5),
+        /*
+        Container( child: Padding(
+          padding: EdgeInsets.only(right:60.0),
+          child:*/
+           Container( margin: EdgeInsets.only(top:13, left:18, ), child:  Text(document['name'],
+            style: TextStyle(color: Colors.green[900], fontSize: 30.0,fontWeight: FontWeight.bold),),),//),
+       // ),
+       // Spacer(),
+       /*
+        Container(margin: EdgeInsets.only(left:18 ), child: Text(document['category'],
+          style: TextStyle(color: Colors.black54, fontSize: 18.0,fontWeight: FontWeight.bold),)),*/
+          // Spacer(),
+
+Container( margin: const EdgeInsets.all(5),
               child: ElevatedButton.icon(
-                onPressed: ()=> _checkCR(document.get("CR"),context),
+                onPressed: (){},//=> _checkCR(document.get("CR"),context),
                 label: Text(document['CR'], style: TextStyle(color: Colors.white, fontSize: 18.0,fontWeight: FontWeight.bold),),
                 icon: Icon(Icons.confirmation_num_sharp), // or assignment
                 style: ElevatedButton.styleFrom(
                   primary: Color.fromRGBO(48, 126, 80, 1) // can be changed 
                 ),
               )),
-            lastRow(context,document),
+    
+     // Row( children: <Widget>[
+        lastRow(context,document),
   ],
     );
 
  }
-
+       
 Widget lastRow(BuildContext context, DocumentSnapshot document){
   return Row( 
+    //mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: <Widget>[
 contactIcons(context,document),
 SizedBox(width: 6),
@@ -181,7 +197,11 @@ SizedBox(width: 6),
 }
 
 Widget contactIcons(BuildContext context, DocumentSnapshot document){
-  return 
+  return /*Container(
+    // margin: EdgeInsets.only(left:15),
+   // height: 50,
+   // width: 1,
+    child:*/
     Flexible(
      child:Row( 
        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -192,7 +212,8 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
           icon: const Icon(Icons.mail_outline),
           color: Colors.lightGreen[900],
           tooltip: 'Send email',
-          onPressed: ()=> _sendingMails(document.get("email")),
+          onPressed: ()=> _sendingMails(document.get("email")
+          ),
           
           ),),
     SizedBox(width: 5),
@@ -207,7 +228,8 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
                 IconButton(
           icon: const Icon(Icons.phone),
           color: Colors.lightGreen[900],
-          onPressed: ()=> _goToWhatsapp(document.get("phone")),),),
+          onPressed: ()=> _goToWhatsapp(document.get("phone")
+          ),),),
   ],),//),
   );
 }
@@ -266,6 +288,7 @@ GestureDetector( onTap: (){_showMyDialog("Disapprove", context,document.id,docum
 
 }
 
+
 Future _sendingMails(String email) async {
   String url = 'mailto:$email'; // specify mail from snapchot
   if (await canLaunch(url)) {
@@ -274,6 +297,7 @@ Future _sendingMails(String email) async {
     throw 'Could not launch $url';
   }
 }
+  
 
 Future _goToTwitter(String account) async {
   String url = 'https://twitter.com/$account';
@@ -286,8 +310,7 @@ if (await canLaunch(url)) {
 }
 
 Future _goToWhatsapp(String phone) async {
- String newPhone= phone.substring(1);
-String url ="whatsapp://send?phone=+966$newPhone"; // maybe needs to be modified to api?
+String url ="whatsapp://send?phone=$phone"; // maybe needs to be modified to api?
 if (await canLaunch(url)) {
     await launch(url);
   } else {
@@ -317,12 +340,9 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid,Docum
                  if(result=='Success approve'){ // show another pop up 
                    print('status has changed to approved');
                    sendEmail("approveEmail",context,document);
-                   showTopSnackBar(context,'Success','Institution has been approved' );
 
                  }
-                 else if(result=='Fail approve'){print('could not update status, procces failed');
-                 showTopSnackBar(context,'Fail','Approve institution failed' );
-                 }
+                 else if(result=='Fail approve'){print('could not update status, procces failed');}
                  else{ print(result);}
                 }
 
@@ -333,14 +353,9 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid,Docum
                  if(result=='Success disapprove'){ // show another pop up 
                    print('intitution has been deleted'); // may change it
                    sendEmail("disapproveEmail",context,document);
-                   showTopSnackBar(context,'Success','Institution has been disapproved' );
 
                  }
-                 else if(result=='Fail disapprove') {
-                 print('could not delete institution, procces failed');
-                 showTopSnackBar(context,'Fail','Dispprove institution failed' );
-                 
-                 }
+                 else if(result=='Fail disapprove') {print('could not delete institution, procces failed');}
                   else{ print(result);}
                 }
                 
@@ -355,7 +370,6 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid,Docum
 }
 
  sendEmail(String uid,BuildContext context,DocumentSnapshot document) async{
-  
 FirebaseFirestore.instance.collection('sendEmail').doc(uid).get().then((DocumentSnapshot emailMess) async{
 final user  = await GoogleAuthApi.signIn();
 print('inside sendEmail method');
@@ -411,27 +425,4 @@ controller.evaluateJavascript("document.getElementById('ctl00_ctl74_g_3aefad74_1
 
 }
 
-       void showTopSnackBar(BuildContext context ,String title,String message) => show(
-        context,
-        Flushbar(
-          icon: Icon(Icons.error, size: 32, color: Colors.white),
-          shouldIconPulse: false,
-          title: title,
-          message: message, // change message
-          duration: Duration(seconds: 3),
-          flushbarPosition: FlushbarPosition.TOP,
-          margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
-          borderRadius: 16,
-           barBlur: 20,
-          backgroundColor: Colors.black.withOpacity(0.5),
-        ),
-      );
-
-          Future show(BuildContext context, Flushbar newFlushBar) async {
-    await Future.wait(flushBars.map((flushBar) => flushBar.dismiss()).toList());
-    flushBars.clear();
-
-    newFlushBar.show(context);
-    flushBars.add(newFlushBar);
-  }
 }// end of class

@@ -8,13 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
-import 'package:test_project/Admin/viViewModel.dart';
-import 'package:test_project/components/google_auth_api.dart';
-import 'package:test_project/services/auth.dart';
-import 'package:test_project/shared/loading.dart';
+import 'package:mostadeem/Admin/viViewModel.dart';
+import 'package:mostadeem/components/google_auth_api.dart';
+import 'package:mostadeem/services/auth.dart';
+import 'package:mostadeem/shared/loading.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import '../constants.dart';
 import 'components/social_icon.dart';
 
 
@@ -56,6 +57,7 @@ final ViewInstitutionViewModel ourViewMode=ViewInstitutionViewModel();
         Duration.zero, () => setState(() {
       setup();
     }));
+    showTopSnackBar(context,"Welcome #name", "Good to have you in Mostadeem",Icons.check_circle_outline_outlined,);
   }
 
     setup() async {
@@ -116,7 +118,17 @@ final ViewInstitutionViewModel ourViewMode=ViewInstitutionViewModel();
                stream: institutions,
                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
           if (!snapshot.hasData) return Loading();
-         return //Container( height: 50, width: 50,child: 
+         if (snapshot.data.docs.length==0){
+          return Center(
+        child: Text(
+          'No available requests at the moment',
+          style: TextStyle(fontSize: 20, color: Colors.grey,),
+        ),
+      );
+        }
+        
+        else return
+         //Container( height: 50, width: 50,child: 
          new ListView.builder( 
             itemCount: snapshot.data.docs.length,
             itemBuilder: (context, index) =>
@@ -135,8 +147,8 @@ final ViewInstitutionViewModel ourViewMode=ViewInstitutionViewModel();
     return  Padding(
             padding: const EdgeInsets.all(20.0),
             child: Container(
-               width: 150, // 250
-               height: 160, //200
+               width: 140, // 250
+               height: 150, //200
                decoration: BoxDecoration(
               /*  border: Border.all(
                  color: Colors.green[900],
@@ -172,9 +184,9 @@ final ViewInstitutionViewModel ourViewMode=ViewInstitutionViewModel();
               child: ElevatedButton.icon(
                 onPressed: ()=> _checkCR(document.get("CR"),context),
                 label: Text(document['CR'], style: TextStyle(color: Colors.blue[400], fontSize: 18.0,fontWeight: FontWeight.bold, decoration: TextDecoration.underline ),),
-                icon: Icon(Icons.receipt_long_rounded), // or assignment confirmation_num_sharp
+                icon: Icon(Icons.verified), // or assignment confirmation_num_sharp verified
                 style: ElevatedButton.styleFrom(
-                  primary: Color.fromRGBO(48, 126, 80, 1) // can be changed 
+                  primary: kPrimaryColor // can be changed 
                 ),
               )),
             lastRow(context,document),
@@ -204,7 +216,7 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
     Flexible( child:
             IconButton(
           icon: const Icon(Icons.mail_outline),
-          color: Colors.lightGreen[900],
+          color: kPrimaryColor,
           tooltip: 'Send email',
           onPressed: ()=>  ourViewMode.sendingMails(document.get("email")),
          // _sendingMails(document.get("email")),
@@ -214,14 +226,14 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
     Flexible( child:
           SocalIcon(
                   iconSrc: "assets/icons/twitter.svg",
-                  color: Colors.lightGreen[900],
+                  color: kPrimaryColor,
                   press: ()=> ourViewMode.goToTwitter(document.get("twitter")),
                 ),),
     SizedBox(width: 12),
     Flexible( child:
                 IconButton(
           icon: const Icon(Icons.phone),
-          color: Colors.lightGreen[900],
+          color: kPrimaryColor,
           onPressed: ()=> ourViewMode.goToWhatsapp(document.get("phone")),),),
   ],),//),
   );
@@ -251,7 +263,10 @@ mainAxisAlignment: MainAxisAlignment.end,
 ElevatedButton(
     child: Text('Approve'),
     style: ElevatedButton.styleFrom(
-      primary: Colors.green[400],
+      shape: new RoundedRectangleBorder(
+               borderRadius: new BorderRadius.circular(22.0),
+               ),
+      primary: kPrimaryColor,
       onPrimary: Colors.white,
       onSurface: Colors.grey,
       padding: EdgeInsets.only(top:3 , bottom: 3, right: 10, left: 10),
@@ -273,16 +288,20 @@ SizedBox(width: 10),
 ElevatedButton(
     child: Text('Disapprove'),
     style: ElevatedButton.styleFrom(
+      shape: new RoundedRectangleBorder(
+               borderRadius: new BorderRadius.circular(22.0),
+               ),
       primary: Colors.red[400],
       onPrimary: Colors.white,
       onSurface: Colors.grey,
-      padding: EdgeInsets.all(3)
+      padding: EdgeInsets.only(top:3 , bottom: 3, right: 5, left: 5),
     ),
     onPressed: () {
       _showMyDialog("Disapprove", context,document.id,document);
     },
 
 ),
+
 /*              IconButton(
                // padding: EdgeInsets.zero,
                 constraints: BoxConstraints(),
@@ -332,11 +351,11 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid,Docum
                  if(result=='Success approve'){ // show another pop up 
                    print('status has changed to approved');
                    sendEmail("approveEmail",context,document);
-                   showTopSnackBar(context,'Success','Institution has been approved' );
+                   showTopSnackBar(context,'Success','Institution has been approved',Icons.check );
 
                  }
                  else if(result=='Fail approve'){print('could not update status, procces failed');
-                 showTopSnackBar(context,'Fail','Approve institution failed' );
+                 showTopSnackBar(context,'Fail','Approve institution failed',Icons.cancel_outlined, );
                  }
                  else{ print(result);}
                 }
@@ -348,12 +367,12 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid,Docum
                  if(result=='Success disapprove'){ // show another pop up 
                    print('intitution has been deleted'); // may change it
                    sendEmail("disapproveEmail",context,document);
-                   showTopSnackBar(context,'Success','Institution has been disapproved' );
+                   showTopSnackBar(context,'Success','Institution has been disapproved',Icons.check  );
 
                  }
                  else if(result=='Fail disapprove') {
                  print('could not delete institution, procces failed');
-                 showTopSnackBar(context,'Fail','Dispprove institution failed' );
+                 showTopSnackBar(context,'Fail','Dispprove institution failed', Icons.cancel_outlined, );
                  
                  }
                   else{ print(result);}
@@ -426,16 +445,16 @@ controller.evaluateJavascript("document.getElementById('ctl00_ctl74_g_3aefad74_1
 
 }
 
-void showTopSnackBar(BuildContext context ,String title,String message) => show(
+void showTopSnackBar(BuildContext context ,String title,String message,IconData icon) => show(
         context,
         Flushbar(
-          icon: Icon(Icons.error, size: 32, color: Colors.white),
+          icon: Icon(icon, size: 32, color: Colors.white),
           shouldIconPulse: false,
           title: title,
           message: message, // change message
           duration: Duration(seconds: 3),
           flushbarPosition: FlushbarPosition.TOP,
-          margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
+          //margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
           borderRadius: 16,
            barBlur: 20,
           backgroundColor: Colors.black.withOpacity(0.5),
