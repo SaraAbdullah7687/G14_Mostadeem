@@ -125,61 +125,77 @@ class requestScreenState extends State<requestScreen> {
           ),
         ],
       ),
-      body: Container(
-          height: 600,
-          margin: EdgeInsets.only(top: 80),
-          width: double.infinity,
-          child: Ink(
-            width: 380,
-            height: 60,
-            color: Colors.white10,
-            child: GridView.count(
-              primary: true,
-              padding: const EdgeInsets.all(20),
-
-              crossAxisCount: 3, //set the number of buttons in a row
-              crossAxisSpacing: 30, //set the spacing between the buttons
-              mainAxisSpacing: 20,
-              childAspectRatio:
-                  1, //set the width-to-height ratio of the button,
-              //>1 is a horizontal rectangle
-              children: List.generate(isSelected.length, (index) {
-                //using Inkwell widget to create a button
-                return InkWell(
-                    splashColor: Colors.grey, //the default splashColor is grey
-                    onTap: () {
-                      //set the toggle logic
-                      setState(() {
-                        for (int indexBtn = 0;
-                            indexBtn < isSelected.length;
-                            indexBtn++) {
-                          if (indexBtn == index) {
-                            isSelected[index] = !isSelected[index];
-                          }
-                        }
-                      });
-                    },
-                    child: Ink(
-                        decoration: BoxDecoration(
-                          //set the background color of the button when it is selected/ not selected
-                          color: isSelected[index]
-                              ? Color.fromRGBO(48, 126, 80, 0.3)
-                              : Colors.white,
-                          // here is where we set the rounded corner
-                          borderRadius: BorderRadius.circular(8),
-                          //don't forget to set the border,
-                          //otherwise there will be no rounded corner
-                          border:
-                              Border.all(color: Color.fromRGBO(48, 126, 80, 1)),
-                        ),
-                        child: Image.asset(
-                            "assets/images/" + categories[index] + '.png')
-                        //set the color of the icon when it is selected/ not selected
-
-                        ));
-              }),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(left: 20, top: 20),
+            width: double.infinity,
+            child: Text(
+              "Select at least one category:",
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                  fontSize: 20, color: Color.fromRGBO(48, 126, 80, 1)),
             ),
-          )),
+          ),
+          Container(
+              height: 600,
+              margin: EdgeInsets.only(top: 20),
+              width: double.infinity,
+              child: Ink(
+                width: 380,
+                height: 60,
+                color: Colors.white10,
+                child: GridView.count(
+                  primary: true,
+                  padding: const EdgeInsets.all(20),
+
+                  crossAxisCount: 3, //set the number of buttons in a row
+                  crossAxisSpacing: 30, //set the spacing between the buttons
+                  mainAxisSpacing: 20,
+                  childAspectRatio:
+                      1, //set the width-to-height ratio of the button,
+                  //>1 is a horizontal rectangle
+                  children: List.generate(isSelected.length, (index) {
+                    //using Inkwell widget to create a button
+                    return InkWell(
+                        splashColor:
+                            Colors.grey, //the default splashColor is grey
+                        onTap: () {
+                          //set the toggle logic
+                          setState(() {
+                            for (int indexBtn = 0;
+                                indexBtn < isSelected.length;
+                                indexBtn++) {
+                              if (indexBtn == index) {
+                                isSelected[index] = !isSelected[index];
+                              }
+                            }
+                          });
+                        },
+                        child: Ink(
+                            decoration: BoxDecoration(
+                              //set the background color of the button when it is selected/ not selected
+                              color: isSelected[index]
+                                  ? Color.fromRGBO(48, 126, 80, 0.3)
+                                  : Colors.white,
+                              // here is where we set the rounded corner
+                              borderRadius: BorderRadius.circular(8),
+                              //don't forget to set the border,
+                              //otherwise there will be no rounded corner
+                              border: Border.all(
+                                  color: Color.fromRGBO(48, 126, 80, 1)),
+                            ),
+                            child: Image.asset(
+                                "assets/images/" + categories[index] + '.png')
+                            //set the color of the icon when it is selected/ not selected
+
+                            ));
+                  }),
+                ),
+              )),
+        ],
+      ),
     );
   }
 }
