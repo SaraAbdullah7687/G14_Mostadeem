@@ -132,7 +132,7 @@ class requestScreenState extends State<requestScreen> {
             margin: EdgeInsets.only(left: 20, top: 20),
             width: double.infinity,
             child: Text(
-              "Select at least one category:",
+              "Select at least one category",
               textAlign: TextAlign.left,
               style: TextStyle(
                   fontSize: 20, color: Color.fromRGBO(48, 126, 80, 1)),
@@ -140,7 +140,7 @@ class requestScreenState extends State<requestScreen> {
           ),
           Container(
               height: 600,
-              margin: EdgeInsets.only(top: 20),
+              margin: EdgeInsets.only(top: 10),
               width: double.infinity,
               child: Ink(
                 width: 380,
