@@ -33,75 +33,107 @@ class _viewInsState extends State<ViewIns> {
         ),
         toolbarHeight: 60.0,
       ),
-      body: Container(
-        height: 320,
-        // width: 300,
-        child: StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection("institution")
-                .where("status", isEqualTo: "approved")
-                .orderBy("dateCreated")
-                .snapshots(),
-            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (!snapshot.hasData) return Text('SOMETHINGWRONG!');
-              return ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: snapshot.data.docs.length,
-                itemBuilder: (context, index) =>
-                    buildCard(context, snapshot.data.docs[index]),
-              );
-            }),
-      ),
+      body: Column(children: <Widget>[
+        Text('Our instituations'),
+        Container(
+          height: 300,
+          //   color: Colors.white,
+          child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection("institution")
+                  .where("status", isEqualTo: "approved")
+                  .orderBy("dateCreated")
+                  .snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) return Text('SOMETHINGWRONG!');
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: snapshot.data.docs.length,
+                  itemBuilder: (context, index) =>
+                      buildCard(context, snapshot.data.docs[index]),
+                );
+              }),
+        ),
+      ]),
     );
   }
 
   Widget buildCard(BuildContext context, DocumentSnapshot document) => Card(
-      color: Colors.white70,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      margin: EdgeInsets.only(top: 80, left: 20),
+      color: Colors.white,
+      elevation: 14.0, //14
+      shadowColor: Color(0x802196F3),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      margin: EdgeInsets.only(
+        top: 80,
+        left: 20,
+      ),
       child: Container(
-          width: 150,
-          height: 200,
-          child: Column(children: [
-            Text(
+        width: 150,
+        height: 520,
+        child: Column(children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(
+              top: 20,
+            ),
+            child: Text(
               document['name'],
               style: TextStyle(
-                color: Colors.white,
-                fontSize: 20.0,
+                color: Color.fromRGBO(48, 126, 80, 1),
+                fontSize: 30.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Container(
-              margin: EdgeInsets.only(left: 5, right: 10),
-            ),
-            Container(
-              padding: EdgeInsets.only(left: 20, right: 10),
-              child: Row(
-                children: [
-                  /* margin: EdgeInsets.only(
+          ),
+          Container(
+            // padding: EdgeInsets.only(top: 50, left: 13, right: 10),
+            margin: EdgeInsets.only(top: 12, left: 5, right: 10),
+            child: Text(document['category'],
+                style: TextStyle(
+                  color: Color.fromRGBO(48, 126, 80, 1),
+                  fontSize: 10.0,
+                )),
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 30, left: 13, right: 10),
+            child: Row(
+              children: [
+                /* margin: EdgeInsets.only(
                   left: 15,
                 ),*/
-                  SocalIcon(
+                Container(
+                  padding: EdgeInsets.only(
+                    left: 5,
+                  ),
+                  child: SocalIcon(
                     iconSrc: "assets/icons/twitter.svg",
-                    color: Colors.lightGreen[900],
+                    color: Color.fromRGBO(48, 126, 80, 1),
                     press: () => _goToTwitter(document.get("twitter")),
                   ),
-                  IconButton(
+                ),
+                Container(
+                  padding: EdgeInsets.only(
+                    left: 6,
+                  ),
+                  child: IconButton(
                     icon: const Icon(Icons.phone),
-                    color: Colors.lightGreen[900],
+                    color: Color.fromRGBO(48, 126, 80, 1),
                     onPressed: () => _goToWhatsapp(document.get("phone")),
                   ),
-                  IconButton(
+                ),
+                Container(
+                  child: IconButton(
                     icon: const Icon(Icons.mail_outline),
-                    color: Colors.lightGreen[900],
+                    color: Color.fromRGBO(48, 126, 80, 1),
                     tooltip: 'Send email',
                     onPressed: () => _sendingMails(document.get("email")),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            TextButton(onPressed: () {}, child: Text('View more...')),
-          ])));
+          ),
+          TextButton(onPressed: () {}, child: Text('View more...')),
+        ]),
+      ));
 
   Future _sendingMails(String email) async {
     String url = 'mailto:$email'; // specify mail from snapchot
