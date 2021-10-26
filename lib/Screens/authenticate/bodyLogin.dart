@@ -1,3 +1,6 @@
+import 'dart:io';
+
+
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -170,7 +173,7 @@ Map<String, String> _authData = { // can use variables instead of map
                   text: "Sign in",
                   press: () async{ 
                   if(_formKey.currentState.validate()){
-                       // setState(() => loading = true);
+                        //setState(() => loading = true);
                         dynamic result = await _auth.signInWithEmailAndPassword(_authData['email'].trim(), _authData['password']); // see the bookclub
                         
                         if(result == null) {
@@ -215,11 +218,17 @@ Map<String, String> _authData = { // can use variables instead of map
     
                           } 
                         else {print("req is not null");
-
+                        //wait before excute
+                       /* await Future.delayed( Duration(seconds:4), (){
+                          showTopSnackBar(context,"Welcome #name", "Good to have you in Mostadeem",Icons.check_circle_outline_outlined,);
+                        });
+                       // showTopSnackBar(context,"Welcome #name", "Good to have you in Mostadeem",Icons.check_circle_outline_outlined,);
+*/
                       setState(() { // added delete it 
                           loading = false;
-                        });}
-                    }
+                        });
+                        }
+                    }//
                   },
                 ),
     
@@ -242,17 +251,17 @@ Map<String, String> _authData = { // can use variables instead of map
   
   }
 // works but shows an error in the console
-       void showTopSnackBar(BuildContext context, String title, String message) => show(
+       void showTopSnackBar(BuildContext context, String title, String message,IconData icon) => show(
         context,
         Flushbar(
-          icon: Icon(Icons.error, size: 32, color: Colors.white),
+          icon: Icon(icon, size: 32, color: Colors.white),
           shouldIconPulse: false,
           title: title,
           message: message,
           duration: Duration(seconds: 3),
           flushbarPosition: FlushbarPosition.TOP,
-          margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
-          borderRadius: 16,
+         // margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
+         // borderRadius: 16,
            barBlur: 20,
           backgroundColor: Colors.black.withOpacity(0.5),
         ),

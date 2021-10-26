@@ -1,5 +1,6 @@
 
 
+
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:mostadeem/components/google_auth_api.dart';
@@ -73,7 +74,7 @@ void initState(){
           duration: Duration(seconds: 3),
           flushbarPosition: FlushbarPosition.TOP,
           //margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
-          borderRadius: 16,
+          //borderRadius: 16,
            barBlur: 20,
           backgroundColor: Colors.black.withOpacity(0.5),
         ),

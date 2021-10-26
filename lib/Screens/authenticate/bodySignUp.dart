@@ -139,7 +139,7 @@ void clearText() {
               child: TextFormField( 
                     //autofocus: false,
                     cursorColor: kPrimaryColor,
-                    maxLength: 40,
+                    maxLength: 30,
                     textInputAction: TextInputAction.next, // added it
                     decoration: InputDecoration(
                     prefixIcon: Icon( Icons.person, color: kPrimaryColor, ),
@@ -390,7 +390,7 @@ void clearText() {
           duration: Duration(seconds: 3),
           flushbarPosition: FlushbarPosition.TOP,
           margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
-          borderRadius: 16,
+         // borderRadius: 16,
            barBlur: 20,
           backgroundColor: Colors.black.withOpacity(0.5),
         ),
