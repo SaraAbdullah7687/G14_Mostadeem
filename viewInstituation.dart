@@ -34,9 +34,17 @@ class _viewInsState extends State<ViewIns> {
         toolbarHeight: 60.0,
       ),
       body: Column(children: <Widget>[
-        Text('Our instituations'),
         Container(
-          height: 300,
+          margin: EdgeInsets.only(top: 60, right: 150, bottom: 20),
+          child: Text('Our instituations',
+              style: TextStyle(
+                fontSize: 20,
+                color: Color.fromRGBO(48, 126, 80, 1),
+                fontWeight: FontWeight.bold,
+              )),
+        ),
+        Container(
+          height: 200,
           //   color: Colors.white,
           child: StreamBuilder(
               stream: FirebaseFirestore.instance
@@ -54,22 +62,40 @@ class _viewInsState extends State<ViewIns> {
                 );
               }),
         ),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 80),
+          padding: EdgeInsets.only(top: 10, left: 10),
+          width: double.infinity,
+          height: 120,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [
+              Color.fromRGBO(48, 126, 80, 1),
+              Color.fromRGBO(236, 232, 202, 1)
+            ]),
+            color: Color.fromRGBO(48, 126, 80, 1),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Text.rich(TextSpan(
+            text: "Tips",
+            style: TextStyle(color: Colors.white),
+          )),
+        ),
       ]),
     );
   }
 
   Widget buildCard(BuildContext context, DocumentSnapshot document) => Card(
-      color: Colors.white,
-      elevation: 14.0, //14
-      shadowColor: Color(0x802196F3),
+      color: Colors.white70,
+      //  elevation: 14.0, //14
+      // shadowColor: Color(0x802196F3),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       margin: EdgeInsets.only(
-        top: 80,
+        //   top: 80,
         left: 20,
       ),
       child: Container(
         width: 150,
-        height: 520,
+        height: 320,
         child: Column(children: <Widget>[
           Padding(
             padding: EdgeInsets.only(
@@ -86,7 +112,7 @@ class _viewInsState extends State<ViewIns> {
           ),
           Container(
             // padding: EdgeInsets.only(top: 50, left: 13, right: 10),
-            margin: EdgeInsets.only(top: 12, left: 5, right: 10),
+            margin: EdgeInsets.only(top: 0, left: 5, right: 10),
             child: Text(document['category'],
                 style: TextStyle(
                   color: Color.fromRGBO(48, 126, 80, 1),
