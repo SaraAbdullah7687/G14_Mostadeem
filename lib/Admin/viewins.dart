@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
 import 'package:mostadeem/Admin/viViewModel.dart';
+import 'package:mostadeem/components/customAlert.dart';
 import 'package:mostadeem/components/google_auth_api.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:mostadeem/shared/loading.dart';
@@ -57,7 +58,8 @@ final ViewInstitutionViewModel ourViewMode=ViewInstitutionViewModel();
         Duration.zero, () => setState(() {
       setup();
     }));
-    showTopSnackBar(context,"Welcome #name", "Good to have you in Mostadeem",Icons.check_circle_outline_outlined,);
+   // showTopSnackBar(context,"Welcome #name", "Good to have you in Mostadeem",Icons.check_circle_outline_outlined,);
+  
   }
 
     setup() async {
@@ -272,7 +274,10 @@ ElevatedButton(
       padding: EdgeInsets.only(top:3 , bottom: 3, right: 10, left: 10),
     ),
     onPressed: () {
-      _showMyDialog("approve", context,document.id,document);
+      //_showMyDialog("approve", context,document.id,document);
+    showCustomAlert("approve", context,document.id,document);
+    
+    
     },
   ),
 SizedBox(width: 10),
@@ -297,7 +302,8 @@ ElevatedButton(
       padding: EdgeInsets.only(top:3 , bottom: 3, right: 5, left: 5),
     ),
     onPressed: () {
-      _showMyDialog("Disapprove", context,document.id,document);
+      //_showMyDialog("Disapprove", context,document.id,document);
+      showCustomAlert("disapprove", context,document.id,document);
     },
 
 ),
@@ -468,4 +474,53 @@ Future show(BuildContext context, Flushbar newFlushBar) async {
     newFlushBar.show(context);
     flushBars.add(newFlushBar);
   }
+
+showCustomAlert(String status, BuildContext context, String uid,DocumentSnapshot document) async {
+
+  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+return CustomAlert(
+      icon:Icons.error_outline,
+      msgTitle: "Institution Status\n",
+      msgContent:'Are you sure you want to $status this intitution?',
+      press:(){
+      if(status=="approve"){
+                  // change status to approved, then admin would not be able to see them 
+                 String result= _auth.updateInstitutionStatus(status,uid);
+                 if(result=='Success approve'){ // show another pop up 
+                   print('status has changed to approved');
+                   sendEmail("approveEmail",context,document);
+                   showTopSnackBar(context,'Success','Institution has been approved',Icons.check );
+
+                 }
+                 else if(result=='Fail approve'){print('could not update status, procces failed');
+                 showTopSnackBar(context,'Fail','Approve institution failed',Icons.cancel_outlined, );
+                 }
+                 else{ print(result);}
+                }
+
+                
+                else {
+                  // delete institution and send email to them to let them know 
+                  String result= _auth.updateInstitutionStatus(status,uid);
+                 if(result=='Success disapprove'){ // show another pop up 
+                   print('intitution has been deleted'); // may change it
+                   sendEmail("disapproveEmail",context,document);
+                   showTopSnackBar(context,'Success','Institution has been disapproved',Icons.check  );
+
+                 }
+                 else if(result=='Fail disapprove') {
+                 print('could not delete institution, procces failed');
+                 showTopSnackBar(context,'Fail','Dispprove institution failed', Icons.cancel_outlined, );
+                 
+                 }
+                  else{ print(result);}
+                }
+                
+                Navigator.pop(context, 'OK');},
+    );
+                    });
+}
+
 }// end of class
