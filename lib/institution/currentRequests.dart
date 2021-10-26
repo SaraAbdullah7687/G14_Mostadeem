@@ -3,7 +3,7 @@
 
 //import 'dart:html';
 
-import 'package:flushbar/flushbar.dart';
+//import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mailer/mailer.dart';
@@ -45,7 +45,7 @@ class ViewCurrentRequests extends StatefulWidget {
 
 class _ViewCurrentRequestsState extends State<ViewCurrentRequests> {
   final AuthService _auth = AuthService();
-  final List<Flushbar> flushBars = []; 
+ //final List<Flushbar> flushBars = []; 
  WebViewController controller;
 
 final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
@@ -131,7 +131,7 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-           Container( 
+           Container( // bring the name from another stream
             margin: EdgeInsets.only(top:13, left:18, ), 
             child:  Text(document['name'],
             style: TextStyle(color: Colors.green[900], fontSize: 25.0,fontWeight: FontWeight.bold),),),
@@ -215,7 +215,7 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
     Flexible( child:
             IconButton(
           icon: const Icon(Icons.mail_outline),
-          color: Colors.lightGreen[900],
+          color: kPrimaryColor,
           tooltip: 'Send email',
           onPressed: ()=>  ourViewMode.sendingMails(document.get("email")),
          // _sendingMails(document.get("email")),
@@ -225,13 +225,13 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
     Flexible( child:
                 IconButton(
           icon: const Icon(Icons.phone),
-          color: Colors.lightGreen[900],
+          color: kPrimaryColor,
           onPressed: ()=> ourViewMode.goToWhatsapp(document.get("phone")),),),
     SizedBox(width: 12),
     Flexible( child:
                 IconButton(
           icon: const Icon(Icons.location_on),
-          color: Colors.lightGreen[900],
+          color: kPrimaryColor,
           onPressed: ()=> ourViewMode.openLocation(document.get("location")),),),
  
   ],),//),
@@ -266,6 +266,7 @@ Padding(
         ),
         onPressed: () {
          // ourViewMode.showMyDialog("done", context,document.id,document);
+         ourViewMode.showCustomAlert("done", "Are you sure you want to mark this request as done?", context, document.id, document);
         },
       ),
 ),

@@ -1,7 +1,9 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mostadeem/components/customAlert.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:url_launcher/url_launcher.dart';
 // import 'package:swe444/Models/request.dart';
@@ -9,8 +11,10 @@ import 'package:url_launcher/url_launcher.dart';
 class ViewRequestViewModel with ChangeNotifier {
   Stream<QuerySnapshot<Map<String, dynamic>>> _requests;
   Stream<QuerySnapshot<Map<String, dynamic>>> _currentRequests;
+  Stream<QuerySnapshot<Map<String, dynamic>>> _contInfo;
   AuthService auth=AuthService();
   final List<Flushbar> flushBars = []; 
+  final AuthService _auth = AuthService();
 
   fetchRequests() async {
     String uid= auth.getCurrentUserID();
@@ -44,6 +48,20 @@ class ViewRequestViewModel with ChangeNotifier {
   Stream<QuerySnapshot<Map<String, dynamic>>> get currentRequests {
     return _currentRequests;
   }
+
+  fetchContInfo(String uid) async {// get uid
+    print(uid+ "cont uid view model");
+     var _contInfo= FirebaseFirestore.instance
+        .collection("contributor")
+        .doc(uid);
+    notifyListeners();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> get contInfo {
+    return _contInfo;
+  }
+
+
 
 Future sendingMails(String email) async {
   print("in view model hii ");
@@ -130,22 +148,21 @@ Future<void> showMyDialog(String status, BuildContext context, String uid,Docume
 }
 
 
-void showTopSnackBar(BuildContext context ,String title,String message) => show(
+void showTopSnackBar(BuildContext context ,String title,String message, IconData icon) => show(
         context,
         Flushbar(
-          icon: Icon(Icons.error, size: 32, color: Colors.white),
+          icon: Icon(icon, size: 32, color: Colors.white),
           shouldIconPulse: false,
           title: title,
           message: message, // change message
           duration: Duration(seconds: 3),
           flushbarPosition: FlushbarPosition.TOP,
-          margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
+        //  margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
           borderRadius: 16,
            barBlur: 20,
           backgroundColor: Colors.black.withOpacity(0.5),
         ),
       );
-
 
 Future show(BuildContext context, Flushbar newFlushBar) async {
     await Future.wait(flushBars.map((flushBar) => flushBar.dismiss()).toList());
@@ -154,5 +171,45 @@ Future show(BuildContext context, Flushbar newFlushBar) async {
     newFlushBar.show(context);
     flushBars.add(newFlushBar);
   }
+
+showCustomAlert(String status,String content, BuildContext context, String uid,DocumentSnapshot document) async {
+
+  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+return CustomAlert(
+      icon:Icons.error_outline,
+      msgTitle: "Request Status\n",
+      msgContent:content,
+      press:(){ 
+        if(status=="accept"){ // then update status in both institution & contributor, and make the same request in other instituton as rejected
+        // send appointment doc id, and get inst id from auth class 
+        String result= _auth.updateAppointmentStatus(status,uid);
+        if(result=='Success approve'){ // show another pop up 
+         String re2= _auth.updateRequestStatus(status,document['contribId'],document['requestID'] ); // تأكدي من اسامي الفيلدز
+         if(re2=='accepted'){
+           print('status has changed to accepted');
+           showTopSnackBar(context,'Success','Request has been accepted',Icons.check );
+
+         }
+         else if(re2=='failed'){
+           print('could not update status, procces failed');
+           showTopSnackBar(context,'Fail','Accept request failed',Icons.cancel_outlined, );
+         }
+         else print(re2);
+                   
+                 }
+                 else if(result=='Fail approve'){print('could not update status, procces failed');
+                 showTopSnackBar(context,'Fail','Accept request failed',Icons.cancel_outlined, );
+                 }
+        else{ print(result);}
+        }// if accept
+
+      Navigator.pop(context, 'OK');
+      },
+    );
+                    });
+}
+
 
 } // end class

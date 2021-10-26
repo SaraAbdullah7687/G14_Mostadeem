@@ -47,6 +47,7 @@ class _ViewRequestsState extends State<ViewRequests> {
   final AuthService _auth = AuthService();
   final List<Flushbar> flushBars = []; 
  WebViewController controller;
+  String contID;
 
 final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
 
@@ -62,6 +63,7 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
     setup() async {
     await Provider.of<ViewRequestViewModel>(context, listen: false)
         .fetchRequests();
+   
   }
 
   @override
@@ -133,7 +135,7 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
       children: <Widget>[
            Container( 
             margin: EdgeInsets.only(top:13, left:18, ), 
-            child:  Text(document['name'],
+            child:Text(document['name'],
             style: TextStyle(color: Colors.green[900], fontSize: 25.0,fontWeight: FontWeight.bold),),),
 
             Row(mainAxisAlignment: MainAxisAlignment.start,
@@ -247,7 +249,7 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
     Flexible( child:
             IconButton(
           icon: const Icon(Icons.mail_outline),
-          color: Colors.lightGreen[900],
+          color: kPrimaryColor,
           tooltip: 'Send email',
           onPressed: ()=>  ourViewMode.sendingMails(document.get("email")),
          // _sendingMails(document.get("email")),
@@ -257,13 +259,13 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
     Flexible( child:
                 IconButton(
           icon: const Icon(Icons.phone),
-          color: Colors.lightGreen[900],
+          color: kPrimaryColor,
           onPressed: ()=> ourViewMode.goToWhatsapp(document.get("phone")),),),
     SizedBox(width: 12),
     Flexible( child:
                 IconButton(
           icon: const Icon(Icons.location_on),
-          color: Colors.lightGreen[900],
+          color: kPrimaryColor,
           onPressed: ()=> ourViewMode.openLocation(document.get("location")),),),
  
   ],),//),
@@ -280,7 +282,7 @@ SingleChildScrollView(
  //alignment: WrapAlignment.end,
 mainAxisAlignment: MainAxisAlignment.end,
    children: <Widget>[
-ElevatedButton(
+TextButton(
     child: Text('Accept'),
     style: ElevatedButton.styleFrom(
       shape: new RoundedRectangleBorder(
@@ -289,10 +291,11 @@ ElevatedButton(
       primary: kPrimaryColor, //Colors.green[400],
       onPrimary: Colors.white,
       onSurface: Colors.grey,
-      padding: EdgeInsets.only(top:3 , bottom: 3, right: 5, left: 5),
+      padding: EdgeInsets.only(top:1 , bottom:1, right: 3, left: 3),
     ),
     onPressed: () {
-      ourViewMode.showMyDialog("accept", context,document.id,document);
+     // ourViewMode.showMyDialog("accept", context,document.id,document);
+     ourViewMode.showCustomAlert("accept", "Are you sure you want to accept this request?", context, document.id, document);
     },
   ),
 SizedBox(width: 10), 
@@ -310,6 +313,7 @@ ElevatedButton(
     ),
     onPressed: () {
      // ourViewMode.showMyDialog("reject", context,document.id,document);
+     ourViewMode.showCustomAlert("reject", "Are you sure you want to reject this request?", context, document.id, document);
     },
 
 ),
