@@ -54,7 +54,6 @@ class _editProfile extends State<editProfile> {
   TextEditingController _twitterController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
 
-  
 
   String message='';
 
@@ -688,6 +687,9 @@ class _DemoToggleButtonsState extends State<DemoToggleButtons> {
       return globals.userName;
 
       } 
+
+
+      
 
  void getPhone(){
    
