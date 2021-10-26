@@ -1,4 +1,4 @@
-import 'package:flushbar/flushbar.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mostadeem/models/ContributorModel.dart';
@@ -9,7 +9,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthService {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-final List<Flushbar> flushBars = [];
   // create user obj based on firebase user
   UserMu _userFromFirebaseUser(User user) { // was FirebaseUser instead of User
   print(user); // maybe wrong
@@ -159,5 +158,16 @@ return name;
 
 }
 
+String updateAppointmentStatus(String status, String appointmentID){ // return string ?
+
+String institutionID=getCurrentUserID(); 
+String result = DatabaseService().updateAppointment(appointmentID,status,institutionID);
+return result;
+}
+String updateRequestStatus(String status, String contID, String reqID){ // return string ?
+String result = DatabaseService().updateRequest(contID,status, reqID);
+return result;
+
+}
 
 } // end of class

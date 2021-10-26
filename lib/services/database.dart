@@ -235,7 +235,47 @@ print (snapshot['name']+" in database method");
     return ids;
   }
 
+String updateAppointment(String uid, String status, String instID){
+String result="nothing changed";
+// check condition approve or disapprove
+if(status =='accept'){// get current user uid
+_institutionCollection.doc(instID).collection("appointment").doc(uid) // لحظة هذا الاي دي حق الدوك للابوينمنت؟
+    .update({'status' : 'accepted'})
+    .then((_) => print(result='Success approve'),)
+    .catchError((error) => print(result='Fail approve'),);
+    result='Success approve';
+}
+else{ 
+_institutionCollection.doc(uid)
+    .update({'status' : 'disapproved'})
+    .then((_) => print(result='Success disapprove'),)
+    .catchError((error) => print(result='Fail disapprove'),);
+result='Success disapprove';
+}
+return result;
 
+}
+
+String updateRequest(String contID, String status, String reqID){
+String result="nothing changed";
+// check condition approve or disapprove
+if(status =='accept'){// get current user uid
+_contributorCollection.doc(contID).collection("request").doc(reqID) // لحظة هذا الاي دي حق الدوك للابوينمنت؟
+    .update({'status' : 'accepted'})
+    .then((_) => print(result='accepted'),)
+    .catchError((error) => print(result='failed'),);
+    result='accepted';
+}
+else{ 
+_contributorCollection.doc(reqID)
+    .update({'status' : 'disapproved'})
+    .then((_) => print(result='Success disapprove'),)
+    .catchError((error) => print(result='Fail disapprove'),);
+result='Success disapprove';
+}
+return result;
+
+}
 
 
 }
