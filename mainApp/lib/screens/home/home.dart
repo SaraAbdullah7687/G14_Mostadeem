@@ -9,12 +9,26 @@ import 'package:provider/provider.dart';
 import 'package:mostadeem/Screens/home/home0.dart';
 import 'package:mostadeem/Screens/home/profile.dart';
 
+// SARA NOTIFICATIONS
+import 'package:mostadeem/services/notific.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
+
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
+  // SARA
+  @override
+  void initState() {
+    super.initState();
+
+    tz.initializeTimeZones();
+  }
+  // END SARA
+
   final AuthService _auth = AuthService();
 
   final screens = [

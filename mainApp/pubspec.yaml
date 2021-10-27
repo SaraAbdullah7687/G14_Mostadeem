@@ -64,6 +64,8 @@ dependencies:
 
   #SARA notific. --------------------------------------------------------
   firebase_messaging: ^10.0.8
+  flutter_local_notifications: ^9.0.1
+  timezone: ^0.8.0
   
 
 dev_dependencies:

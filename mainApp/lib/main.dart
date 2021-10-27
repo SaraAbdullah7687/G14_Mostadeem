@@ -4,10 +4,15 @@ import 'package:mostadeem/models/userMu.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:provider/provider.dart';
 import 'Screens/wrapper.dart';
+import 'package:mostadeem/services/notific.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(); // important
+
+  // SARA Notification
+  WidgetsFlutterBinding.ensureInitialized();
+  NotificationService().initNotification();
   runApp(MyApp());
 }
 
