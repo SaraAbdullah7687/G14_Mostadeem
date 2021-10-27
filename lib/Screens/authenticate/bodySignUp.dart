@@ -282,7 +282,7 @@ void clearText() {
                               //  setState(() => loading = true);
                                // clearText();
                                 print("validate form,sending signup req"); // maybe beacuse it's dunamic?
-                                dynamic result = await _auth.registerWithEmailAndPassword(_authData['email'].trim(), _authData['password'], _authData['name'].trim());
+                                dynamic result = await _auth.registerWithEmailAndPassword(_authData['email'].trim(), _authData['password'], _authData['name'].trim(),_authData['phone'].trim());
                                 
                                 if(result == null) {
                                   print("req returend null");
