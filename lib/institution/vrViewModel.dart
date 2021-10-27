@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mostadeem/components/customAlert.dart';
 import 'package:mostadeem/services/auth.dart';
+import 'package:mostadeem/services/database.dart';
 import 'package:url_launcher/url_launcher.dart';
 // import 'package:swe444/Models/request.dart';
 
@@ -184,13 +185,24 @@ return CustomAlert(
       press:(){ 
         if(status=="accept"){ // then update status in both institution & contributor, and make the same request in other instituton as rejected
         // send appointment doc id, and get inst id from auth class 
-        String result= _auth.updateAppointmentStatus(status,uid);
-        if(result=='Success approve'){ // show another pop up 
+        String result= _auth.updateAppointmentStatus(status,uid);// appointment id
+        if(result=='Success approve'){ 
          String re2= _auth.updateRequestStatus(status,document['contribId'],document['requestID'] ); // تأكدي من اسامي الفيلدز
-         if(re2=='accepted'){
-           print('status has changed to accepted');
+        
+         if(re2=='accepted'){ // change status to rejected in other institutions
+           String re3=DatabaseService().updateRequestStatusInAllInst(status,document['requestID'] );
+           print(re3);
+           if(re3== "success"){
+             print("re3 Succeeded");
            showTopSnackBar(context,'Success','Request has been accepted',Icons.check );
-
+           }
+           else if(re3=='fail'){
+             print("re3 failed");
+             showTopSnackBar(context,'Fail','Accept request failed',Icons.cancel_outlined, );
+           }
+           else{
+             print(re3+' did not work');
+           }
          }
          else if(re2=='failed'){
            print('could not update status, procces failed');

@@ -81,7 +81,7 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
         if (snapshot.data.docs.length==0){
           return Center(
         child: Text(
-          'No accepted requests',
+          'No available requests',
           style: TextStyle(fontSize: 20, color: Colors.grey,),
         ),
       );
@@ -135,7 +135,7 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
       children: <Widget>[
            Container( 
             margin: EdgeInsets.only(top:13, left:18, ), 
-            child:Text(document['name'],
+            child:Text(document['contName'],
             style: TextStyle(color: Colors.green[900], fontSize: 25.0,fontWeight: FontWeight.bold),),),
 
             Row(mainAxisAlignment: MainAxisAlignment.start,
@@ -251,7 +251,7 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
           icon: const Icon(Icons.mail_outline),
           color: kPrimaryColor,
           tooltip: 'Send email',
-          onPressed: ()=>  ourViewMode.sendingMails(document.get("email")),
+          onPressed: ()=>  ourViewMode.sendingMails(document.get("contEmail")),
          // _sendingMails(document.get("email")),
           
           ),),
@@ -260,7 +260,7 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
                 IconButton(
           icon: const Icon(Icons.phone),
           color: kPrimaryColor,
-          onPressed: ()=> ourViewMode.goToWhatsapp(document.get("phone")),),),
+          onPressed: ()=> ourViewMode.goToWhatsapp(document.get("contPhone")),),),
     SizedBox(width: 12),
     Flexible( child:
                 IconButton(
