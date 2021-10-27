@@ -36,6 +36,7 @@ Future<String> createUserContributor(ContributorModel user) async {
         'uid':user.uid,
         'name': user.name,
         'email': user.email,
+        'phone':user.phone,
         'userType': 'contributor',
         //'notifToken': user.notifToken,?? what should we add?
       });
@@ -277,6 +278,39 @@ return result;
 
 }
 
+String updateRequestStatusInAllInst(String status, String reqID){
+String result="initial";
+var theRequest = FirebaseFirestore.instance.collectionGroup('appointment')
+   .where("requestID", isEqualTo: reqID).where("status", isEqualTo: "pending"); // only bring the request that is pending and has requestID=reqID, (I specify the status pending bc I already accepted one)
+   if(status=='accept'){
+     print('in accept if database');
+ theRequest.get().then( (querySnapshot) { // change status to rejected
+     querySnapshot.docs.forEach((document) {
+       if(document.exists){
+       try{
+         //print(document['contEmail']);
+         //print(document['status']+' before');
+         
+        var docRef= document.reference;
+        docRef.update({'status' : 'rejected'}); // call method to delete rejected req
+       // print(document['status']+' after');
+       // print(document['contName']);
+        return result="success";
+       } 
+       on FormatException catch (error) {
+         print("error in update status all");
+         return result="fail";
+       }
+       }
+       else {return result="no institutions has the same req";}
+       
+     });
+     
+ });
+   
+   }
+   return result;
+}
 
 }
 

@@ -1,4 +1,5 @@
 
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mostadeem/models/ContributorModel.dart';
@@ -40,7 +41,7 @@ class AuthService {
   }
 
   // register with email and password
-  Future <dynamic>registerWithEmailAndPassword(String email, String password, String name) async { // خلي الميثود تقبل رقم جواله
+  Future <dynamic>registerWithEmailAndPassword(String email, String password, String name, String phone) async { // خلي الميثود تقبل رقم جواله
    String retVal = "retVal error";
    try {
      print("before registering contributor");
@@ -51,7 +52,8 @@ class AuthService {
        ContributorModel _userCont = ContributorModel(
         uid: user.uid,
         email: user.email,
-        name: name,); //notifToken: await _fcm.getToken(),?? 
+        name: name,
+        phone: phone); //notifToken: await _fcm.getToken(),?? 
 
         String _returnString = await DatabaseService().createUserContributor(_userCont); // maybe database service
         print("contributor created");
@@ -170,4 +172,41 @@ return result;
 
 }
 
+
+
 } // end of class
+
+/*
+String updateRequestStatusInAllInst(String status, String reqID){
+  //https://petercoding.com/firebase/2020/04/04/using-cloud-firestore-in-flutter/
+String result="initial";
+//dynamic newValue='rejected';
+WriteBatch batch = FirebaseFirestore.instance.batch();
+
+var theRequest = FirebaseFirestore.instance.collectionGroup('appointment')
+   .where("requestID", isEqualTo: reqID).where("status", isEqualTo: "pending"); // only bring the request that is pending and has requestID=reqID, (I specify the status pending bc I already accepted one)
+   if(status=='accept'){
+     print('in accept if database');
+ theRequest.get().then( (querySnapshot) { // change status to rejected
+     querySnapshot.docs.forEach((document) {
+       //if(document.exists){
+       try{
+         print(document['contEmail']);
+         print(document['status']+' before');
+         //var docRef= document.reference;
+         document.reference.update({'status' : 'rejected'}); // doesn't work!!
+        print(document['status']+' after');
+        print(document['contName']);
+        result="success";
+       } 
+       on FormatException catch (error) {
+         print("error in update status all");
+         result="fail";
+       }//}
+     });
+     batch.commit();
+ });
+   return result;
+   }
+}
+*/
