@@ -1,6 +1,7 @@
 //import 'dart:html';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mostadeem/models/ContributorModel.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -112,16 +113,23 @@ _usersCollection.doc(uid) // also delete it from users collecction
   }
 
 //return userType;
+/* get name 
+  String getName() {
+    var firebaseUser = FirebaseAuth.instance.currentUser;
+    firestoreInstance.
+  }*/
 
   //addRequest
   Future<String> addRequest(String contId, requestModel request) async {
     String retVal = "error";
+
     print("DB 22########################################################");
     try {
       CollectionReference _docRef = _firestore
           .collection("contributor")
           .doc(contId)
           .collection("request");
+
       print("DB 28 ########################################################" +
           _docRef.toString());
 
@@ -130,9 +138,13 @@ _usersCollection.doc(uid) // also delete it from users collecction
         'date': request.date.trim(),
         'location': request.location.data,
         'status': request.status.trim(),
-        'time': request.time.trim(), //'name': request.name.trim(),
+        'time': request.time.trim(),
+        //'requestID': _docRef.id.toString(), //'name': request.name.trim(),
         // 'descreption': request.descreption.trim(),
+      }).then((_docRef) {
+        print("!!!!!!!!!Document written with ID: " + _docRef.id.toString());
       });
+
       print("DB 35########################################################");
 
 // ADD appointment to suitble instituations
@@ -150,6 +162,24 @@ _usersCollection.doc(uid) // also delete it from users collecction
   // ADD appointment to instituations
   Future<String> addAppointment(String contribId, requestModel request) async {
     String retVal = "error";
+    String contName;
+    String contEmail;
+    String contPhone;
+    ////
+    FirebaseFirestore firestoreObj = FirebaseFirestore.instance;
+    /* TO GET NAME*/
+    firestoreObj.collection("contributor").doc(contribId).get().then((value) {
+      contName = (value.data()['name']);
+    });
+    /*TO GET EMAIL*/
+    firestoreObj.collection("contributor").doc(contribId).get().then((value) {
+      contEmail = (value.data()['email']);
+    });
+    /*TO GET PHONE
+      firestoreObj.collection("contributor").doc(contribId).get().then((value) {
+      contPhone = (value.data()['phone']);
+    });*/
+
     print("DB 52########################################################");
 
     try {
@@ -171,7 +201,10 @@ _usersCollection.doc(uid) // also delete it from users collecction
           'location': request.location.data,
           'time': request.time.trim(),
           'status': request.status.trim(),
+          //'requestID': request.requestID.trim(),
           // 'descreption': request.descreption.trim(),
+          'contName': contName,
+          'contEmail': contEmail,
         });
       }); // END outer foreach
       print("DB 74########################################################");
