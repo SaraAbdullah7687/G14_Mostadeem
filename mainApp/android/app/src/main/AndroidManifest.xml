@@ -12,6 +12,11 @@
 -->
       <uses-permission android:name="android.permission.INTERNET"/>
 <uses-permission android:name="android.permission.VIBRATE"/>
+<!--
+  SARA local notification
+
+ <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+-->
 
    <application
         android:label="mostadeem"
@@ -56,6 +61,20 @@
     <action android:name="FLUTTER_NOTIFICATION_CLICK" />
     <category android:name="android.intent.category.DEFAULT" />
 </intent-filter>
+<!--
+  SARA local notification
+
+<receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+
+
+-->
 
         </activity>
         <!-- Don't delete the meta-data below.

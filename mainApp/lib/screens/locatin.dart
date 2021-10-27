@@ -20,6 +20,10 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:mostadeem/screens/calendar.dart';
 import 'package:mostadeem/globals/global.dart' as global;
 
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:mostadeem/services/notific.dart';
+
 /*Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   FirebaseApp LocationApp = await Firebase.initializeApp();
@@ -56,6 +60,25 @@ class LocationApp extends StatefulWidget {
 }
 
 class _LocationAppState extends State<LocationApp> {
+  @override
+  void initState() {
+    super.initState();
+    getCurrentLocation();
+    setCustomMarker();
+    tz.initializeTimeZones(); //============================================================================================================
+    NotificationService().initNotification();
+  }
+
+// يلتقط الاشعار ويوديه للصفحة المستهدفة، فالمفروض هالميثود تكون بالمين الاساسية
+  /*
+  void listenNotis() {
+    NotificationService().onNotifs.stream.listen((payload) {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => Home(/*payload: payload*/),
+      ));
+    });
+  }
+*/
   // FINAL STEP > ADD to database
   void _addRequest(
       BuildContext context, String contId, requestModel request) async {
@@ -65,6 +88,14 @@ class _LocationAppState extends State<LocationApp> {
     _returnString = await DatabaseService().addRequest(contId, request);
 
     if (_returnString == "success") {
+      // اشيل اللي بسطر 442
+      Duration difference = global.globalDate.difference(DateTime.now());
+      if (difference.inDays > 1) {
+        NotificationService().showNotification(1, "Pickup Reminder",
+            "Your request will be pickuped today.", difference.inDays);
+      }
+// DateTime subtracted =  global.globalDate.subtract(Duration(hours:24));
+
       global.globalDate = null;
       global.globalTime = null;
       /* Navigator.pushAndRemoveUntil(
@@ -76,7 +107,7 @@ class _LocationAppState extends State<LocationApp> {
     } // END inner if
     /* }*/ else {
       // WE must show error msg
-      print("ERRRRRRRRRRRRRRRRRRRRRRRRRRRRROR 52 location");
+      print("ERRRRRRRRRRRRRRRRRRRRRRRRRRRRROR 109 location");
     }
   } // END FINAL STEP > ADD to database
 
@@ -264,13 +295,6 @@ class _LocationAppState extends State<LocationApp> {
     });
   }*/
 
-  @override
-  void initState() {
-    super.initState();
-    getCurrentLocation();
-    setCustomMarker();
-  }
-
   void setCustomMarker() async {
     mapMarker = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(), 'assets/images/marker.png');
@@ -409,7 +433,21 @@ class AdvanceCustomAlert extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => MyHomePage()),
-                                );*/
+                                );
+                                OR
+                                 Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => Home(),
+                                  )
+                                );
+                                */
+
+                                /*  NotificationService().showNotification(
+                                    1,
+                                    "Pickup Reminder",
+                                    "Your request will be pickuped today.",
+                                    3);
+                                    */
                               }
                             },
                           )

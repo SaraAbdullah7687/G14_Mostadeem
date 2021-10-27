@@ -66,7 +66,10 @@ dependencies:
   firebase_messaging: ^10.0.8
   flutter_local_notifications: ^9.0.1
   timezone: ^0.8.0
-  
+  rxdart: ^0.27.2
+  background_fetch: ^1.0.1
+  workmanager: ^0.4.1
+  http: ^0.13.4
 
 dev_dependencies:
   flutter_test:

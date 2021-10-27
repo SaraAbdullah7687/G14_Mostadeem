@@ -1,18 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mostadeem/models/userMu.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:provider/provider.dart';
 import 'Screens/wrapper.dart';
 import 'package:mostadeem/services/notific.dart';
 
+/*
+import 'dart:convert';
+import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'package:workmanager/workmanager.dart';
+*/
+// const simplePeriodicTask = "SPT";
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(); // important
 
   // SARA Notification
-  WidgetsFlutterBinding.ensureInitialized();
   NotificationService().initNotification();
+  // Notifs in BACKGROUND
+  /*
+  await Workmanager.initialize(callbackDispatcher, isInDebugMode: true); //to true if still in testing lev turn it to false whenever you are launching the app
+  await Workmanager.registerPeriodicTask("5", simplePeriodicTask,
+      existingWorkPolicy: ExistingWorkPolicy.replace,
+      frequency: Duration(minutes: 15),//when should it check the link
+      initialDelay: Duration(seconds: 5),//duration before showing the notification
+      constraints: Constraints(
+        networkType: NetworkType.connected,
+      ));
+      */
   runApp(MyApp());
 }
 
