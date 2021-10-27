@@ -94,6 +94,10 @@ class _viewInsState extends State<ViewIns> {
         left: 20,
       ),
       child: Container(
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(236, 232, 202, 0.3),
+          borderRadius: BorderRadius.circular(20),
+        ),
         width: 150,
         height: 320,
         child: Column(children: <Widget>[
@@ -112,7 +116,7 @@ class _viewInsState extends State<ViewIns> {
           ),
           Container(
             // padding: EdgeInsets.only(top: 50, left: 13, right: 10),
-            margin: EdgeInsets.only(top: 0, left: 5, right: 10),
+            margin: EdgeInsets.only(top: 8, left: 5, right: 10),
             child: Text(document['category'],
                 style: TextStyle(
                   color: Color.fromRGBO(48, 126, 80, 1),
@@ -120,12 +124,20 @@ class _viewInsState extends State<ViewIns> {
                 )),
           ),
           Container(
-            padding: EdgeInsets.only(top: 30, left: 13, right: 10),
+            padding: EdgeInsets.only(top: 20, left: 13, right: 10),
             child: Row(
               children: [
                 /* margin: EdgeInsets.only(
                   left: 15,
                 ),*/
+                Container(
+                  child: IconButton(
+                    icon: const Icon(Icons.mail_outline),
+                    color: Color.fromRGBO(48, 126, 80, 1),
+                    tooltip: 'Send email',
+                    onPressed: () => _sendingMails(document.get("email")),
+                  ),
+                ),
                 Container(
                   padding: EdgeInsets.only(
                     left: 5,
@@ -138,7 +150,7 @@ class _viewInsState extends State<ViewIns> {
                 ),
                 Container(
                   padding: EdgeInsets.only(
-                    left: 6,
+                    left: 4,
                   ),
                   child: IconButton(
                     icon: const Icon(Icons.phone),
@@ -146,18 +158,18 @@ class _viewInsState extends State<ViewIns> {
                     onPressed: () => _goToWhatsapp(document.get("phone")),
                   ),
                 ),
-                Container(
-                  child: IconButton(
-                    icon: const Icon(Icons.mail_outline),
-                    color: Color.fromRGBO(48, 126, 80, 1),
-                    tooltip: 'Send email',
-                    onPressed: () => _sendingMails(document.get("email")),
-                  ),
-                ),
               ],
             ),
           ),
-          TextButton(onPressed: () {}, child: Text('View more...')),
+          TextButton(
+              onPressed: () {},
+              child: Text(
+                'View more...',
+                style: TextStyle(
+                  color: Color.fromRGBO(48, 126, 80, 1),
+                  decoration: TextDecoration.underline,
+                ),
+              )),
         ]),
       ));
 
