@@ -242,16 +242,23 @@ String result="nothing changed";
 if(status =='accept'){// get current user uid
 _institutionCollection.doc(instID).collection("appointment").doc(uid) // لحظة هذا الاي دي حق الدوك للابوينمنت؟
     .update({'status' : 'accepted'}) // modify it
-    .then((_) => print(result='Success approve'),)
-    .catchError((error) => print(result='accepted appointment'),);
-    result='Success approve';
+    .then((_) => print(result='Success accept'),)
+    .catchError((error) => print(result='Fail accept'),);
+    result='Success accept';
 }
-else{ // status == reject 
+else if(status == 'reject'){
 _institutionCollection.doc(instID).collection("appointment").doc(uid)
     .delete() 
     .then((_) => print(result='Success reject'),)
     .catchError((error) => print(result='Fail reject'),);
 result='Success reject';
+}
+else{ // status==done
+_institutionCollection.doc(instID).collection("appointment").doc(uid) // لحظة هذا الاي دي حق الدوك للابوينمنت؟
+    .update({'status' : 'done'}) 
+    .then((_) => print(result='Success done'),)
+    .catchError((error) => print(result='done failed'),);
+    result='Success done';
 }
 return result;
 
@@ -263,16 +270,23 @@ String result="nothing changed";
 if(status =='accept'){// get current user uid
 _contributorCollection.doc(contID).collection("request").doc(reqID) // لحظة هذا الاي دي حق الدوك للابوينمنت؟
     .update({'status' : 'accepted'})
-    .then((_) => print(result='accepted request'),)
+    .then((_) => print(result='accepted'),)
     .catchError((error) => print(result='failed'),);
     result='accepted';
 }
-else{  // status == reject
+else if(status=='reject'){  
 _contributorCollection.doc(contID).collection("request").doc(reqID)
     .update({'status' : 'rejected'})
     .then((_) => print(result='rejected'),)
     .catchError((error) => print(result='Fail reject'),);
 result='Success reject';
+}
+else{// status==done
+_contributorCollection.doc(contID).collection("request").doc(reqID) // لحظة هذا الاي دي حق الدوك للابوينمنت؟
+    .update({'status' : 'done'})
+    .then((_) => print(result='done'),)
+    .catchError((error) => print(result='could not mark done'),);
+    result='done';
 }
 return result;
 

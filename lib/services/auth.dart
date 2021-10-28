@@ -113,8 +113,7 @@ return result;
 
 }
 
-Future<String> checkUserType (//BuildContext context
-)async{
+Future<String> checkUserType ()async{
 
 String uid = getCurrentUserID();
 print(uid);
