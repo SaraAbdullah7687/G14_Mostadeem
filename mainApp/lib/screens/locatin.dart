@@ -66,6 +66,14 @@ class _LocationAppState extends State<LocationApp> {
     _returnString = await DatabaseService().addRequest(contId, request);
 
     if (_returnString == "success") {
+      print("add success inside if in location line 69");
+      // اشيل الاشعار اللي بسطر 421
+      Duration difference = global.globalDate.difference(DateTime.now());
+      if (difference.inDays > 1) {
+        print("diff inside if in location line 73");
+        NotificationService().showNotification(1, "Pickup Reminder",
+            "Your request will be pickuped today.", difference.inDays);
+      }
       global.globalDate = null;
       global.globalTime = null;
       /* Navigator.pushAndRemoveUntil(
