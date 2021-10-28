@@ -182,7 +182,7 @@ return CustomAlert(
       icon:Icons.error_outline,
       msgTitle: "Request Status\n",
       msgContent:content,
-      press:(){ 
+      press:()  async { 
         if(status=="accept"){ // then update status in both institution & contributor, and make the same request in other instituton as rejected
         // send appointment doc id, and get inst id from auth class 
         String result= _auth.updateAppointmentStatus(status,uid);// appointment id
@@ -190,7 +190,7 @@ return CustomAlert(
          String re2= _auth.updateRequestStatus(status,document['contribId'],document['requestID'] ); // تأكدي من اسامي الفيلدز
         
          if(re2=='accepted'){ // change status to rejected in other institutions
-           String re3=DatabaseService().updateRequestStatusInAllInst(status,document['requestID'] );
+           String re3= await DatabaseService().updateRequestStatusInAllInst(status,document['requestID'] );
            print(re3);
            if(re3== "success"){
              print("re3 Succeeded");
@@ -198,9 +198,10 @@ return CustomAlert(
            }
            else if(re3=='fail'){
              print("re3 failed");
-             showTopSnackBar(context,'Fail','Accept request failed',Icons.cancel_outlined, );
+             showTopSnackBar(context,'Fail','An error occured while accepthing the request',Icons.cancel_outlined, );
            }
            else{
+             showTopSnackBar(context,'Fail','An error occured while accepthing the request',Icons.cancel_outlined, );
              print(re3+' did not work');
            }
          }
@@ -216,12 +217,45 @@ return CustomAlert(
                  }
         else{ print(result);}
         }// if accept
+    else{// status == reject
 
+        // delete appointment from this inst
+        String result= _auth.updateAppointmentStatus(status,uid);// appointment id
+        if(result=='Success reject'){  
+       // check if  there's an instition that has the same request or not 
+        String re3= await DatabaseService().updateRequestStatusInAllInst(status,document['requestID'] ); 
+           if(re3=='No inst has the request'){ // change status to rejected in req collection
+         print(re3);
+           String re2= _auth.updateRequestStatus(status,document['contribId'],document['requestID'] );
+               if(re2== "Success reject"){
+             print("re2 Succeeded reject");
+           showTopSnackBar(context,'Success','Request has been rejected',Icons.check );
+           }
+               else if(re2=='Fail reject'){
+             print("re3 failed");
+             showTopSnackBar(context,'Fail','An error occured while rejecting the request',Icons.cancel_outlined, );
+           }
+               else{
+             print(re2+' did not work');
+             showTopSnackBar(context,'Fail','An error occured while rejecting the request',Icons.cancel_outlined, );
+           }
+         }
+           else if(re3=='There is inst has the request'){// there is inst that have the same req
+           print('there is inst that have the same req');
+         }
+            else print(re3);
+                   
+                 }
+        else if(result=='Fail reject'){print('could not update status, procces failed');
+                 showTopSnackBar(context,'Fail','An error occured while rejecting the request',Icons.cancel_outlined, );
+                 }
+        else{ print(result);}
+
+}
       Navigator.pop(context, 'OK');
       },
     );
                     });
 }
-
 
 } // end class
