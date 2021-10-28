@@ -241,17 +241,17 @@ String result="nothing changed";
 // check condition approve or disapprove
 if(status =='accept'){// get current user uid
 _institutionCollection.doc(instID).collection("appointment").doc(uid) // لحظة هذا الاي دي حق الدوك للابوينمنت؟
-    .update({'status' : 'accepted'})
+    .update({'status' : 'accepted'}) // modify it
     .then((_) => print(result='Success approve'),)
-    .catchError((error) => print(result='Fail approve'),);
+    .catchError((error) => print(result='accepted appointment'),);
     result='Success approve';
 }
-else{ 
-_institutionCollection.doc(uid)
-    .update({'status' : 'disapproved'})
-    .then((_) => print(result='Success disapprove'),)
-    .catchError((error) => print(result='Fail disapprove'),);
-result='Success disapprove';
+else{ // status == reject 
+_institutionCollection.doc(instID).collection("appointment").doc(uid)
+    .delete() 
+    .then((_) => print(result='Success reject'),)
+    .catchError((error) => print(result='Fail reject'),);
+result='Success reject';
 }
 return result;
 
@@ -263,39 +263,39 @@ String result="nothing changed";
 if(status =='accept'){// get current user uid
 _contributorCollection.doc(contID).collection("request").doc(reqID) // لحظة هذا الاي دي حق الدوك للابوينمنت؟
     .update({'status' : 'accepted'})
-    .then((_) => print(result='accepted'),)
+    .then((_) => print(result='accepted request'),)
     .catchError((error) => print(result='failed'),);
     result='accepted';
 }
-else{ 
-_contributorCollection.doc(reqID)
-    .update({'status' : 'disapproved'})
-    .then((_) => print(result='Success disapprove'),)
-    .catchError((error) => print(result='Fail disapprove'),);
-result='Success disapprove';
+else{  // status == reject
+_contributorCollection.doc(contID).collection("request").doc(reqID)
+    .update({'status' : 'rejected'})
+    .then((_) => print(result='rejected'),)
+    .catchError((error) => print(result='Fail reject'),);
+result='Success reject';
 }
 return result;
 
 }
 
-String updateRequestStatusInAllInst(String status, String reqID){
+Future<String> updateRequestStatusInAllInst(String status, String reqID) async {
 String result="initial";
 var theRequest = FirebaseFirestore.instance.collectionGroup('appointment')
    .where("requestID", isEqualTo: reqID).where("status", isEqualTo: "pending"); // only bring the request that is pending and has requestID=reqID, (I specify the status pending bc I already accepted one)
    if(status=='accept'){
      print('in accept if database');
- theRequest.get().then( (querySnapshot) { // change status to rejected
-     querySnapshot.docs.forEach((document) {
-       if(document.exists){
+     QuerySnapshot<Map<String, dynamic>> query = await theRequest.get();
+     List<QueryDocumentSnapshot<Map<String, dynamic>>> document= query.docs;
+     print('before checking doc length');
+     if (document.length!=0){
+     for (int i=0; i < document.length; i++){
+       print('before if doc exixts');
+       if(document[i].exists){
        try{
-         //print(document['contEmail']);
-         //print(document['status']+' before');
-         
-        var docRef= document.reference;
-        docRef.update({'status' : 'rejected'}); // call method to delete rejected req
-       // print(document['status']+' after');
-       // print(document['contName']);
-        return result="success";
+         print('inside for loop,before changing status');
+        var docRef= document[i].reference;
+        docRef.delete(); // call method to delete rejected req
+       result="success";
        } 
        on FormatException catch (error) {
          print("error in update status all");
@@ -303,13 +303,28 @@ var theRequest = FirebaseFirestore.instance.collectionGroup('appointment')
        }
        }
        else {return result="no institutions has the same req";}
-       
-     });
-     
- });
-   
+
+     }// end for
+     }else{
+     print('doc length is 0');
+     result="no doc with same req";}
+     return result;
+ 
+   //return result;
    }
-   return result;
+   
+   else { // status == reject => check if there is inst that has the same request
+   QuerySnapshot<Map<String, dynamic>> query = await theRequest.get();
+     List<QueryDocumentSnapshot<Map<String, dynamic>>> document= query.docs;
+     print('before checking doc length');
+     if (document.length==0){ // no inst has the req => change status in request collection
+      return "No inst has the request";
+     }
+     else {// there's inst has the request
+      return "There is inst has the request";
+     }
+
+   }
 }
 
 }
