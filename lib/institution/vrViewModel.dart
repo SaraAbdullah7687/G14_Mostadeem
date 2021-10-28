@@ -1,13 +1,15 @@
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mostadeem/components/customAlert.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:mostadeem/services/database.dart';
 import 'package:url_launcher/url_launcher.dart';
-// import 'package:swe444/Models/request.dart';
+
+import 'package:another_flushbar/flushbar_helper.dart';
+import 'package:another_flushbar/flushbar_route.dart';
 
 class ViewRequestViewModel with ChangeNotifier {
   Stream<QuerySnapshot<Map<String, dynamic>>> _requests;
@@ -49,20 +51,6 @@ class ViewRequestViewModel with ChangeNotifier {
   Stream<QuerySnapshot<Map<String, dynamic>>> get currentRequests {
     return _currentRequests;
   }
-
-  fetchContInfo(String uid) async {// get uid
-    print(uid+ "cont uid view model");
-     var _contInfo= FirebaseFirestore.instance
-        .collection("contributor")
-        .doc(uid);
-    notifyListeners();
-  }
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> get contInfo {
-    return _contInfo;
-  }
-
-
 
 Future sendingMails(String email) async {
   print("in view model hii ");
@@ -148,7 +136,6 @@ Future<void> showMyDialog(String status, BuildContext context, String uid,Docume
   );
 }
 
-
 void showTopSnackBar(BuildContext context ,String title,String message, IconData icon) => show(
         context,
         Flushbar(
@@ -156,10 +143,11 @@ void showTopSnackBar(BuildContext context ,String title,String message, IconData
           shouldIconPulse: false,
           title: title,
           message: message, // change message
+          borderRadius: BorderRadius.circular(6),
           duration: Duration(seconds: 3),
           flushbarPosition: FlushbarPosition.TOP,
         //  margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
-          borderRadius: 16,
+          
            barBlur: 20,
           backgroundColor: Colors.black.withOpacity(0.5),
         ),
@@ -186,7 +174,7 @@ return CustomAlert(
         if(status=="accept"){ // then update status in both institution & contributor, and make the same request in other instituton as rejected
         // send appointment doc id, and get inst id from auth class 
         String result= _auth.updateAppointmentStatus(status,uid);// appointment id
-        if(result=='Success approve'){ 
+        if(result=='Success accept'){ 
          String re2= _auth.updateRequestStatus(status,document['contribId'],document['requestID'] ); // تأكدي من اسامي الفيلدز
         
          if(re2=='accepted'){ // change status to rejected in other institutions
@@ -198,7 +186,10 @@ return CustomAlert(
            }
            else if(re3=='fail'){
              print("re3 failed");
-             showTopSnackBar(context,'Fail','An error occured while accepthing the request',Icons.cancel_outlined, );
+             showTopSnackBar(context,'Couldn\'t accept request','The request couldn\'t been accepted',Icons.cancel_outlined, );
+           }
+           else if (re3=="no doc with same req"){
+            showTopSnackBar(context,'Success','Request has been accepted',Icons.check );
            }
            else{
              showTopSnackBar(context,'Fail','An error occured while accepthing the request',Icons.cancel_outlined, );
@@ -212,12 +203,15 @@ return CustomAlert(
          else print(re2);
                    
                  }
-                 else if(result=='Fail approve'){print('could not update status, procces failed');
+        else if(result=='Fail accept'){print('could not update status, procces failed');
                  showTopSnackBar(context,'Fail','Accept request failed',Icons.cancel_outlined, );
                  }
         else{ print(result);}
         }// if accept
-    else{// status == reject
+    
+    
+    
+    else if(status=="reject"){
 
         // delete appointment from this inst
         String result= _auth.updateAppointmentStatus(status,uid);// appointment id
@@ -250,6 +244,30 @@ return CustomAlert(
                  showTopSnackBar(context,'Fail','An error occured while rejecting the request',Icons.cancel_outlined, );
                  }
         else{ print(result);}
+
+}
+
+
+    else { // status == done
+    String result= _auth.updateAppointmentStatus(status,uid);// appointment id
+    if(result=='Success done'){
+       String re2= _auth.updateRequestStatus(status,document['contribId'],document['requestID'] ); // تأكدي من اسامي الفيلدز
+        if(re2=='done'){ // change status to rejected in other institutions
+           showTopSnackBar(context,'Success','Request has been marked as done',Icons.check );
+         }
+         else if(re2=='could not mark done'){
+           print('could not update status, procces failed');
+           showTopSnackBar(context,'Fail','Request couldn\'t be marked as done',Icons.cancel_outlined, );
+         }
+         else print(re2);
+        }
+    else if(result=='done failed'){
+    showTopSnackBar(context,'Fail','Request couldn\'t be marked as done',Icons.cancel_outlined, );
+    }
+    else{
+      
+    }
+
 
 }
       Navigator.pop(context, 'OK');

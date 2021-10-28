@@ -3,7 +3,7 @@
 
 //import 'dart:html';
 
-import 'package:flushbar/flushbar.dart';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mailer/mailer.dart';
@@ -45,7 +45,6 @@ class ViewRequests extends StatefulWidget {
 
 class _ViewRequestsState extends State<ViewRequests> {
   final AuthService _auth = AuthService();
-  final List<Flushbar> flushBars = []; 
  WebViewController controller;
   String contID;
 
