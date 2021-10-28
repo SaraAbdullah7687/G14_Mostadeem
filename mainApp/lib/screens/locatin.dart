@@ -19,6 +19,7 @@ import 'package:mostadeem/services/auth.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:mostadeem/screens/calendar.dart';
 import 'package:mostadeem/globals/global.dart' as global;
+import 'package:mostadeem/services/notific.dart';
 
 /*Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -411,6 +412,11 @@ class AdvanceCustomAlert extends StatelessWidget {
                                       builder: (context) => MyHomePage()),
                                 );*/
                               }
+                              /*  NotificationService().showNotification(
+                                  1,
+                                  "Pickup Reminder",
+                                  "Your request will be pickuped today.",
+                                  5);*/
                             },
                           )
                         ],
