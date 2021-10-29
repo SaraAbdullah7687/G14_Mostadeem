@@ -10,7 +10,7 @@ import 'package:mostadeem/Screens/home/home0.dart';
 import 'package:mostadeem/Screens/home/profile.dart';
 
 // SARA NOTIFICATIONS
-import 'package:mostadeem/services/notific.dart';
+import 'package:mostadeem/services/localNotific.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 

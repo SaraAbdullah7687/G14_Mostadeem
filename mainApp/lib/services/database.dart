@@ -151,6 +151,23 @@ _usersCollection.doc(uid) // also delete it from users collecction
   // ADD appointment to instituations
   Future<String> addAppointment(String contribId, requestModel request) async {
     String retVal = "error";
+    String contName;
+    String contEmail;
+    String contPhone;
+    ////
+    FirebaseFirestore firestoreObj = FirebaseFirestore.instance;
+    /* TO GET NAME*/
+    firestoreObj.collection("contributor").doc(contribId).get().then((value) {
+      contName = (value.data()['name']);
+    });
+    /*TO GET EMAIL*/
+    firestoreObj.collection("contributor").doc(contribId).get().then((value) {
+      contEmail = (value.data()['email']);
+    });
+    /*TO GET PHONE
+      firestoreObj.collection("contributor").doc(contribId).get().then((value) {
+      contPhone = (value.data()['phone']);
+    });*/
     print("DB 52########################################################");
 
     try {
@@ -170,8 +187,12 @@ _usersCollection.doc(uid) // also delete it from users collecction
           'category': request.category.trim().toLowerCase(),
           'date': request.date.trim(),
           'location': request.location.data,
-          //  'status': request.status.trim(),
           'time': request.time.trim(),
+          'status': request.status.trim(),
+          //'requestID': request.requestID.trim(),
+          // 'descreption': request.descreption.trim(),
+          'contName': contName,
+          'contEmail': contEmail,
         });
       }); // END outer foreach
       print("DB 74########################################################");

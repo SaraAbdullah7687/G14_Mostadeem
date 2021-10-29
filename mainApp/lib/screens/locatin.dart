@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mostadeem/models/contributorModel.dart';
@@ -19,7 +20,7 @@ import 'package:mostadeem/services/auth.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:mostadeem/screens/calendar.dart';
 import 'package:mostadeem/globals/global.dart' as global;
-import 'package:mostadeem/services/notific.dart';
+import 'package:mostadeem/services/localNotific.dart';
 
 /*Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,17 +41,19 @@ class MyApp extends StatelessWidget {
   }
 }
 */
-AuthService a = new AuthService();
+AuthService auth = AuthService();
+/*newly added*/
+var firebaseUser = FirebaseAuth.instance.currentUser;
 
 class LocationApp extends StatefulWidget {
   //const LocationApp({Key? key, String category}) : super(key: key);
   String category; //FINAL ?
   String date;
   String time;
-  String currentUser = a.getCurrentUserID();
+  String uid = auth.getCurrentUserID();
 //===========================================================================================
 
-  LocationApp({this.category, this.date, this.time, this.currentUser});
+  LocationApp({this.category, this.date, this.time, this.uid});
 
   @override
   _LocationAppState createState() => _LocationAppState();
@@ -189,16 +192,16 @@ class _LocationAppState extends State<LocationApp> {
               // make request obj
               requestModel request = requestModel(
                 contId: widget
-                    .currentUser, // NULLABLE ###################################################################
+                    .uid, // NULLABLE ###################################################################
                 category: widget.category,
                 date: widget.date,
                 time: widget.time,
                 location: geo.point(latitude: lat, longitude: lng),
-                status: 'new',
+                status: 'pending',
               );
 
               // ADD TO DB
-              _addRequest(context, widget.currentUser,
+              _addRequest(context, widget.uid,
                   request); // NULLABLE ###################################################################
 
               /* display conformation pop up*/

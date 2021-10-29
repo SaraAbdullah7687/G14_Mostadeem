@@ -32,18 +32,22 @@ class requestScreenState extends State<requestScreen> {
   void initState() {
     super.initState();
 
-    _fcm.getToken().then((token) {
-      print("TOOOOOOOOOOKKKKKKKKKKKKKEN: " + token + "  END");
+    _fcm.getToken().then((fcmToken) {
+      if (fcmToken != null) {
+        print("TOOOOOOOOOOKKKKKKKKKKKKKEN for this device is: " +
+            fcmToken +
+            "  END");
+        var tokens = FirebaseFirestore.instance
+            .collection('contributor')
+            .doc(uid)
+            .collection('tokens')
+            .doc(fcmToken);
 
-      FirebaseFirestore.instance
-          .collection('contributor')
-          .doc(uid)
-          .collection('tokens')
-          .add({
-        'token': token,
-        'timeCreated': DateTime.now()
-        /*, 'contribId': uid*/
-      });
+        tokens.set({
+          'token': fcmToken,
+          'createdAt': FieldValue.serverTimestamp(), // optional
+        });
+      }
     });
   }
 

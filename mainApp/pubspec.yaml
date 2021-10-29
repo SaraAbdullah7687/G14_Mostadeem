@@ -62,11 +62,15 @@ dependencies:
   numberpicker: ^2.1.1
   curved_navigation_bar: ^1.0.1
 
-  #SARA notific. --------------------------------------------------------
-  firebase_messaging: ^10.0.8
+  #SARA notific. (local -reminder- ) --------------------------------------------------------
   flutter_local_notifications: ^9.0.1
   timezone: ^0.8.0
-  
+
+  #SARA notific. (between two devices ) --------------------------------------------------------
+  firebase_messaging: ^10.0.9
+  awesome_notifications: ^0.6.13
+  get: ^4.3.8
+  random_string: ^2.3.1
 
 dev_dependencies:
   flutter_test:

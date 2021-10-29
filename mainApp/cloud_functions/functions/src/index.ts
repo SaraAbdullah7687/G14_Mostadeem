@@ -36,7 +36,7 @@ export const sendToDevice = functions.firestore
   });
 
 // from FCM tutorial website 
-export const sendToDeviceFCM = functions.firestore
+/*export const sendToDeviceFCM = functions.firestore
   .document('orders/{orderId}')
   .onCreate(async snapshot => {
 
@@ -99,7 +99,7 @@ export const onBostonWeatherUpdate = functions.firestore.document ("cities-weath
         .catch(error => { console.error("FCM failed", error) 
       })
   })
-
+*/
 /*import * as functions from "firebase-functions";
 
 // // Start writing Firebase Functions
