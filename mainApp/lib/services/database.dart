@@ -126,6 +126,8 @@ _usersCollection.doc(uid) // also delete it from users collecction
           _docRef.toString());
 
       _docRef.add({
+        'conribId':
+            contId, // FOR notifications ONLY=============================================================NEWLY ADDED========================
         'category': request.category.trim().toLowerCase(),
         'date': request.date.trim(),
         'location': request.location.data,

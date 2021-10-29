@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -6,6 +8,7 @@ import 'package:mostadeem/screens/calendar.dart';
 import 'package:mostadeem/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mostadeem/screens/home/home.dart';
+import 'package:mostadeem/services/auth.dart';
 
 import 'locatin.dart';
 
@@ -17,14 +20,30 @@ class requestScreen extends StatefulWidget {
   requestScreenState createState() => requestScreenState();
 }
 
+// to get current user id and store it with the token
+AuthService auth = AuthService();
+/*newly added*/
+var firebaseUser = FirebaseAuth.instance.currentUser;
+
 class requestScreenState extends State<requestScreen> {
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+  String uid = auth.getCurrentUserID();
 
   void initState() {
     super.initState();
 
     _fcm.getToken().then((token) {
       print("TOOOOOOOOOOKKKKKKKKKKKKKEN: " + token + "  END");
+
+      FirebaseFirestore.instance
+          .collection('contributor')
+          .doc(uid)
+          .collection('tokens')
+          .add({
+        'token': token,
+        'timeCreated': DateTime.now()
+        /*, 'contribId': uid*/
+      });
     });
   }
 
