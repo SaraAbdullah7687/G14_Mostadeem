@@ -1,9 +1,5 @@
 
-//import 'dart:convert';
-
-//import 'dart:html';
-
-import 'package:flushbar/flushbar.dart';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mailer/mailer.dart';
@@ -14,7 +10,6 @@ import 'package:mostadeem/components/google_auth_api.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:mostadeem/shared/loading.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../constants.dart';
 import 'components/social_icon.dart';
@@ -229,7 +224,7 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
           SocalIcon(
                   iconSrc: "assets/icons/twitter.svg",
                   color: kPrimaryColor,
-                  press: ()=> ourViewMode.goToTwitter(document.get("twitter")),
+                  press: ()=> ourViewMode.goToTwitter(document.get("twitterAccount")),
                 ),),
     SizedBox(width: 12),
     Flexible( child:
@@ -461,7 +456,7 @@ void showTopSnackBar(BuildContext context ,String title,String message,IconData 
           duration: Duration(seconds: 3),
           flushbarPosition: FlushbarPosition.TOP,
           //margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
-          borderRadius: 16,
+          borderRadius: BorderRadius.circular(6),
            barBlur: 20,
           backgroundColor: Colors.black.withOpacity(0.5),
         ),
@@ -495,7 +490,7 @@ return CustomAlert(
 
                  }
                  else if(result=='Fail approve'){print('could not update status, procces failed');
-                 showTopSnackBar(context,'Fail','Approve institution failed',Icons.cancel_outlined, );
+                 showTopSnackBar(context,'Couldn\'t approve','An error occurred while approving institution',Icons.cancel_outlined, );
                  }
                  else{ print(result);}
                 }
@@ -512,7 +507,7 @@ return CustomAlert(
                  }
                  else if(result=='Fail disapprove') {
                  print('could not delete institution, procces failed');
-                 showTopSnackBar(context,'Fail','Dispprove institution failed', Icons.cancel_outlined, );
+                 showTopSnackBar(context,'Couldn\'t disapprove','An error occurred while disapproving institution', Icons.cancel_outlined, );
                  
                  }
                   else{ print(result);}
