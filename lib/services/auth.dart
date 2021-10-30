@@ -1,15 +1,21 @@
 
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mostadeem/Screens/authenticate/bodyLogin.dart';
+import 'package:mostadeem/globals/global.dart';
 import 'package:mostadeem/models/ContributorModel.dart';
 import 'package:mostadeem/models/userMu.dart';
 import 'package:mostadeem/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../main.dart';
+
 class AuthService {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final List<Flushbar> flushBars = [];
   // create user obj based on firebase user
   UserMu _userFromFirebaseUser(User user) { // was FirebaseUser instead of User
   print(user); // maybe wrong
@@ -67,7 +73,7 @@ class AuthService {
      // await DatabaseService(uid: _user.uid).updateUserData('0','new crew member', 100);
       return _userFromFirebaseUser(user);
     } on FirebaseAuthException catch (signUpError) {
-      print("email exists");
+      print("catch error in register");
       //if (signUpError is PlatformException){
         switch(signUpError.code){
           case "ERROR_EMAIL_ALREADY_IN_USE": // ما تضبط
@@ -92,6 +98,14 @@ class AuthService {
       print(error.toString());
       return null;
     }
+
+   /* _auth.signOut().then((res) {
+            Navigator.pushReplacement(
+context, MaterialPageRoute(builder: (context) => MyApp()));
+        
+        });*/
+  
+  
   }
 
   //get the current user
@@ -171,41 +185,30 @@ return result;
 
 }
 
+void showTopSnackBar(BuildContext context, String title, String message,IconData icon) => show(
+        context,
+        Flushbar(
+          icon: Icon(icon, size: 32, color: Colors.white),
+          shouldIconPulse: false,
+          title: title,
+          message: message,
+          duration: Duration(seconds: 3),
+          flushbarPosition: FlushbarPosition.TOP,
+         // margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
+         borderRadius: BorderRadius.circular(6),
+           barBlur: 20,
+          backgroundColor: Colors.black.withOpacity(0.5),
+        ),
+      );
 
+
+          Future show(BuildContext context, Flushbar newFlushBar) async {
+           // await Future.delayed(const Duration(seconds: 2), (){});
+    await Future.wait(flushBars.map((flushBar) => flushBar.dismiss()).toList());
+    flushBars.clear();
+
+    newFlushBar.show(context);
+    flushBars.add(newFlushBar);
+  }
 
 } // end of class
-
-/*
-String updateRequestStatusInAllInst(String status, String reqID){
-  //https://petercoding.com/firebase/2020/04/04/using-cloud-firestore-in-flutter/
-String result="initial";
-//dynamic newValue='rejected';
-WriteBatch batch = FirebaseFirestore.instance.batch();
-
-var theRequest = FirebaseFirestore.instance.collectionGroup('appointment')
-   .where("requestID", isEqualTo: reqID).where("status", isEqualTo: "pending"); // only bring the request that is pending and has requestID=reqID, (I specify the status pending bc I already accepted one)
-   if(status=='accept'){
-     print('in accept if database');
- theRequest.get().then( (querySnapshot) { // change status to rejected
-     querySnapshot.docs.forEach((document) {
-       //if(document.exists){
-       try{
-         print(document['contEmail']);
-         print(document['status']+' before');
-         //var docRef= document.reference;
-         document.reference.update({'status' : 'rejected'}); // doesn't work!!
-        print(document['status']+' after');
-        print(document['contName']);
-        result="success";
-       } 
-       on FormatException catch (error) {
-         print("error in update status all");
-         result="fail";
-       }//}
-     });
-     batch.commit();
- });
-   return result;
-   }
-}
-*/
