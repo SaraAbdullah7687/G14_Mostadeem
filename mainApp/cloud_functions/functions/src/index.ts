@@ -22,7 +22,7 @@ export const sendToDevice = functions.firestore
       .get();
 
     const tokens = querySnapshot.docs.map(snap => snap.id);
-    if (tokens.length == 0) {
+    if (tokens.length == 0 || request.status== "pending" || request.status== "Pending") {
       console.log("No Device");
     } else{
     const payloadData = {
