@@ -53,7 +53,7 @@ class LocationApp extends StatefulWidget {
   String uid = auth.getCurrentUserID();
 //===========================================================================================
 
-  LocationApp({this.category, this.date, this.time, this.uid});
+  LocationApp({this.category, this.date, this.time, uid});
 
   @override
   _LocationAppState createState() => _LocationAppState();

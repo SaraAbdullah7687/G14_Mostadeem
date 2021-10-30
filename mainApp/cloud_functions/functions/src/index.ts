@@ -5,12 +5,12 @@ admin.initializeApp();
 
 const db = admin.firestore();
 
-const fcm = admin.messaging();
+//const fcm = admin.messaging();
 
 // send a notification when request status updated
 export const sendToDevice = functions.firestore
-  .document('contributor/request')
-  .onUpdate(async snapshot => {
+  .document('/contributor/{contribId}/request/{reqID}')
+  .onUpdate(async (snapshot, context) => {
 
 
     const request = snapshot.after.data();
@@ -22,8 +22,22 @@ export const sendToDevice = functions.firestore
       .get();
 
     const tokens = querySnapshot.docs.map(snap => snap.id);
+    if (tokens.length == 0) {
+      console.log("No Device");
+    } else{
+    const payloadData = {
+      title: ' Your request has been updated',
+      message: 'Please check your requests list',
+    };
+    const payload = {
+      data: payloadData,
+    };
+    return await admin.messaging().sendToDevice(tokens, payload).then((response) => {
+      console.log("Pushed All Notifications");
+    });
+  }// end else
 
-    const payload: admin.messaging.MessagingPayload = {
+    /*const payload: admin.messaging.MessagingPayload = {
       notification: {
         title : ' Your request has been updated',
         body : 'Please check your requests list',
@@ -32,7 +46,9 @@ export const sendToDevice = functions.firestore
       }
     };
 
-    return fcm.sendToDevice(tokens, payload);
+    return fcm.sendToDevice(tokens, payload).then((response) => {
+      console.log("Pushed All Notifications");
+    });*/
   });
 
 // from FCM tutorial website 
@@ -73,6 +89,7 @@ export const sendToDevice2 = functions.firestore.document('posts/{postID}').onCr
         tokens.push(tokenDoc.data().token);
       
     });
+    
 
     const payload : admin.messaging.MessagingPayload = {
         notification : {
@@ -117,3 +134,37 @@ export const onBostonWeatherUpdate = functions.firestore.document ("cities-weath
  export const helloWorld = functions.https.onRequest((request, response) => {
   response.send("Hello from Firebase!");
  });
+
+
+
+
+
+/*
+import * as functions from "firebase-functions"; 
+import * as admin from 'firebase-admin'; 
+admin.initializeApp(); 
+export const sendNotificationToTrainee = functions.firestore.document('Requests/(userid)').onUpdate(async (snapshot, context) =>
+ let requestData = snapshot.after.data();
+ console.log(`Tid: ${requestData['Tid']}`); 
+ let traineeRef = admin.firestore().collection('trainees').doc(requestData['Tid']); 
+ let traineeData = (await traineeRef.get()).data(); 
+ console.log(`usrData: ${requestData['Status']}`); 
+ if (requestData['Status'] == 'D' || requestData['Status'] == 'A') { 
+     let tokens = []; 
+     console.log(`usrData: ${traineeData}`); 
+     console.log(${traineeData["notificationTokens"]}`); 
+     if (traineeData['notificationTokens'] != undefined && traineeData['notificationTokens'].length != 0) {
+          traineeData['notificationTokens'].forEach((token) => { 
+              tokens.push(token); });
+          console.log(`Tid: ${requestData['Status']}`); 
+          let msg =""; 
+          if(requestData['Status'] == "D"){ msg ="yours acccepted !!";
+        }else{ msg ="yours rejected !!";}
+           // const msg - requestData['Status'] --- 'D' ? 'y go hylb ahds pj' : 'yjI g Jegš ps"; 
+           console.log(`Tid: $(msg)`); 
+           let payloadData = { 
+               title: 'hi', 
+               message: msg +' ' + requestData["CoachName"] +' ' + requestData["CoachName2"],
+             }; 
+             var payload = { data: payloadData, }; 
+*/

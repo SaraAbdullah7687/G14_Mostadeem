@@ -17,7 +17,6 @@ Future<void> main() async {
   await Firebase.initializeApp(); // important
 
   // SARA Notification (local one)
-  WidgetsFlutterBinding.ensureInitialized();
   NotificationService().initNotification();
 
   // SARA Notification (global one)
@@ -43,7 +42,7 @@ Future<void> main() async {
   });
 
   FirebaseMessaging.instance.getToken().then((token) {
-    print(token);
+    print("TOOOOOOOOOOKKKKKKKKKKKKKEN IN main for this device is: " + token);
   });
   runApp(MyApp());
 }

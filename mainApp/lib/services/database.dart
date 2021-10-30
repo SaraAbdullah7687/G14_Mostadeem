@@ -126,7 +126,7 @@ _usersCollection.doc(uid) // also delete it from users collecction
           _docRef.toString());
 
       _docRef.add({
-        'conribId':
+        'contribId':
             contId, // FOR notifications ONLY=============================================================NEWLY ADDED========================
         'category': request.category.trim().toLowerCase(),
         'date': request.date.trim(),
@@ -138,6 +138,7 @@ _usersCollection.doc(uid) // also delete it from users collecction
 
 // ADD appointment to suitble instituations
       addAppointment(contId, request);
+      //  addRequestOutside(contId, request);
       retVal = "success";
     } catch (e) {
       print("DB 41########################################################");
@@ -148,6 +149,26 @@ _usersCollection.doc(uid) // also delete it from users collecction
     return retVal;
   }
 
+/*
+  Future<String> addRequestOutside(
+      String contribId, requestModel request) async {
+    CollectionReference _docRef = _firestore.collection("requests");
+    print(
+        "DB 158 NEW ########################################################" +
+            _docRef.toString());
+
+    _docRef.add({
+      // 'reqID':
+      'contribId':
+          contribId, // FOR notifications ONLY=============================================================NEWLY ADDED========================
+      'category': request.category.trim().toLowerCase(),
+      'date': request.date.trim(),
+      'location': request.location.data,
+      'status': request.status.trim(),
+      'time': request.time.trim()
+    });
+  }
+*/
   // ADD appointment to instituations
   Future<String> addAppointment(String contribId, requestModel request) async {
     String retVal = "error";
