@@ -1,7 +1,8 @@
 
 
 
-import 'package:flushbar/flushbar.dart';
+
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:mostadeem/components/google_auth_api.dart';
 import 'package:mostadeem/services/auth.dart';
@@ -15,13 +16,13 @@ class _HomeZeroState extends State<HomeZero> {
 final AuthService _auth = AuthService();
 
 final List<Flushbar> flushBars = [];
-
+/*
 @override
 void initState(){
     super.initState();
     showTopSnackBar(context,"Welcome #name", "Good to have you in Mostadeem",);
 
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +75,7 @@ void initState(){
           duration: Duration(seconds: 3),
           flushbarPosition: FlushbarPosition.TOP,
           //margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
-          //borderRadius: 16,
+          borderRadius: BorderRadius.circular(6),
            barBlur: 20,
           backgroundColor: Colors.black.withOpacity(0.5),
         ),

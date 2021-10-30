@@ -1,7 +1,8 @@
 import 'dart:io';
 
 
-import 'package:flushbar/flushbar.dart';
+
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:mostadeem/Screens/Login/components/resetPassword.dart';
@@ -11,9 +12,11 @@ import 'package:mostadeem/components/already_have_an_account_acheck.dart';
 import 'package:mostadeem/components/rounded_button.dart';
 import 'package:mostadeem/components/rounded_password_field.dart';
 import 'package:mostadeem/components/text_field_container.dart';
+import 'package:mostadeem/globals/global.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:mostadeem/shared/loading.dart';
 import '../../constants.dart';
+import 'package:mostadeem/screens/home/home.dart';
 
 class BodyLogin extends StatefulWidget {
   final Function toggleView; 
@@ -218,15 +221,15 @@ Map<String, String> _authData = { // can use variables instead of map
     
                           } 
                         else {print("req is not null");
-                        //wait before excute
-                       /* await Future.delayed( Duration(seconds:4), (){
-                          showTopSnackBar(context,"Welcome #name", "Good to have you in Mostadeem",Icons.check_circle_outline_outlined,);
-                        });
-                       // showTopSnackBar(context,"Welcome #name", "Good to have you in Mostadeem",Icons.check_circle_outline_outlined,);
-*/
-                      setState(() { // added delete it 
-                          loading = false;
-                        });
+                     /* Navigator.pushReplacement(context,
+                  MaterialPageRoute(
+                    builder: (context) => Home(
+                      feedback: () {
+                        _auth.showTopSnackBar(context,"Welcome", "Good to have you in Mostadeem",Icons.check_circle_outline_outlined,);
+                      },
+                    ),
+                  ),
+                );*/
                         }
                     }//
                   },
@@ -235,8 +238,9 @@ Map<String, String> _authData = { // can use variables instead of map
     
                 SizedBox(height: size.height * 0.03),
                 AlreadyHaveAnAccountCheck(
+                  login: true,
                   press: () {
-                    widget.toggleView();
+                  widget.toggleView();
                     
                   },
                 ),
@@ -250,48 +254,6 @@ Map<String, String> _authData = { // can use variables instead of map
     );
   
   }
-// works but shows an error in the console
-       void showTopSnackBar(BuildContext context, String title, String message,IconData icon) => show(
-        context,
-        Flushbar(
-          icon: Icon(icon, size: 32, color: Colors.white),
-          shouldIconPulse: false,
-          title: title,
-          message: message,
-          duration: Duration(seconds: 3),
-          flushbarPosition: FlushbarPosition.TOP,
-         // margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
-         // borderRadius: 16,
-           barBlur: 20,
-          backgroundColor: Colors.black.withOpacity(0.5),
-        ),
-      );
-
-
-          Future show(BuildContext context, Flushbar newFlushBar) async {
-           // await Future.delayed(const Duration(seconds: 2), (){});
-    await Future.wait(flushBars.map((flushBar) => flushBar.dismiss()).toList());
-    flushBars.clear();
-
-    newFlushBar.show(context);
-    flushBars.add(newFlushBar);
-  }
-  // login function
-  /*
-  void signIn(String email, String password) async {
-    //if (_formKey.currentState!.validate()) {
-      if (_formKey.currentState.validate()){
-      await _auth
-          .signInWithEmailAndPassword(email: email, password: password)
-          .then((uid) => {
-                Fluttertoast.showToast(msg: "Login Successful"),
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => HomeScreen())),
-              })
-          .catchError((e) {
-        Fluttertoast.showToast(msg: e.message); //e.!message
-      });
-    }
-  }*/
+      
 }
 

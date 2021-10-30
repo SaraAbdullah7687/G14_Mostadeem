@@ -1,24 +1,18 @@
 
-import 'package:flushbar/flushbar.dart';
+
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:mostadeem/Screens/Welcome/welcome_screen.dart';
-import 'package:mostadeem/Screens/authenticate/bodyLogin.dart';
 import 'package:mostadeem/Screens/background.dart';
 import 'package:mostadeem/Screens/home/home.dart';
 import 'package:mostadeem/components/advanceAlert.dart';
-//import 'package:flutter_auth/Screens/Signup/components/or_divider.dart';
-//import 'package:flutter_auth/Screens/Signup/components/social_icon.dart';
 import 'package:mostadeem/components/already_have_an_account_acheck.dart';
 import 'package:mostadeem/components/rounded_button.dart';
-import 'package:mostadeem/components/rounded_input_field.dart';
 import 'package:mostadeem/components/rounded_password_field.dart';
-//import 'package:flutter_svg/svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:mostadeem/components/text_field_container.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:mostadeem/shared/loading.dart';
 import '../../constants.dart';
-import 'package:mostadeem/Screens/authenticate/authenticate.dart';
 
 class BodySignUp extends StatefulWidget {
     final Function toggleView; 
@@ -139,7 +133,7 @@ void clearText() {
               child: TextFormField( 
                     //autofocus: false,
                     cursorColor: kPrimaryColor,
-                    maxLength: 30,
+                    maxLength: 15,
                     textInputAction: TextInputAction.next, // added it
                     decoration: InputDecoration(
                     prefixIcon: Icon( Icons.person, color: kPrimaryColor, ),
@@ -311,11 +305,15 @@ void clearText() {
                                   } 
                                 else{print("req is not null");
                                
-    
-    
-                              /*  setState(() {
-                                    loading = false;
-                                  });*/
+     /*Navigator.pushReplacement(context,
+                  MaterialPageRoute(
+                    builder: (context) => Home(
+                      feedback: () async {
+                         _auth.showTopSnackBar(context,"Welcome", "Good to have you in Mostadeem",Icons.check_circle_outline_outlined,);
+                      },
+                    ),
+                  ),
+                );*/
                                 }
                              
                               } 
@@ -380,28 +378,5 @@ void clearText() {
      else 
      return null;
   }
-          void showTopSnackBar(BuildContext context, String title, String message) => show(
-        context,
-        Flushbar(
-          icon: Icon(Icons.error, size: 32, color: Colors.white),
-          shouldIconPulse: false,
-          title: title,
-          message: message,
-          duration: Duration(seconds: 3),
-          flushbarPosition: FlushbarPosition.TOP,
-          margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
-         // borderRadius: 16,
-           barBlur: 20,
-          backgroundColor: Colors.black.withOpacity(0.5),
-        ),
-      );
 
-
-          Future show(BuildContext context, Flushbar newFlushBar) async {
-    await Future.wait(flushBars.map((flushBar) => flushBar.dismiss()).toList());
-    flushBars.clear();
-
-    newFlushBar.show(context);
-    flushBars.add(newFlushBar);
-  }
 }

@@ -13,7 +13,7 @@ import 'package:mostadeem/shared/loading.dart';
 
 //import 'Login/login_screen.dart';
 import 'Signup/signup_screen.dart';
-import 'Welcome/welcome_screen.dart';
+//import 'Welcome/welcome_screen.dart';
 
 class Wrapper extends StatelessWidget {
   @override
@@ -38,15 +38,18 @@ class Wrapper extends StatelessWidget {
         
        else{ 
          if (text.data == "admin")
-        {return AdminHome(); //عدليه وخليه هذا
+        {return AdminHome(feedback: () {
+                        _authService.showTopSnackBar(context,"Welcome", "Good to have you in Mostadeem",Icons.check_circle_outline_outlined,);
+                      },); //عدليه وخليه هذا
         //return ViewInstitution();
         }
        else if (text.data == "contributor")
         { print("entered home");
-          return Home();}
-          else if (text.data == "institution")
-        { print("inst home");
-          return StartInst();}
+          return Home(
+                      feedback: () {
+                        _authService.showTopSnackBar(context,"Welcome", "Good to have you in Mostadeem",Icons.check_circle_outline_outlined,);
+                      },
+                    );}
         else{ return BodyLogin();}} 
       }
       print("still loading !!!");

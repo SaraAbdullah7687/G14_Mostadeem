@@ -10,7 +10,10 @@ import 'package:provider/provider.dart';
 
 // add package at yaml
 class Home extends StatefulWidget {
+ const Home({Key key, this.feedback,
+ }) : super(key: key);
 
+  final Function feedback;
   @override
   _HomeState createState() => _HomeState();
 }
@@ -33,6 +36,16 @@ Icon(Icons.home, size:30),
 Icon(Icons.add, size:30),
 Icon(Icons.person, size:30),
 ];
+
+ @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        widget.feedback.call();
+      },
+    );
+  }
 
   @override
  Widget build(BuildContext context) {

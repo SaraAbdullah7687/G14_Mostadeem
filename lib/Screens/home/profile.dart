@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mostadeem/components/google_auth_api.dart';
+import 'package:mostadeem/globals/global.dart';
 import 'package:mostadeem/services/auth.dart';
 
 class Profile extends StatelessWidget {
@@ -26,8 +27,7 @@ final AuthService _auth = AuthService();
             color: Colors.white,),
             
               onPressed: () async {
-                await _auth.signOut();
-                GoogleAuthApi.signOut();
+                await _auth.signOut(); // from _auth
               },
             ),
           ],
