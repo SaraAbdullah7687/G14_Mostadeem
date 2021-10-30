@@ -1,19 +1,7 @@
-import 'dart:ffi';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:inst_trial/Screens/authenticate/logIn.dart';
-import 'package:inst_trial/constants.dart';
-import 'package:inst_trial/Screens/home.dart';
-import 'package:inst_trial/Screens/authenticate/registerScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:inst_trial/models/instModel.dart';
-import 'package:inst_trial/services/auth.dart';
-import 'package:inst_trial/Screens/wraper.dart';
-import 'package:provider/provider.dart';
+import 'package:inst_app/Screens/authenticate/logIn.dart';
 
-import 'models/userMu.dart';
 
 
 
@@ -31,14 +19,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
      
      return 
-   StreamProvider<UserMu>.value(
-      value: AuthService().user,
-      initialData: null,
-      child: MaterialApp(
+   MaterialApp(
        debugShowCheckedModeBanner: false,
-        home: logIn(),//Wrapper(),
-      ),
-    );
+        home: logIn(),
+      );
+    
 
   }
 
@@ -51,11 +36,3 @@ class MyApp extends StatelessWidget {
   
   }
 
-
-
-getStatus(){
-  var firebaseUser =  FirebaseAuth.instance.currentUser;
-    firestoreInstance.collection("institution").doc(firebaseUser.uid).get().then((value){
-      print(value.data());
-    });
-  }
