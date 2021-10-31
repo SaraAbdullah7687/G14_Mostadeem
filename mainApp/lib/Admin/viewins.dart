@@ -2,18 +2,19 @@
 
 //import 'dart:html';
 
-import 'package:flushbar/flushbar.dart';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
 import 'package:mostadeem/Admin/viViewModel.dart';
+import 'package:mostadeem/components/customAlert.dart';
 import 'package:mostadeem/components/google_auth_api.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:mostadeem/shared/loading.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import '../constants.dart';
 import 'components/social_icon.dart';
 
 class institutionView extends StatelessWidget {
@@ -49,6 +50,7 @@ class _ViewInstitutionState extends State<ViewInstitution> {
         () => setState(() {
               setup();
             }));
+    // showTopSnackBar(context,"Welcome #name", "Good to have you in Mostadeem",Icons.check_circle_outline_outlined,);
   }
 
   setup() async {
@@ -62,8 +64,17 @@ class _ViewInstitutionState extends State<ViewInstitution> {
         Provider.of<ViewInstitutionViewModel>(context, listen: false)
             .institutions;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          "Requests",
+          style: TextStyle(
+            letterSpacing: 2,
+            fontSize: 28.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(18),
@@ -71,15 +82,6 @@ class _ViewInstitutionState extends State<ViewInstitution> {
         ),
         backgroundColor: Color.fromRGBO(48, 126, 80, 1),
         elevation: 0.0,
-        /* title: Text(
-            'Home',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-              fontSize: 24,
-            ),
-          ),*/
         actions: <Widget>[
           IconButton(
             padding: EdgeInsets.only(right: 15),
@@ -90,32 +92,10 @@ class _ViewInstitutionState extends State<ViewInstitution> {
             ),
             onPressed: () async {
               await _auth.signOut();
-              //GoogleAuthApi.signOut();
+              GoogleAuthApi.signOut();
             },
           ),
         ],
-        /*  leading: IconButton(
-          icon: Icon(Icons.arrow_back_outlined, color: Colors.green[50], size: 30.0,),
-          onPressed: () {
-            // passing this to our root
-            Navigator.of(context).pop();
-          },
-        ),*/
-        /*   actions: <Widget>[
-            FlatButton.icon(
-              icon: Icon(Icons.person , size: 30.0,
-            color: Colors.white,),
-              
-              label: Text(
-          "Logout",
-          style: TextStyle(color: Colors.white,
-          ),
-        ),
-              onPressed: () async {
-                await _auth.signOut();
-              },
-            ),
-          ],*/
         toolbarHeight: 60.0, // was 80
       ),
 
@@ -132,12 +112,24 @@ class _ViewInstitutionState extends State<ViewInstitution> {
               stream: institutions,
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) return Loading();
-                return //Container( height: 50, width: 50,child:
-                    new ListView.builder(
-                  itemCount: snapshot.data.docs.length,
-                  itemBuilder: (context, index) => buildInstitutionCard(
-                      context, snapshot.data.docs[index]), //),
-                );
+                if (snapshot.data.docs.length == 0) {
+                  return Center(
+                    child: Text(
+                      'No available requests at the moment',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  );
+                } else
+                  return
+                      //Container( height: 50, width: 50,child:
+                      new ListView.builder(
+                    itemCount: snapshot.data.docs.length,
+                    itemBuilder: (context, index) => buildInstitutionCard(
+                        context, snapshot.data.docs[index]), //),
+                  );
               }),
       // ),
     );
@@ -145,24 +137,24 @@ class _ViewInstitutionState extends State<ViewInstitution> {
 
   Widget buildInstitutionCard(BuildContext context, DocumentSnapshot document) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(20.0),
       child: Container(
-        width: 250,
-        height: 200,
+        width: 140, // 250
+        height: 150, //200
         decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.green[900],
-          ),
+          /*  border: Border.all(
+                 color: Colors.green[900],
+                ),*/
           borderRadius: BorderRadius.circular(24.0),
         ),
         child: Material(
           color: Colors.white,
-          elevation: 14.0,
+          elevation: 14.0, //14
           borderRadius: BorderRadius.circular(24.0),
           shadowColor: Color(0x802196F3),
           child: Container(
             child: Padding(
-              padding: const EdgeInsets.only(right: 90.0),
+              padding: const EdgeInsets.only(right: 15.0), // 90
               child: myDetailsContainer1(context, document),
             ),
           ),
@@ -185,7 +177,7 @@ class _ViewInstitutionState extends State<ViewInstitution> {
             document['name'],
             style: TextStyle(
                 color: Colors.green[900],
-                fontSize: 30.0,
+                fontSize: 25.0,
                 fontWeight: FontWeight.bold),
           ),
         ),
@@ -196,13 +188,15 @@ class _ViewInstitutionState extends State<ViewInstitution> {
               label: Text(
                 document['CR'],
                 style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.blue[400],
                     fontSize: 18.0,
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline),
               ),
-              icon: Icon(Icons.confirmation_num_sharp), // or assignment
+              icon: Icon(Icons
+                  .verified), // or assignment confirmation_num_sharp verified
               style: ElevatedButton.styleFrom(
-                  primary: Color.fromRGBO(48, 126, 80, 1) // can be changed
+                  primary: kPrimaryColor // can be changed
                   ),
             )),
         lastRow(context, document),
@@ -223,31 +217,32 @@ class _ViewInstitutionState extends State<ViewInstitution> {
   Widget contactIcons(BuildContext context, DocumentSnapshot document) {
     return Flexible(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.start,
+        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Flexible(
             child: IconButton(
               icon: const Icon(Icons.mail_outline),
-              color: Colors.lightGreen[900],
+              color: kPrimaryColor,
               tooltip: 'Send email',
               onPressed: () => ourViewMode.sendingMails(document.get("email")),
               // _sendingMails(document.get("email")),
             ),
           ),
-          SizedBox(width: 5),
+          SizedBox(width: 12),
           Flexible(
             child: SocalIcon(
               iconSrc: "assets/icons/twitter.svg",
-              color: Colors.lightGreen[900],
+              color: kPrimaryColor,
               press: () =>
                   ourViewMode.goToTwitter(document.get("twitterAccount")),
             ),
           ),
-          SizedBox(width: 6),
+          SizedBox(width: 12),
           Flexible(
             child: IconButton(
               icon: const Icon(Icons.phone),
-              color: Colors.lightGreen[900],
+              color: kPrimaryColor,
               onPressed: () => ourViewMode.goToWhatsapp(document.get("phone")),
             ),
           ),
@@ -262,31 +257,60 @@ class _ViewInstitutionState extends State<ViewInstitution> {
       child: Row(
         //direction: Axis.vertical,
         //alignment: WrapAlignment.end,
-
+        mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           //  Flexible(  child:
           /* Container( width:25 , 
                 child:*/
-          GestureDetector(
-            onTap: () {
-              _showMyDialog("approve", context, document.id, document);
-            },
-            child: Icon(
-              Icons.check,
-              size: 50.0,
-              color: Colors.lightGreen[600],
-            ),
-          ),
+          /*GestureDetector( onTap: (){_showMyDialog("approve", context,document.id,document); },
+  child: Icon( Icons.check,
+               size: 40.0,
+               color: Colors.lightGreen[600],
+             ), 
+),
+*/
 
-          GestureDetector(
-            onTap: () {
-              _showMyDialog("Disapprove", context, document.id, document);
-            },
-            child: Icon(
-              Icons.clear,
-              size: 50.0,
-              color: Colors.red[800],
+          ElevatedButton(
+            child: Text('Approve'),
+            style: ElevatedButton.styleFrom(
+              shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(22.0),
+              ),
+              primary: kPrimaryColor,
+              onPrimary: Colors.white,
+              onSurface: Colors.grey,
+              padding: EdgeInsets.only(top: 3, bottom: 3, right: 10, left: 10),
             ),
+            onPressed: () {
+              //_showMyDialog("approve", context,document.id,document);
+              showCustomAlert("approve", context, document.id, document);
+            },
+          ),
+          SizedBox(width: 10),
+
+/*GestureDetector( onTap: (){_showMyDialog("Disapprove", context,document.id,document); },
+  child: Icon( Icons.clear,
+               size: 40.0,
+               color: Colors.red[800],
+             ), 
+),
+*/
+
+          ElevatedButton(
+            child: Text('Disapprove'),
+            style: ElevatedButton.styleFrom(
+              shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(22.0),
+              ),
+              primary: Colors.red[400],
+              onPrimary: Colors.white,
+              onSurface: Colors.grey,
+              padding: EdgeInsets.only(top: 3, bottom: 3, right: 5, left: 5),
+            ),
+            onPressed: () {
+              //_showMyDialog("Disapprove", context,document.id,document);
+              showCustomAlert("disapprove", context, document.id, document);
+            },
           ),
 
 /*              IconButton(
@@ -323,7 +347,7 @@ class _ViewInstitutionState extends State<ViewInstitution> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Institution Status'),
-          content: Text('Do you want to $status this intitution?'),
+          content: Text('Are you sure you want to $status this intitution?'),
           actions: <Widget>[
             TextButton(
               // nothing should happen
@@ -339,12 +363,16 @@ class _ViewInstitutionState extends State<ViewInstitution> {
                     // show another pop up
                     print('status has changed to approved');
                     sendEmail("approveEmail", context, document);
-                    showTopSnackBar(
-                        context, 'Success', 'Institution has been approved');
+                    showTopSnackBar(context, 'Success',
+                        'Institution has been approved', Icons.check);
                   } else if (result == 'Fail approve') {
                     print('could not update status, procces failed');
                     showTopSnackBar(
-                        context, 'Fail', 'Approve institution failed');
+                      context,
+                      'Fail',
+                      'Approve institution failed',
+                      Icons.cancel_outlined,
+                    );
                   } else {
                     print(result);
                   }
@@ -355,12 +383,16 @@ class _ViewInstitutionState extends State<ViewInstitution> {
                     // show another pop up
                     print('intitution has been deleted'); // may change it
                     sendEmail("disapproveEmail", context, document);
-                    showTopSnackBar(
-                        context, 'Success', 'Institution has been disapproved');
+                    showTopSnackBar(context, 'Success',
+                        'Institution has been disapproved', Icons.check);
                   } else if (result == 'Fail disapprove') {
                     print('could not delete institution, procces failed');
                     showTopSnackBar(
-                        context, 'Fail', 'Dispprove institution failed');
+                      context,
+                      'Fail',
+                      'Dispprove institution failed',
+                      Icons.cancel_outlined,
+                    );
                   } else {
                     print(result);
                   }
@@ -390,7 +422,7 @@ class _ViewInstitutionState extends State<ViewInstitution> {
       final email = user.email;
       final auth = await user.authentication;
       final token = auth.accessToken;
-//GoogleAuthApi.signOut();
+      GoogleAuthApi.signOut();
 
       print('Authenticated: $email');
       final smtpServer = gmailSaslXoauth2(email, token);
@@ -438,18 +470,19 @@ class _ViewInstitutionState extends State<ViewInstitution> {
     );
   }
 
-  void showTopSnackBar(BuildContext context, String title, String message) =>
+  void showTopSnackBar(
+          BuildContext context, String title, String message, IconData icon) =>
       show(
         context,
         Flushbar(
-          icon: Icon(Icons.error, size: 32, color: Colors.white),
+          icon: Icon(icon, size: 32, color: Colors.white),
           shouldIconPulse: false,
           title: title,
           message: message, // change message
           duration: Duration(seconds: 3),
           flushbarPosition: FlushbarPosition.TOP,
-          margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
-          borderRadius: 16,
+          //margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
+          borderRadius: BorderRadius.circular(6),
           barBlur: 20,
           backgroundColor: Colors.black.withOpacity(0.5),
         ),
@@ -461,5 +494,63 @@ class _ViewInstitutionState extends State<ViewInstitution> {
 
     newFlushBar.show(context);
     flushBars.add(newFlushBar);
+  }
+
+  showCustomAlert(String status, BuildContext context, String uid,
+      DocumentSnapshot document) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomAlert(
+            icon: Icons.error_outline,
+            msgTitle: "Institution Status\n",
+            msgContent: 'Are you sure you want to $status this intitution?',
+            press: () {
+              if (status == "approve") {
+                // change status to approved, then admin would not be able to see them
+                String result = _auth.updateInstitutionStatus(status, uid);
+                if (result == 'Success approve') {
+                  // show another pop up
+                  print('status has changed to approved');
+                  sendEmail("approveEmail", context, document);
+                  showTopSnackBar(context, 'Success',
+                      'Institution has been approved', Icons.check);
+                } else if (result == 'Fail approve') {
+                  print('could not update status, procces failed');
+                  showTopSnackBar(
+                    context,
+                    'Couldn\'t approve',
+                    'An error occurred while approving institution',
+                    Icons.cancel_outlined,
+                  );
+                } else {
+                  print(result);
+                }
+              } else {
+                // delete institution and send email to them to let them know
+                String result = _auth.updateInstitutionStatus(status, uid);
+                if (result == 'Success disapprove') {
+                  // show another pop up
+                  print('intitution has been deleted'); // may change it
+                  sendEmail("disapproveEmail", context, document);
+                  showTopSnackBar(context, 'Success',
+                      'Institution has been disapproved', Icons.check);
+                } else if (result == 'Fail disapprove') {
+                  print('could not delete institution, procces failed');
+                  showTopSnackBar(
+                    context,
+                    'Couldn\'t disapprove',
+                    'An error occurred while disapproving institution',
+                    Icons.cancel_outlined,
+                  );
+                } else {
+                  print(result);
+                }
+              }
+
+              Navigator.pop(context, 'OK');
+            },
+          );
+        });
   }
 } // end of class

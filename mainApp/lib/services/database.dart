@@ -1,6 +1,7 @@
 //import 'dart:html';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mostadeem/models/ContributorModel.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -38,6 +39,7 @@ class DatabaseService {
         'uid': user.uid,
         'name': user.name,
         'email': user.email,
+        'phone': user.phone,
         'userType': 'contributor',
         //'notifToken': user.notifToken,?? what should we add?
       });
@@ -57,7 +59,6 @@ class DatabaseService {
     } catch (e) {
       print(e);
     }
-
     return retVal;
   }
 
@@ -112,33 +113,48 @@ _usersCollection.doc(uid) // also delete it from users collecction
   }
 
 //return userType;
+/* get name 
+  String getName() {
+    var firebaseUser = FirebaseAuth.instance.currentUser;
+    firestoreInstance.
+  }*/
 
   //addRequest
   Future<String> addRequest(String contId, requestModel request) async {
     String retVal = "error";
+    String ID;
     print("DB 22########################################################");
     try {
       CollectionReference _docRef = _firestore
           .collection("contributor")
           .doc(contId)
           .collection("request");
+
       print("DB 28 ########################################################" +
           _docRef.toString());
 
-      _docRef.add({
-        'contribId':
-            contId, // FOR notifications ONLY=============================================================NEWLY ADDED========================
+      DocumentReference dic1 = await _docRef.add({
         'category': request.category.trim().toLowerCase(),
+        'contribId': contId,
         'date': request.date.trim(),
         'location': request.location.data,
         'status': request.status.trim(),
-        'time': request.time.trim()
+        'time': request.time.trim(),
+        'title': request.title,
+      });
+
+      _firestore
+          .collection("contributor")
+          .doc(contId)
+          .collection("request")
+          .doc(dic1.id)
+          .update({
+        'reqID': dic1.id,
       });
       print("DB 35########################################################");
+      /////
 
-// ADD appointment to suitble instituations
-      addAppointment(contId, request);
-      //  addRequestOutside(contId, request);
+      addAppointment(contId, request, dic1.id.toString());
       retVal = "success";
     } catch (e) {
       print("DB 41########################################################");
@@ -149,34 +165,27 @@ _usersCollection.doc(uid) // also delete it from users collecction
     return retVal;
   }
 
-/*
-  Future<String> addRequestOutside(
-      String contribId, requestModel request) async {
-    CollectionReference _docRef = _firestore.collection("requests");
-    print(
-        "DB 158 NEW ########################################################" +
-            _docRef.toString());
-
-    _docRef.add({
-      // 'reqID':
-      'contribId':
-          contribId, // FOR notifications ONLY=============================================================NEWLY ADDED========================
-      'category': request.category.trim().toLowerCase(),
-      'date': request.date.trim(),
-      'location': request.location.data,
-      'status': request.status.trim(),
-      'time': request.time.trim()
-    });
-  }
-*/
   // ADD appointment to instituations
-  Future<String> addAppointment(String contribId, requestModel request) async {
+  Future<String> addAppointment(
+      String contribId, requestModel request, String requestId) async {
     String retVal = "error";
     String contName;
     String contEmail;
     String contPhone;
+    //String requestID;
     ////
     FirebaseFirestore firestoreObj = FirebaseFirestore.instance;
+    /*TO GET ID
+    firestoreObj
+        .collection("contributor")
+        .doc(contribId)
+        .collection("request")
+        .doc(requestID)
+        .get()
+        .then((value) {
+      requestID = (value.data()['requestID']);
+    });*/
+
     /* TO GET NAME*/
     firestoreObj.collection("contributor").doc(contribId).get().then((value) {
       contName = (value.data()['name']);
@@ -185,10 +194,12 @@ _usersCollection.doc(uid) // also delete it from users collecction
     firestoreObj.collection("contributor").doc(contribId).get().then((value) {
       contEmail = (value.data()['email']);
     });
-    /*TO GET PHONE
-      firestoreObj.collection("contributor").doc(contribId).get().then((value) {
+
+    /* TO GET PHONE*/
+    firestoreObj.collection("contributor").doc(contribId).get().then((value) {
       contPhone = (value.data()['phone']);
-    });*/
+    });
+
     print("DB 52########################################################");
 
     try {
@@ -204,18 +215,20 @@ _usersCollection.doc(uid) // also delete it from users collecction
             .add({
           'contribId':
               contribId, ////----------------------------------------------------------------NEW ADDED
-
           'category': request.category.trim().toLowerCase(),
           'date': request.date.trim(),
           'location': request.location.data,
           'time': request.time.trim(),
           'status': request.status.trim(),
-          //'requestID': request.requestID.trim(),
-          // 'descreption': request.descreption.trim(),
+          'requestID': requestId,
+          'reqTitle': request.title.trim(),
           'contName': contName,
           'contEmail': contEmail,
+          'contPhone': contPhone,
         });
-      }); // END outer foreach
+      });
+
+      // END outer foreach
       print("DB 74########################################################");
 
       retVal = "success";
@@ -247,6 +260,7 @@ _usersCollection.doc(uid) // also delete it from users collecction
       print("DB 119########################################################");
       bool flag = false;
       query.docs.forEach((element) {
+        flag = false;
         print("DB 122########################################################" +
             element.toString());
 
