@@ -583,7 +583,7 @@ class _DemoToggleButtonsState extends State<DemoToggleButtons> {
     //wrap the GridView wiget in an Ink wiget and set the width and height, 
     //otherwise the GridView widget will fill up all the space of its parent widget
     return  Container(
-      height: 300,
+      height: 275,
       width: double.infinity,
       child: Ink(
       width: 380,
