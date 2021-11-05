@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mostadeem/components/google_auth_api.dart';
+import 'package:mostadeem/screens/instList.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
@@ -48,14 +49,32 @@ class HomeZero extends StatelessWidget {
         toolbarHeight: 60.0,
       ),
       body: Column(children: <Widget>[
-        Container(
-          margin: EdgeInsets.only(top: 30, right: 10, bottom: 20),
-          child: Text('Instituations',
-              style: TextStyle(
-                fontSize: 20,
-                color: Color.fromRGBO(48, 126, 80, 1),
-                fontWeight: FontWeight.bold,
-              )),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('Instituations',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Color.fromRGBO(48, 126, 80, 1),
+                  fontWeight: FontWeight.bold,
+                )),
+            TextButton(
+              style: TextButton.styleFrom(
+                  //    padding: EdgeInsets.only(left: 20),
+                  alignment: Alignment.bottomLeft),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => instList()),
+                );
+              },
+              child: Text(
+                'See all',
+                style: TextStyle(
+                    color: Colors.grey, decoration: TextDecoration.underline),
+              ),
+            ),
+          ],
         ),
         Container(
           height: 180,
