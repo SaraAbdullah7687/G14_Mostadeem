@@ -1,23 +1,16 @@
-import 'package:flushbar/flushbar.dart';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:mostadeem/Screens/Welcome/welcome_screen.dart';
-import 'package:mostadeem/Screens/authenticate/bodyLogin.dart';
 import 'package:mostadeem/Screens/background.dart';
 import 'package:mostadeem/Screens/home/home.dart';
 import 'package:mostadeem/components/advanceAlert.dart';
-//import 'package:flutter_auth/Screens/Signup/components/or_divider.dart';
-//import 'package:flutter_auth/Screens/Signup/components/social_icon.dart';
 import 'package:mostadeem/components/already_have_an_account_acheck.dart';
 import 'package:mostadeem/components/rounded_button.dart';
-import 'package:mostadeem/components/rounded_input_field.dart';
 import 'package:mostadeem/components/rounded_password_field.dart';
-//import 'package:flutter_svg/svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:mostadeem/components/text_field_container.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:mostadeem/shared/loading.dart';
 import '../../constants.dart';
-import 'package:mostadeem/Screens/authenticate/authenticate.dart';
 
 class BodySignUp extends StatefulWidget {
   final Function toggleView;
@@ -33,6 +26,8 @@ class BodySignUp extends StatefulWidget {
 
 class _BodySignUpState extends State<BodySignUp> {
   final AuthService _auth = AuthService();
+  final RegExp nameRegExp = RegExp('[a-zA-Z]');
+
   String error = '';
   bool loading = false;
   String _email = '';
@@ -137,6 +132,7 @@ void clearText() {
                           child: TextFormField(
                             //autofocus: false,
                             cursorColor: kPrimaryColor,
+                            maxLength: 15,
                             textInputAction: TextInputAction.next, // added it
                             decoration: InputDecoration(
                               prefixIcon: Icon(
@@ -161,11 +157,11 @@ void clearText() {
                                 }
                                 return null;
                               },*/
-                            validator: MultiValidator([
-                              RequiredValidator(errorText: "Required"),
-                              MaxLengthValidator(15,
-                                  errorText: "At most 15 characters"),
-                            ]),
+                            validator: (value) => value.isEmpty
+                                ? 'Required'
+                                : (nameRegExp.hasMatch(value)
+                                    ? null
+                                    : 'Not a valid Name'),
                             onSaved: (value) {
                               // or _emailController.text = value!;
                               _authData['name'] = value;
@@ -209,7 +205,7 @@ void clearText() {
                               },*/
                             validator: MultiValidator([
                               RequiredValidator(errorText: "Required"),
-                              EmailValidator(errorText: "Not a valid email"),
+                              EmailValidator(errorText: "not a valid Email"),
                               // validateEmail(_emailController.text),
                             ]),
                             onSaved: (value) {
@@ -227,6 +223,7 @@ void clearText() {
                         TextFieldContainer(
                           child: TextFormField(
                             //autofocus: false,
+                            maxLength: 10,
                             keyboardType: TextInputType.number, // or phone
                             controller: _phoneController,
                             cursorColor: kPrimaryColor,
@@ -288,7 +285,7 @@ void clearText() {
 
                         RoundedButton(
                           // when click go to auth phone number , and send data with it
-                          text: "SIGN UP",
+                          text: "Sign up",
                           press: () async {
                             if (_formKey.currentState.validate()) {
                               //  setState(() => loading = true);
@@ -299,7 +296,8 @@ void clearText() {
                                   await _auth.registerWithEmailAndPassword(
                                       _authData['email'].trim(),
                                       _authData['password'],
-                                      _authData['name'].trim());
+                                      _authData['name'].trim(),
+                                      _authData['phone'].trim());
 
                               if (result == null) {
                                 print("req returend null");
@@ -317,8 +315,8 @@ void clearText() {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AdvanceCustomAlert(
-                                        icon: Icons.error,
-                                        msgTitle: 'INVALID',
+                                        icon: Icons.cancel_outlined,
+                                        msgTitle: 'Invalid\n',
                                         msgContent:
                                             'Email already exists, please sign in',
                                         btnContent: 'Ok',
@@ -328,11 +326,16 @@ void clearText() {
 
                               } else {
                                 print("req is not null");
-                                print("pass go to pin page");
 
-                                /*  setState(() {
-                                    loading = false;
-                                  });*/
+                                /*Navigator.pushReplacement(context,
+                  MaterialPageRoute(
+                    builder: (context) => Home(
+                      feedback: () async {
+                         _auth.showTopSnackBar(context,"Welcome", "Good to have you in Mostadeem",Icons.check_circle_outline_outlined,);
+                      },
+                    ),
+                  ),
+                );*/
                               }
                             }
                           },
@@ -385,34 +388,8 @@ void clearText() {
     Pattern pattern = "(05|5)(5|0|3|6|4|9|1|8|7)([0-9]{7})";
     RegExp regex = new RegExp(pattern);
     if (!regex.hasMatch(value) || value == null)
-      return 'Invalid phone number';
-    else if (value.length < 10 || value.length > 10)
-      return 'Invalid phone number';
+      return 'not a valid phone number';
     else
       return null;
-  }
-
-  void showTopSnackBar(BuildContext context) => show(
-        context,
-        Flushbar(
-          icon: Icon(Icons.error, size: 32, color: Colors.white),
-          shouldIconPulse: false,
-          title: 'INVALID',
-          message: 'Email already exists, please sign in', // change message
-          duration: Duration(seconds: 3),
-          flushbarPosition: FlushbarPosition.TOP,
-          margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
-          borderRadius: 16,
-          barBlur: 20,
-          backgroundColor: Colors.black.withOpacity(0.5),
-        ),
-      );
-
-  Future show(BuildContext context, Flushbar newFlushBar) async {
-    await Future.wait(flushBars.map((flushBar) => flushBar.dismiss()).toList());
-    flushBars.clear();
-
-    newFlushBar.show(context);
-    flushBars.add(newFlushBar);
   }
 }

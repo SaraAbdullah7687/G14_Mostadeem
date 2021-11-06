@@ -2,18 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mostadeem/screens/home/home.dart';
 
-class AdvanceCustomAlert extends StatelessWidget {
+class CustomAlert extends StatelessWidget {
   IconData icon;
   String msgTitle;
   String msgContent;
-  String btnContent;
+  //String btnContent;
+  final Function press;
 
 // constructor
-  AdvanceCustomAlert({
+  CustomAlert({
     @required this.icon,
     @required this.msgTitle,
     @required this.msgContent,
-    @required this.btnContent,
+    // @required this.btnContent,
+    @required this.press,
   });
 
   @override
@@ -26,7 +28,7 @@ class AdvanceCustomAlert extends StatelessWidget {
         overflow: Overflow.visible,
         children: [
           Container(
-            height: 255,
+            height: 260,
             width: 300,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
@@ -64,42 +66,48 @@ class AdvanceCustomAlert extends StatelessWidget {
                             // 3- msg content var ######################################################################33
                             //  'we have recievd your request',
                             msgContent, // var
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 13,
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 6),
-                            child: RaisedButton(
-                              child: Text(
-                                // 4- msg btn content var ######################################################################33
-                                // 'OK',
-                                btnContent, //var
-                                style: TextStyle(
-                                  color: Color.fromRGBO(48, 126, 80, 1),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 6),
+                                child: RaisedButton(
+                                  child: Text(
+                                    // 4- msg btn content var ######################################################################33
+                                    // 'OK',
+                                    "Cancle", //var
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(48, 126, 80, 1),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
                                 ),
                               ),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-
-                                if (icon == Icons.celebration) {
-                                  //=======================================================================================================================
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Home(),
-                                      ),
-                                      (route) => false);
-                                  /*  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MyHomePage()),
-                                  );*/
-                                }
-                              },
-                            ),
-                          )
+                              SizedBox(width: 12),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 6),
+                                child: RaisedButton(
+                                  child: Text(
+                                    // 4- msg btn content var ######################################################################33
+                                    // 'OK',
+                                    "Yes", //var
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(48, 126, 80, 1),
+                                    ),
+                                  ),
+                                  onPressed: press,
+                                ),
+                              )
+                            ],
+                          ),
                         ],
                       ),
                     ),

@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:mostadeem/globals/global.dart';
 import 'package:mostadeem/models/contributorModel.dart';
 import 'package:mostadeem/models/requestModel.dart';
 import 'package:mostadeem/screens/home/home.dart';
@@ -20,6 +21,7 @@ import 'package:mostadeem/services/auth.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:mostadeem/screens/calendar.dart';
 import 'package:mostadeem/globals/global.dart' as global;
+import 'package:mostadeem/services/localNotific.dart';
 
 /*Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,12 +53,18 @@ class LocationApp extends StatefulWidget {
   String category; //FINAL ?
   String date;
   String time;
+  String title;
   /*newly added*/
   //String currentUser = firebaseUser.uid;
 
 //===========================================================================================
 
-  LocationApp({this.category, this.date, this.time, /*this.currentUser*/ uid});
+  LocationApp(
+      {this.category,
+      this.date,
+      this.time,
+      /*this.currentUser*/ uid,
+      this.title});
 
   @override
   _LocationAppState createState() => _LocationAppState();
@@ -70,10 +78,36 @@ class _LocationAppState extends State<LocationApp> {
     String _returnString;
     await Firebase.initializeApp();
     _returnString = await DatabaseService().addRequest(contId, request);
+    print("add success inside if in location line 79");
 
     if (_returnString == "success") {
+/*SARA*/
+      print("add success inside if in location line 84");
+      // اشيل الاشعار اللي بسطر 421
+      Duration difference = global.globalDate.difference(DateTime.now());
+      if (difference.inHours > 24) {
+        print("diff inside if in location line 88");
+        NotificationService().showNotification(1, "Pickup Reminder",
+            "Your request will be pickuped today.", difference.inHours);
+      }
+
       global.globalDate = null;
       global.globalTime = null;
+      global.reqCat = [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ];
+
       /* Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
@@ -83,7 +117,7 @@ class _LocationAppState extends State<LocationApp> {
     } // END inner if
     /* }*/ else {
       // WE must show error msg
-      print("ERRRRRRRRRRRRRRRRRRRRRRRRRRRRROR 52 location");
+      print("Sorry! the request not recievd");
     }
   } // END FINAL STEP > ADD to database
 
@@ -147,31 +181,58 @@ class _LocationAppState extends State<LocationApp> {
           ),
           toolbarHeight: 60.0,
         ),
-        body: GoogleMap(
-            initialCameraPosition: _initialCameraPosition,
-            mapType: MapType.normal,
-            onMapCreated: (controller) => _controller.complete(controller),
-            markers: _markers,
-            onTap: _handelTap,
-
-            /* to move camera*/
-            onCameraMove: (CameraPosition newPos) {
-              setState(() {
-                currentLocation = newPos.target;
-              });
-            }),
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.only(bottom: 40.0, right: 40),
-          child: FloatingActionButton(
-            backgroundColor: Colors.white,
-            onPressed: () => getCurrentLocation(),
-            child: Icon(
-              Icons.gps_fixed,
-              color: Color.fromRGBO(48, 126, 80, 1),
+        body: Column(children: [
+          Container(
+            width: 280,
+            margin: EdgeInsets.only(left: 10),
+            child: Image.asset(
+              'assets/images/step3.png',
+              alignment: Alignment.center,
+              height: 80,
+              fit: BoxFit.fitWidth,
             ),
           ),
-        ),
+          Container(
+            alignment: Alignment.center,
+            //  borderRadius: BorderRadius.circular(25),
+            /*decoration: BoxDecoration(
+              border: Border.all(
+                width: 2,
+                color: Color.fromRGBO(48, 126, 80, 1), // red as border color
+              ),
+            ),*/
+            child: SizedBox(
+              width: 300, // or use fixed size like 200
+              height: 480,
 
+              child: GoogleMap(
+                  initialCameraPosition: _initialCameraPosition,
+                  mapType: MapType.normal,
+                  onMapCreated: (controller) =>
+                      _controller.complete(controller),
+                  markers: _markers,
+                  onTap: _handelTap,
+
+                  /* to move camera*/
+                  onCameraMove: (CameraPosition newPos) {
+                    setState(() {
+                      currentLocation = newPos.target;
+                    });
+                  }),
+            ),
+          ),
+          /* Container(
+            padding: const EdgeInsets.only(bottom: 40.0, right: 40),
+            child: FloatingActionButton(
+              backgroundColor: Colors.white,
+              onPressed: () => getCurrentLocation(),
+              child: Icon(
+                Icons.gps_fixed,
+                color: Color.fromRGBO(48, 126, 80, 1),
+              ),
+            ),
+          ),*/
+        ]),
 ///////////////////////////////////////////
 
         /* to display location lang+long*/
@@ -191,6 +252,7 @@ class _LocationAppState extends State<LocationApp> {
                 category: widget.category,
                 date: widget.date,
                 time: widget.time,
+                title: widget.title,
                 location: geo.point(latitude: lat, longitude: lng),
                 status: 'pending',
               );

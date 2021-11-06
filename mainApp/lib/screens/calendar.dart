@@ -264,8 +264,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:mostadeem/components/text_field_container.dart';
 import 'package:mostadeem/screens/request.dart';
+import 'package:mostadeem/services/auth.dart';
 import 'locatin.dart';
+
+import 'package:mostadeem/Screens/authenticate/authenticate.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:mostadeem/globals/global.dart'
     as global; //==================================================================================
 
@@ -299,7 +304,6 @@ class MyApp extends StatelessWidget {
 
 class MainPage extends StatefulWidget {
   String category; //FINAL ?
-
   //constructer--------------------------------------------------------------------------------------------
   MainPage({this.category});
 
@@ -308,10 +312,18 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  TextEditingController _descreptionController = TextEditingController();
+  //final AuthService _auth = AuthService();
+  final RegExp nameRegExp = RegExp('[a-zA-Z]');
+  final formKey = GlobalKey<FormState>();
+  String _title = "";
+  // added it
+
   //========================METHODS================================
   // when onPressed: BACK- take the cats and go to calendar screens
   void _goToCategory(BuildContext context) async {
     //AFNAN
+
     Navigator.of(context).pop();
     Navigator.push(
       context,
@@ -321,8 +333,9 @@ class _MainPageState extends State<MainPage> {
 
   // when onPressed: take the cats and go to calendar screens
   void _goToLocation(BuildContext context, String thisCategory, String thisDate,
-      String thisTime) async {
+      String thisTime, String thisTitle) async {
     // AFNAN
+    // Navigator.of(context).push(
     Navigator.of(context).pop();
     Navigator.push(
       context,
@@ -332,6 +345,7 @@ class _MainPageState extends State<MainPage> {
                 date:
                     thisDate, // ERROR HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRREEEEEEEEEEEEEEE : we fix it
                 time: thisTime,
+                title: thisTitle,
               )),
     );
   }
@@ -349,47 +363,13 @@ class _MainPageState extends State<MainPage> {
           body: Scaffold(
             appBar: AppBar(
               centerTitle: true,
-              title: Text('Date & Time'),
+              title: Text('Date & Time & Title'),
               backgroundColor: Color.fromRGBO(48, 126, 80, 1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.vertical(
                   bottom: Radius.circular(18),
                 ),
               ),
-              actions: <Widget>[
-                IconButton(
-                  icon: const Icon(
-                    Icons.arrow_forward_rounded,
-                    color: Colors.white,
-                  ),
-                  tooltip: 'Show Snackbar',
-                  onPressed: () {
-                    if (global.globalDate == null ||
-                        global.globalTime == null) {
-                      // ERROR msg **********************************************************************************HERE****************************
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AdvanceCustomAlert(
-                              icon: Icons.error,
-                              msgTitle: 'Attention',
-                              msgContent: 'Please select Date & Time.',
-                              btnContent: 'Ok',
-                            );
-                          });
-                    } else {
-                      _goToLocation(
-                        context,
-                        widget.category,
-                        global.globalDate.toString(),
-                        global.globalTime.toString(),
-                      );
-                    }
-
-                    /// PASS dateTIME ====================================================
-                  },
-                ),
-              ],
               leading: IconButton(
                 icon: const Icon(
                   Icons.arrow_back_rounded,
@@ -405,14 +385,126 @@ class _MainPageState extends State<MainPage> {
             ),
             //      backgroundColor: Colors.white10,
             body: Padding(
-              padding:
-                  const EdgeInsets.only(left: 40.0, right: 40.0, bottom: 100),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TimePickerWidget(),
-                  DatePickerWidget(),
-                ],
+              padding: const EdgeInsets.only(left: 40, right: 40),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      width: 400,
+                      //    margin: EdgeInsets.only(left: 20),
+                      child: Image.asset(
+                        'assets/images/step2.png',
+                        alignment: Alignment.center,
+                        height: 80,
+                        fit: BoxFit.fitWidth,
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 10.0, top: 20),
+                      child: Text(
+                        "Title",
+                        style: TextStyle(
+                          color: Color.fromRGBO(48, 126, 80, 1),
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Form(
+                      autovalidateMode: AutovalidateMode.always,
+                      key: formKey,
+                      child: Container(
+                        child: TextFormField(
+                          validator: (value) => value.isEmpty
+                              ? 'Required'
+                              : (nameRegExp.hasMatch(value)
+                                  ? null
+                                  : 'Not a valid Title'),
+                          onSaved: (value) {
+                            _descreptionController.text = value;
+                          },
+                          onChanged: (val) {
+                            setState(() => _title = val);
+                          },
+                          controller: _descreptionController,
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromRGBO(48, 126, 80, 1),
+                                    width: 2),
+                                borderRadius: BorderRadius.circular(25)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromRGBO(48, 126, 80, 1),
+                                    width: 1)),
+                            hintText: "Add a title to your request",
+                            hintStyle: TextStyle(
+                              fontSize: 15.0,
+                              color: Colors.black,
+                              // fontWeight: FontWeight.bold,
+                            ),
+                            fillColor: Colors.white,
+                            filled: true,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLength: 15,
+                        ),
+                      ),
+                    ),
+                    TimePickerWidget(),
+                    DatePickerWidget(),
+                    Container(
+                      margin: const EdgeInsets.only(
+                        left: 80,
+                        right: 80,
+                        top: 70,
+                      ),
+                      child: FloatingActionButton(
+                          heroTag: "btn2",
+                          shape: new RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(25.0),
+                          ),
+                          backgroundColor: Color.fromRGBO(48, 126, 80, 1),
+                          child: Text(
+                            'Next',
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                          onPressed: () {
+                            if (global.globalDate == null ||
+                                global.globalTime == null ||
+                                _descreptionController.text == '') {
+                              // ERROR msg **********************************************************************************HERE****************************
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AdvanceCustomAlert(
+                                      icon: Icons.error,
+                                      msgTitle: 'Attention',
+                                      msgContent:
+                                          'Please select Date & Time & Title.',
+                                      btnContent: 'Ok',
+                                    );
+                                  });
+                            } else {
+                              _goToLocation(
+                                context,
+                                widget.category,
+                                global.globalDate.toString(),
+                                global.globalTime.toString(),
+                                _descreptionController.text,
+                              );
+                              print('!!!!!! LINE 390 HERE IS THE VALUE ' +
+                                  _descreptionController.text);
+                            }
+                          }),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -570,10 +662,10 @@ class ButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) => ElevatedButton(
         style: ElevatedButton.styleFrom(
           side: BorderSide(
-            width: 1.0,
+            width: 2.0,
             color: Color.fromRGBO(48, 126, 80, 1),
           ),
-          minimumSize: Size.fromHeight(120),
+          minimumSize: Size.fromHeight(63),
           primary: Colors.white,
           shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(25.0),
@@ -582,7 +674,7 @@ class ButtonWidget extends StatelessWidget {
         child: FittedBox(
           child: Text(
             text,
-            style: TextStyle(fontSize: 20, color: Colors.black),
+            style: TextStyle(fontSize: 15, color: Colors.black),
           ),
         ),
         onPressed: onClicked,
@@ -604,7 +696,9 @@ class HeaderWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            margin: EdgeInsets.only(top: 80),
+            margin: EdgeInsets.only(
+              top: 30,
+            ),
             child: Text(
               title,
               style: TextStyle(
@@ -622,7 +716,7 @@ class HeaderWidget extends StatelessWidget {
                   ? Color.fromRGBO(48, 126, 80, 1)
                   : Colors.white10),*/
           const SizedBox(
-            height: 8,
+            height: 2,
           ),
           child,
         ],

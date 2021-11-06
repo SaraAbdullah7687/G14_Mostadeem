@@ -10,8 +10,9 @@ class requestModel {
   String time;
   GeoFirePoint location;
   String status;
-  //String descreption;
-  // String name;
+  //String requestID;
+  String title;
+  //String contName;
 
   requestModel({
     //  this.reqId, ================================================
@@ -22,8 +23,9 @@ class requestModel {
     this.time,
     this.location,
     this.status,
-    // this.descreption,
-    //  this.name,
+    // this.requestID,
+    this.title,
+    // this.contName,
   });
 
   /*requestModel.fromDocumentSnapshot({DocumentSnapshot doc}) {

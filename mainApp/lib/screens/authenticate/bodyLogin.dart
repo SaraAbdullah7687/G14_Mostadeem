@@ -1,4 +1,6 @@
-import 'package:flushbar/flushbar.dart';
+import 'dart:io';
+
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:mostadeem/Screens/Login/components/resetPassword.dart';
@@ -8,9 +10,11 @@ import 'package:mostadeem/components/already_have_an_account_acheck.dart';
 import 'package:mostadeem/components/rounded_button.dart';
 import 'package:mostadeem/components/rounded_password_field.dart';
 import 'package:mostadeem/components/text_field_container.dart';
+import 'package:mostadeem/globals/global.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:mostadeem/shared/loading.dart';
 import '../../constants.dart';
+import 'package:mostadeem/screens/home/home.dart';
 
 class BodyLogin extends StatefulWidget {
   final Function toggleView;
@@ -170,13 +174,13 @@ class _BodyLoginState extends State<BodyLogin> {
                               }),
 
                           RoundedButton(
-                            text: "SIGN IN",
+                            text: "Sign in",
                             press: () async {
                               if (_formKey.currentState.validate()) {
-                                // setState(() => loading = true);
+                                //setState(() => loading = true);
                                 dynamic result =
                                     await _auth.signInWithEmailAndPassword(
-                                        _authData['email'],
+                                        _authData['email'].trim(),
                                         _authData[
                                             'password']); // see the bookclub
 
@@ -195,8 +199,8 @@ class _BodyLoginState extends State<BodyLogin> {
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AdvanceCustomAlert(
-                                          icon: Icons.error,
-                                          msgTitle: 'INVALID',
+                                          icon: Icons.cancel_outlined,
+                                          msgTitle: 'Invalid\n',
                                           msgContent:
                                               'Email or password incorrect',
                                           btnContent: 'Ok',
@@ -213,8 +217,8 @@ class _BodyLoginState extends State<BodyLogin> {
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AdvanceCustomAlert(
-                                          icon: Icons.error,
-                                          msgTitle: 'INVALID',
+                                          icon: Icons.cancel_outlined,
+                                          msgTitle: 'Invalid\n',
                                           msgContent:
                                               'Email or password incorrect',
                                           btnContent: 'Ok',
@@ -224,41 +228,25 @@ class _BodyLoginState extends State<BodyLogin> {
 
                                 } else {
                                   print("req is not null");
-                                  setState(() {
-                                    // added delete it
-                                    loading = false;
-                                  });
+                                  /* Navigator.pushReplacement(context,
+                  MaterialPageRoute(
+                    builder: (context) => Home(
+                      feedback: () {
+                        _auth.showTopSnackBar(context,"Welcome", "Good to have you in Mostadeem",Icons.check_circle_outline_outlined,);
+                      },
+                    ),
+                  ),
+                );*/
                                 }
-                              }
-                              /* context.read<AuthenticationService>().signIn(
-                        email: _emailController.text.trim(),
-                        password: _passwordController.text.trim(),
-                      );*/
-
-                              // signIn(_emailController.text, _passwordController.text);
-
-                              /* if (!_formKey.currentState.validate()) {
-                       print("validation doesn't works");// delete it 
-                          return;
-                        }
-                  print("validation works"); // delete it 
-                        _formKey.currentState.save();*/
+                              } //
                             },
                           ),
 
                           SizedBox(height: size.height * 0.03),
                           AlreadyHaveAnAccountCheck(
+                            login: true,
                             press: () {
                               widget.toggleView();
-
-                              /* Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return WelcomeScreen(); // the general signup screen from nouf
-                        },
-                      ),
-                    );*/
                             },
                           ),
                         ],
@@ -270,46 +258,4 @@ class _BodyLoginState extends State<BodyLogin> {
       ),
     );
   }
-
-// works but shows an error in the console
-  void showTopSnackBar(BuildContext context) => show(
-        context,
-        Flushbar(
-          icon: Icon(Icons.error, size: 32, color: Colors.white),
-          shouldIconPulse: false,
-          title: 'INVALID',
-          message: 'Email or password incorrect', // change message
-          duration: Duration(seconds: 4),
-          flushbarPosition: FlushbarPosition.TOP,
-          margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
-          borderRadius: 16,
-          barBlur: 20,
-          backgroundColor: Colors.black.withOpacity(0.5),
-        ),
-      );
-
-  Future show(BuildContext context, Flushbar newFlushBar) async {
-    await Future.wait(flushBars.map((flushBar) => flushBar.dismiss()).toList());
-    flushBars.clear();
-
-    newFlushBar.show(context);
-    flushBars.add(newFlushBar);
-  }
-  // login function
-  /*
-  void signIn(String email, String password) async {
-    //if (_formKey.currentState!.validate()) {
-      if (_formKey.currentState.validate()){
-      await _auth
-          .signInWithEmailAndPassword(email: email, password: password)
-          .then((uid) => {
-                Fluttertoast.showToast(msg: "Login Successful"),
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => HomeScreen())),
-              })
-          .catchError((e) {
-        Fluttertoast.showToast(msg: e.message); //e.!message
-      });
-    }
-  }*/
 }

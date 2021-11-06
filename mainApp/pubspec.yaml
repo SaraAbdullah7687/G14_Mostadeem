@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.2.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -61,6 +61,18 @@ dependencies:
   geoflutterfire: ^3.0.1
   numberpicker: ^2.1.1
   curved_navigation_bar: ^1.0.1
+  another_flushbar: ^1.10.24 
+
+
+  #SARA notific. (local -reminder- ) --------------------------------------------------------
+  flutter_local_notifications: ^9.0.1
+  timezone: ^0.8.0
+
+  #SARA notific. (between two devices ) --------------------------------------------------------
+  firebase_messaging: ^10.0.9
+  awesome_notifications: ^0.6.13
+  get: ^4.3.8
+  random_string: ^2.3.1
   
 
 dev_dependencies:

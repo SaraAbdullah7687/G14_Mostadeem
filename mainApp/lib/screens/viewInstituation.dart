@@ -1,7 +1,3 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:mostadeem/components/google_auth_api.dart';
-import 'package:mostadeem/services/auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,41 +12,31 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class HomeZero extends StatelessWidget {
-  final AuthService _auth = AuthService();
+class ViewIns extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+  _viewInsState createState() => _viewInsState();
+}
+
+class _viewInsState extends State<ViewIns> {
+  @override
+  Widget build(BuildContext contexts) {
+    // ignore: unnecessary_new
+    return new Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text('Home'),
+        backgroundColor: Color.fromRGBO(48, 126, 80, 1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(18),
           ),
         ),
-        backgroundColor: Color.fromRGBO(48, 126, 80, 1),
-        elevation: 0.0,
-        /* actions: <Widget>[
-            IconButton(
-              padding: EdgeInsets.only(right: 15),
-              icon: Icon(Icons.logout , size: 25.0,
-            color: Colors.white,),
-            
-              onPressed: () async {
-                await _auth.signOut();
-                GoogleAuthApi.signOut();
-              },
-            ),
-          ],
-          */
         toolbarHeight: 60.0,
       ),
       body: Column(children: <Widget>[
         Container(
-          margin: EdgeInsets.only(top: 30, right: 10, bottom: 20),
-          child: Text('Instituations',
+          margin: EdgeInsets.only(top: 60, right: 150, bottom: 20),
+          child: Text('Our instituations',
               style: TextStyle(
                 fontSize: 20,
                 color: Color.fromRGBO(48, 126, 80, 1),
@@ -58,7 +44,7 @@ class HomeZero extends StatelessWidget {
               )),
         ),
         Container(
-          height: 180,
+          height: 200,
           //   color: Colors.white,
           child: StreamBuilder(
               stream: FirebaseFirestore.instance
@@ -68,85 +54,20 @@ class HomeZero extends StatelessWidget {
                   .snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) return Text('SOMETHINGWRONG!');
-                return myWidget(context, snapshot);
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: snapshot.data.docs.length,
+                  itemBuilder: (context, index) =>
+                      buildCard(context, snapshot.data.docs[index]),
+                );
               }),
         ),
-        Row(
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(top: 30, left: 50, bottom: 30),
-              width: 70,
-              height: 70,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Color.fromRGBO(48, 126, 80, 1),
-                  width: 2,
-                ),
-              ),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.card_giftcard_rounded,
-                  size: 33,
-                  color: Color.fromRGBO(48, 126, 80, 1),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 30, left: 25, bottom: 30),
-              width: 70,
-              height: 70,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Color.fromRGBO(48, 126, 80, 1),
-                  width: 2,
-                ),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.store,
-                  size: 33,
-                  color: Color.fromRGBO(48, 126, 80, 1),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 30, left: 25, bottom: 30),
-              width: 70,
-              height: 70,
-              decoration: BoxDecoration(
-                //  color: Color.fromRGBO(48, 126, 80, 1),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Color.fromRGBO(48, 126, 80, 1),
-                  width: 2,
-                ),
-              ),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.help,
-                  size: 33,
-                  color: Color.fromRGBO(48, 126, 80, 1),
-                ),
-              ),
-            ),
-          ],
-        ),
         Container(
-          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 80),
           padding: EdgeInsets.only(top: 10, left: 10),
           width: double.infinity,
           height: 120,
           decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: Offset(0, 3), // changes position of shadow
-              ),
-            ],
             gradient: LinearGradient(colors: [
               Color.fromRGBO(48, 126, 80, 1),
               Color.fromRGBO(236, 232, 202, 1)
@@ -163,32 +84,19 @@ class HomeZero extends StatelessWidget {
     );
   }
 
-  Widget myWidget(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-    return Scrollbar(
-        isAlwaysShown: true,
-        scrollbarOrientation: ScrollbarOrientation.top,
-        interactive: true,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: snapshot.data.docs.length,
-          itemBuilder: (context, index) =>
-              buildCard(context, snapshot.data.docs[index]),
-        ));
-  }
-
   Widget buildCard(BuildContext context, DocumentSnapshot document) => Card(
       color: Colors.white70,
       //  elevation: 14.0, //14
       // shadowColor: Color(0x802196F3),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       margin: EdgeInsets.only(
-        //    bottom: 80,
+        //   top: 80,
         left: 20,
       ),
       child: Container(
         decoration: BoxDecoration(
           color: Color.fromRGBO(236, 232, 202, 0.3),
-          borderRadius: BorderRadius.circular(25),
+          borderRadius: BorderRadius.circular(20),
         ),
         width: 150,
         height: 320,
@@ -201,18 +109,18 @@ class HomeZero extends StatelessWidget {
               document['name'],
               style: TextStyle(
                 color: Color.fromRGBO(48, 126, 80, 1),
-                fontSize: 25.0,
+                fontSize: 30.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
           Container(
             // padding: EdgeInsets.only(top: 50, left: 13, right: 10),
-            margin: EdgeInsets.only(top: 20, left: 5, right: 10),
+            margin: EdgeInsets.only(top: 8, left: 5, right: 10),
             child: Text(document['category'],
                 style: TextStyle(
                   color: Color.fromRGBO(48, 126, 80, 1),
-                  fontSize: 15.0,
+                  fontSize: 10.0,
                 )),
           ),
           Container(
@@ -237,7 +145,7 @@ class HomeZero extends StatelessWidget {
                   child: SocalIcon(
                     iconSrc: "assets/icons/twitter.svg",
                     color: Color.fromRGBO(48, 126, 80, 1),
-                    press: () => _goToTwitter(document.get("twitterAccount")),
+                    press: () => _goToTwitter(document.get("twitter")),
                   ),
                 ),
                 Container(
@@ -253,7 +161,7 @@ class HomeZero extends StatelessWidget {
               ],
             ),
           ),
-          /*   TextButton(
+          TextButton(
               onPressed: () {},
               child: Text(
                 'View more...',
@@ -261,7 +169,7 @@ class HomeZero extends StatelessWidget {
                   color: Color.fromRGBO(48, 126, 80, 1),
                   decoration: TextDecoration.underline,
                 ),
-              )),*/
+              )),
         ]),
       ));
 

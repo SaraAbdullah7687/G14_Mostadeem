@@ -1,11 +1,18 @@
+import 'package:another_flushbar/flushbar.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:mostadeem/Screens/authenticate/bodyLogin.dart';
+import 'package:mostadeem/globals/global.dart';
 import 'package:mostadeem/models/ContributorModel.dart';
 import 'package:mostadeem/models/userMu.dart';
 import 'package:mostadeem/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../main.dart';
+
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  final List<Flushbar> flushBars = [];
   // create user obj based on firebase user
   UserMu _userFromFirebaseUser(User user) {
     // was FirebaseUser instead of User
@@ -42,7 +49,7 @@ class AuthService {
 
   // register with email and password
   Future<dynamic> registerWithEmailAndPassword(
-      String email, String password, String name) async {
+      String email, String password, String name, String phone) async {
     // خلي الميثود تقبل رقم جواله
     String retVal = "retVal error";
     try {
@@ -53,10 +60,10 @@ class AuthService {
       User user = _result.user; // was FirebaseUser instead of User
       print("contributor registered");
       ContributorModel _userCont = ContributorModel(
-        uid: user.uid,
-        email: user.email,
-        name: name,
-      ); //notifToken: await _fcm.getToken(),??
+          uid: user.uid,
+          email: user.email,
+          name: name,
+          phone: phone); //notifToken: await _fcm.getToken(),??
 
       String _returnString = await DatabaseService()
           .createUserContributor(_userCont); // maybe database service
@@ -72,7 +79,7 @@ class AuthService {
       // await DatabaseService(uid: _user.uid).updateUserData('0','new crew member', 100);
       return _userFromFirebaseUser(user);
     } on FirebaseAuthException catch (signUpError) {
-      print("email exists");
+      print("catch error in register");
       //if (signUpError is PlatformException){
       switch (signUpError.code) {
         case "ERROR_EMAIL_ALREADY_IN_USE": // ما تضبط
@@ -123,7 +130,7 @@ class AuthService {
     print(uid);
     print("check user type method");
 //dynamic userType =
-    await Future.delayed(const Duration(seconds: 2), () {});
+    await Future.delayed(const Duration(seconds: 1), () {});
     return await DatabaseService().getUserType(uid //,context
         );
 
@@ -150,5 +157,32 @@ return "user type is problem";*/
       print(e.message);
       return "fail";
     }
+  }
+
+  void showTopSnackBar(
+          BuildContext context, String title, String message, IconData icon) =>
+      show(
+        context,
+        Flushbar(
+          icon: Icon(icon, size: 32, color: Colors.white),
+          shouldIconPulse: false,
+          title: title,
+          message: message,
+          duration: Duration(seconds: 3),
+          flushbarPosition: FlushbarPosition.TOP,
+          // margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
+          borderRadius: BorderRadius.circular(6),
+          barBlur: 20,
+          backgroundColor: Colors.black.withOpacity(0.5),
+        ),
+      );
+
+  Future show(BuildContext context, Flushbar newFlushBar) async {
+    // await Future.delayed(const Duration(seconds: 2), (){});
+    await Future.wait(flushBars.map((flushBar) => flushBar.dismiss()).toList());
+    flushBars.clear();
+
+    newFlushBar.show(context);
+    flushBars.add(newFlushBar);
   }
 }
