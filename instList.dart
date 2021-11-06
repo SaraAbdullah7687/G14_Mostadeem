@@ -48,31 +48,35 @@ class instList extends StatelessWidget {
   }
 
   Widget myWidget(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-    return ListView.builder(
-      padding: EdgeInsets.all(10),
-      itemCount: snapshot.data.docs.length,
-      itemBuilder: (context, index) {
-        return Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              side: BorderSide(color: Color.fromRGBO(48, 126, 80, 1), width: 1),
-            ),
-            elevation: 15,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                ListTile(
-                  leading: Icon(
-                    Icons.account_balance_rounded,
-                    color: Color.fromRGBO(48, 126, 80, 1),
-                    size: 35,
+    return Scrollbar(
+      child: ListView.builder(
+        padding: EdgeInsets.all(10),
+        itemCount: snapshot.data.docs.length,
+        itemBuilder: (context, index) {
+          return Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                side:
+                    BorderSide(color: Color.fromRGBO(48, 126, 80, 1), width: 1),
+              ),
+              elevation: 15,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  ListTile(
+                    leading: Icon(
+                      Icons.account_balance_rounded,
+                      color: Color.fromRGBO(48, 126, 80, 1),
+                      size: 35,
+                    ),
+                    title: Text(snapshot.data.docs[index]['name'] ?? ''),
+                    subtitle: Text(snapshot.data.docs[index]['category'] ?? ''),
+                    
                   ),
-                  title: Text(snapshot.data.docs[index]['name'] ?? ''),
-                  subtitle: Text(snapshot.data.docs[index]['category'] ?? ''),
-                ),
-              ],
-            ));
-      },
+                ],
+              ));
+        },
+      ),
     );
   }
 }
