@@ -1,21 +1,11 @@
 
-//import 'dart:convert';
-
-//import 'dart:html';
-
-//import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server/gmail.dart';
-import 'package:mostadeem/Admin/components/social_icon.dart';
-import 'package:mostadeem/components/google_auth_api.dart';
 import 'package:mostadeem/institution/vrViewModel.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:mostadeem/shared/loading.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
 import '../constants.dart';
 
 
@@ -45,6 +35,11 @@ class ViewCurrentRequests extends StatefulWidget {
 
 class _ViewCurrentRequestsState extends State<ViewCurrentRequests> {
   final AuthService _auth = AuthService();
+  List<Widget> myDialogWidgets=[];
+  String valueCat;
+  int widgetsCount=0;// count newly added widgets
+  int itemCount=0;
+  
  //final List<Flushbar> flushBars = []; 
  WebViewController controller;
 
@@ -265,8 +260,9 @@ Padding(
           padding: EdgeInsets.only(top:3 , bottom: 3, right: 5, left: 5),
         ),
         onPressed: () {
+          openDialog(context,document['category'],);
          // ourViewMode.showMyDialog("done", context,document.id,document);
-         ourViewMode.showCustomAlert("done", "Are you sure you want to mark this request as done?", context, document.id, document);
+         //ourViewMode.showCustomAlert("done", "Are you sure you want to mark this request as done?", context, document.id, document);
         },
       ),
 ),
@@ -286,5 +282,120 @@ ElevatedButton.icon(
    );
 
 }
+
+
+
+Future openDialog(BuildContext context, String category) => showDialog(
+
+context: context,
+builder: (context)=>AlertDialog(
+  title: Text("Number of items"),
+  content: dialogContent(category),
+  actions: [
+    TextButton(
+      child: Text('Submit'),
+      onPressed:(){} , // save data to FB
+    )
+  ],
+
+),
+);// end of show 
+
+Widget dialogContent(String category){
+
+int numOfCat;// maybe in class declare
+var listOfCat=convertStringToArray(category);
+
+      for(int i=0; i< listOfCat.length; i++){ // check cond
+      numOfCat+=1;
+      }
+
+return  SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch, // may change
+                  children: <Widget>[
+                  initialContent(listOfCat),
+                    
+
+                   numOfCat == widgetsCount+1 ? null: // else show + button, بس كذا راح يروح الماينس بوتن بعد
+
+        widgetsCount!=0? new  IconButton(icon: new Icon(Icons.remove),
+        onPressed: (){
+          // and delete widget
+        dynamicWidgets('remove',listOfCat);  
+        setState(()=>widgetsCount--);})
+
+        :new Container(), // وmeybe delete it
+        new IconButton(icon: new Icon(Icons.add),
+        onPressed: () { 
+          dynamicWidgets('add',listOfCat);
+          setState(()=>widgetsCount++); }),
+
+                  ],
+                ),
+);
+
+}
+
+convertStringToArray(String category){
+
+var list = category.split(',');
+
+}
+
+void dynamicWidgets(String status,var listOfCat){
+int index=myDialogWidgets.length;
+
+  setState(() {
+    if(status=='add'){
+    myDialogWidgets.add(initialContent(listOfCat));}
+    else
+    myDialogWidgets.removeAt(index);
+  }); 
+
+}
+
+Widget _card() {
+
+}
+
+Widget initialContent(var listOfCat){
+
+return Row(
+  mainAxisAlignment: MainAxisAlignment.start,
+  children:<Widget> [
+    Container(
+      width: 200,
+      padding: EdgeInsets.only(left:10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color:kPrimaryColor, width:1)
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          iconSize: 20,
+          icon: Icon(Icons.arrow_drop_down, color:kPrimaryColor,),
+          isExpanded: true,// change ir later
+          value: valueCat,
+          items: listOfCat.map(buildMenuItem).toList(),
+          onChanged: (value)=> setState(()=> value=valueCat),
+          ),
+      ),
+    )
+,
+ itemCount!=0? new  IconButton(icon: new Icon(Icons.remove),onPressed: ()=>setState(()=>itemCount--),):new Container(),
+            new Text(itemCount.toString()),
+            new IconButton(icon: new Icon(Icons.add),onPressed: ()=>setState(()=>itemCount++))
+        
+
+],);
+}
+
+DropdownMenuItem<String> buildMenuItem(String item)=>DropdownMenuItem(
+  value: item,
+  child: Text(item,
+              style:TextStyle(fontSize: 12), ),
+
+);
 
 }// end of class
