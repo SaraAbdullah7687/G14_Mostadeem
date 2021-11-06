@@ -58,7 +58,7 @@ class _ViewRequestsState extends State<ViewRequests> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Requests'),
+          title: Text('Current Requests'),
           backgroundColor: Color.fromRGBO(48, 126, 80, 1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -114,7 +114,7 @@ class _ViewRequestsState extends State<ViewRequests> {
       ),
       child: Container(
         width: 100, // 250
-        height: 110, //160
+        height: 119, //160
         decoration: BoxDecoration(
           /*  border: Border.all(
                  color: Colors.green[900],
@@ -127,22 +127,17 @@ class _ViewRequestsState extends State<ViewRequests> {
           borderRadius: BorderRadius.circular(24.0),
           shadowColor: Color(0x802196F3),
           child: Container(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 15.0), // 90 //15
-              child: myDetailsContainer1(context, document),
-            ),
+            //    child: Padding(
+            //     padding: const EdgeInsets.only(right: 15.0), // 90 //15
+            child: myDetailsContainer1(context, document),
           ),
         ),
       ),
+      //  ),
     );
   }
 
   Widget myDetailsContainer1(BuildContext context, DocumentSnapshot document) {
-    bool isPendding() {
-      if (document['status'] == ('pending')) return true;
-      return false;
-    }
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,34 +145,13 @@ class _ViewRequestsState extends State<ViewRequests> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            if (isPendding())
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, top: 7),
-                child: Icon(
-                  Icons.pending_actions_rounded,
-                  color: Color.fromRGBO(48, 126, 80, 1),
-                  size: 36,
-                ),
-              ),
-            if (!isPendding())
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, top: 7),
-                child: Icon(
-                  Icons.check,
-                  color: Color.fromRGBO(48, 126, 80, 1),
-                  size: 36,
-                ),
-              ),
             Container(
-              margin: EdgeInsets.only(
-                top: 9,
-                left: 5,
-              ),
+              margin: EdgeInsets.only(left: 35, bottom: 9, top: 9),
               child: Text(
-                document['status'],
+                document['title'],
                 style: TextStyle(
                     color: Color.fromRGBO(48, 126, 80, 1),
-                    fontSize: 22.0,
+                    fontSize: 20.0,
                     fontWeight: FontWeight.bold),
               ),
             ),
@@ -186,9 +160,94 @@ class _ViewRequestsState extends State<ViewRequests> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            if (document['status'] == 'pending')
+              Padding(
+                padding: const EdgeInsets.only(left: 35.0, top: 3),
+                child: Icon(
+                  Icons.pending_actions_rounded,
+                  color: Colors.orange,
+                  size: 20,
+                ),
+              ),
+            if (document['status'] == 'accepted')
+              Padding(
+                padding: const EdgeInsets.only(left: 35.0, top: 3),
+                child: Icon(
+                  Icons.check,
+                  color: Color.fromRGBO(48, 126, 80, 1),
+                  size: 20,
+                ),
+              ),
+            if (document['status'] == 'rejected')
+              Padding(
+                padding: const EdgeInsets.only(left: 35.0, top: 3),
+                child: Icon(
+                  Icons.cancel,
+                  color: Colors.red,
+                  size: 20,
+                ),
+              ),
+            Container(
+              margin: EdgeInsets.only(
+                top: 3,
+                left: 3,
+              ),
+              child: Text(
+                document['status'],
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 15,
+                  //  fontWeight: FontWeight.bold
+                ),
+              ),
+            ),
+
+            /*third icon*/
+            Padding(
+              padding: const EdgeInsets.only(left: 9, top: 3, right: 2),
+              child: Icon(
+                Icons.category,
+                size: 14,
+                color: Color.fromRGBO(48, 126, 80, 1),
+              ),
+            ),
+            /* Container(
+              margin: EdgeInsets.only(
+                top: 3, left: 5, //left:18,
+              ),
+              child: Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Text(
+                    document['category'],
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12.0,
+                    ),
+                  ),
+                ),
+              ),
+            ),*/
+            Expanded(
+              child: Text(
+                document['category'],
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 15.0,
+                ),
+              ),
+            ),
+            /*fourth icon*/
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
             /* First icon*/
             Padding(
-              padding: const EdgeInsets.only(left: 30.0, top: 7),
+              padding: const EdgeInsets.only(
+                left: 35,
+              ),
               child: Icon(
                 Icons.calendar_today_sharp,
                 size: 20,
@@ -197,21 +256,22 @@ class _ViewRequestsState extends State<ViewRequests> {
             ),
             Container(
               margin: EdgeInsets.only(
-                top: 9,
-                left: 5,
+                left: 4,
               ),
               child: Text(
                 ourViewMode.convertDate(context, document),
                 style: TextStyle(
                   color: Colors.grey,
-                  fontSize: 12.0,
+                  fontSize: 15.0,
                 ),
               ),
             ),
 
             /*Sconed icon*/
             Padding(
-              padding: const EdgeInsets.only(left: 10, top: 7),
+              padding: const EdgeInsets.only(
+                left: 9,
+              ),
               child: Icon(
                 Icons.access_time,
                 size: 20,
@@ -220,44 +280,19 @@ class _ViewRequestsState extends State<ViewRequests> {
             ),
             Container(
               margin: EdgeInsets.only(
-                top: 10,
-                left: 5,
+                left: 3,
               ),
               child: Text(
                 ourViewMode.convertTime(context, document),
                 style: TextStyle(
                   color: Colors.grey,
-                  fontSize: 12.0,
+                  fontSize: 15.0,
                 ),
-              ),
-            ),
-
-            /*third icon*/
-            Padding(
-              padding: const EdgeInsets.only(left: 12.0, top: 7),
-              child: Icon(
-                Icons.category,
-                size: 20,
-                color: Color.fromRGBO(48, 126, 80, 1),
               ),
             ),
             Container(
               margin: EdgeInsets.only(
-                top: 7, left: 5, //left:18,
-              ),
-              child: Text(
-                document['category'],
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12.0,
-                ),
-              ),
-            ),
-
-            /*  /*fourth icon*/
-            Container(
-              margin: EdgeInsets.only(
-                top: 7, //left: 5, //left:18,
+                top: 2, //left: 5, //left:18,
               ),
               child: IconButton(
                 icon: const Icon(Icons.location_on),
@@ -265,9 +300,55 @@ class _ViewRequestsState extends State<ViewRequests> {
                 onPressed: () =>
                     ourViewMode.openLocation(document.get("location")),
               ),
-            ),*/
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  // left: 3,
+                  ),
+              child: Text(
+                'click',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 15.0,
+                ),
+              ),
+            ),
+            if (document['status'] == 'rejected')
+              TextButton(
+                style: TextButton.styleFrom(
+                    //    padding: EdgeInsets.only(left: 20),
+                    alignment: Alignment.centerRight),
+                onPressed: () => ourViewMode.cancelRequest(document.id),
+                child: Text(
+                  'Delete',
+                  style: TextStyle(
+                      color: Colors.red, decoration: TextDecoration.underline),
+                ),
+              ),
           ],
         ),
+
+        /*   Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (document['status'] == 'rejected')
+              TextButton(
+                style: TextButton.styleFrom(
+                    padding: EdgeInsets.only(right: 20),
+                    alignment: Alignment.center),
+                onPressed: () {
+                  ourViewMode.cancelRequest(document.id);
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => ViewRequest()),
+                      (Route<dynamic> route) => false);
+                },
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+          ],
+        ),*/
       ],
     );
   }
