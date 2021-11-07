@@ -141,6 +141,8 @@ _usersCollection.doc(uid) // also delete it from users collecction
         'status': request.status.trim(),
         'time': request.time.trim(),
         'title': request.title,
+        'insID':
+            "yet", //=======================================for rating====================================================================
       });
 
       _firestore

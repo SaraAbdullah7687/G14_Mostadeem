@@ -73,6 +73,10 @@ dependencies:
   awesome_notifications: ^0.6.13
   get: ^4.3.8
   random_string: ^2.3.1
+
+  #Sara Rating
+  rating_dialog:
+
   
 
 dev_dependencies:
