@@ -1,14 +1,14 @@
-import * as functions from 'firebase-functions';
+//import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
 admin.initializeApp();
 
-const db = admin.firestore();
+//const db = admin.firestore();
 
-const fcm = admin.messaging();
+//const fcm = admin.messaging();
 
 // send a notification when request status updated
-export const sendToDevice = functions.firestore
+/*export const sendToDevice = functions.firestore
   .document('contributor/request')
   .onUpdate(async snapshot => {
 
@@ -33,7 +33,7 @@ export const sendToDevice = functions.firestore
     };
 
     return fcm.sendToDevice(tokens, payload);
-  });
+  });*/
 
 // from FCM tutorial website 
 /*export const sendToDeviceFCM = functions.firestore
@@ -114,6 +114,7 @@ export const onBostonWeatherUpdate = functions.firestore.document ("cities-weath
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
- export const helloWorld = functions.https.onRequest((request, response) => {
+ /*export const helloWorld = functions.https.onRequest((request, response) => {
   response.send("Hello from Firebase!");
  });
+ */
