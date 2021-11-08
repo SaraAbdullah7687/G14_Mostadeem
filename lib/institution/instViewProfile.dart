@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mostadeem/Admin/components/social_icon.dart';
@@ -13,6 +15,21 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
         children: [
           topWidget(context),
           bottomWidget(context),
+          Positioned(
+            top: MediaQuery.of(context).size.height * .5 -(MediaQuery.of(context).size.width*.2),
+            left: MediaQuery.of(context).size.width * .35, 
+            
+            child: Container(
+              width: MediaQuery.of(context).size.width * .3,
+              height: MediaQuery.of(context).size.width * .3,
+             
+              child: ClipOval(
+                child: Image(
+                  image: AssetImage("assets/images/instPhoto.png"),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -64,13 +81,13 @@ instName(),
 // Rating
 instRating(),
 // Category
-
 Padding(
   padding: const EdgeInsets.only(top:45),
   child:   listViewCat(context),
 ),
 // Social media
-Spacer(),
+//Spacer(),
+SizedBox(height: 40,),
 contactIcons(),
   ],
   );
@@ -78,7 +95,7 @@ contactIcons(),
 Widget instName(){
   return Padding(
   padding: const EdgeInsets.only(
-    top: 20,
+    top: 30,
     left: 30,// maybe i'll make it center
     right: 30,
   ),
