@@ -56,8 +56,8 @@ class instList extends StatelessWidget {
           return Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
-                side:
-                    BorderSide(color: Color.fromRGBO(48, 126, 80, 1), width: 1),
+              //  side:
+               //     BorderSide(color: Color.fromRGBO(48, 126, 80, 1), width: 1),
               ),
               elevation: 15,
               child: Column(
