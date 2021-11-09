@@ -75,7 +75,7 @@ dependencies:
   random_string: ^2.3.1
 
   #Sara Rating
-  rating_dialog:
+  rating_dialog: any
 
   
 
