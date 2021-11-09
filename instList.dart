@@ -56,8 +56,8 @@ class instList extends StatelessWidget {
           return Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
-              //  side:
-               //     BorderSide(color: Color.fromRGBO(48, 126, 80, 1), width: 1),
+                //  side:
+                //     BorderSide(color: Color.fromRGBO(48, 126, 80, 1), width: 1),
               ),
               elevation: 15,
               child: Column(
@@ -69,9 +69,15 @@ class instList extends StatelessWidget {
                       color: Color.fromRGBO(48, 126, 80, 1),
                       size: 35,
                     ),
-                    title: Text(snapshot.data.docs[index]['name'] ?? ''),
-                    subtitle: Text(snapshot.data.docs[index]['category'] ?? ''),
-                    
+                    title: Text(
+                      snapshot.data.docs[index]['name'] ?? '',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color.fromRGBO(48, 126, 80, 1),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(snapshot.data.docs[index]['rates'] ?? ''),
                   ),
                 ],
               ));
