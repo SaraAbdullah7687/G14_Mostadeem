@@ -374,14 +374,16 @@ class _HomeZeroState extends State<HomeZero> {
           message: Text(
             'Title: ' +
                 request["title"] +
-                '\n' +
+                /* 
+               '\n' +
                 catFeildName +
                 request["category"] +
                 '\nDate: ' +
                 request["date"].toString().substring(0, 11) +
+                */
                 '\nInstitution: ' +
                 insName +
-                '\n',
+                '\n\nTap a star to set your rating.',
 
             //'Tap a star to set your rating.',
             textAlign: TextAlign.center,
@@ -394,6 +396,7 @@ class _HomeZeroState extends State<HomeZero> {
             height: 100,
           ),
           submitButtonText: 'Submit',
+          enableComment: false,
           //  commentHint: 'Set your custom comment hint',
           onCancelled: () {
             print('cancelled');
@@ -416,7 +419,8 @@ class _HomeZeroState extends State<HomeZero> {
                   .collection("institution")
                   .doc(request["insID"])
                   .update({'rates': oldRates += '${response.rating},'});
-              await _firestore
+              // store comment ?
+              /*   await _firestore
                   .collection("institution")
                   .doc(request["insID"])
                   .collection("appointment")
@@ -427,7 +431,7 @@ class _HomeZeroState extends State<HomeZero> {
                             .collection("appointment")
                             .doc(element.id)
                             .update({'comment': response.comment});
-                      }));
+                      }));*/
             });
             // END get the ins.
             // store the comment in the appointment
