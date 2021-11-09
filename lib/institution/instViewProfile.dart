@@ -1,33 +1,48 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mostadeem/Admin/components/social_icon.dart';
+import 'package:mostadeem/Admin/viViewModel.dart';
 import 'package:mostadeem/constants.dart';
 import 'package:mostadeem/institution/vrViewModel.dart';
+import 'package:provider/provider.dart';
 
 class InstViewProfile extends StatelessWidget {
-final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
+final ViewRequestViewModel ourViewMode=ViewRequestViewModel(); // use the other one in admin class
+String UID='CXbJCQp7PhZRveFPvp6G6j0uG4o2';
+/*
+@override
+  void initState() {
+    setup();
+  }
+  setup() async {
+  // await Provider.of<ViewInstitutionViewModel>(context, listen: false)
+   //     .fetchInstProfile(UID);
+  }*/
   @override
-  Widget build(BuildContext context) {
+Widget build(BuildContext context) {
+  //Stream<DocumentSnapshot> instProfile = Provider.of<ViewInstitutionViewModel>(context, listen: false)
+  //.instProfile;
     return Scaffold(
       body: Stack(
         children: [
           topWidget(context),
           bottomWidget(context),
           Positioned(
-            top: MediaQuery.of(context).size.height * .5 -(MediaQuery.of(context).size.width*.2),
-            left: MediaQuery.of(context).size.width * .35, 
+            top: MediaQuery.of(context).size.height * .43 -(MediaQuery.of(context).size.width*.2),
+            left: MediaQuery.of(context).size.width * .26, 
             
             child: Container(
-              width: MediaQuery.of(context).size.width * .3,
-              height: MediaQuery.of(context).size.width * .3,
+              width: MediaQuery.of(context).size.width * .5,
+              height: MediaQuery.of(context).size.width * .5,
              
-              child: ClipOval(
+             /// child: ClipOval(
                 child: Image(
-                  image: AssetImage("assets/images/instPhoto.png"),
+                  image: AssetImage("assets/images/org2.png"),
                 ),
-              ),
+              //),
             ),
           ),
         ],
@@ -41,7 +56,7 @@ return Container(
   height:MediaQuery.of(context).size.height * .6, // maybe width
   decoration: BoxDecoration(
     image: DecorationImage(
-      image: AssetImage('assets/images/shapes2.png'),
+      image: AssetImage('assets/images/greenBG.png'),
       fit: BoxFit.cover,
     ),
   ),
