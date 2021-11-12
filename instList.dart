@@ -15,9 +15,12 @@ import 'package:mostadeem/shared/loading.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class instList extends StatelessWidget {
   final AuthService _auth = AuthService();
+  ScrollController _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +44,7 @@ class instList extends StatelessWidget {
               .orderBy("dateCreated")
               .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (!snapshot.hasData) return Text('SOMETHINGWRONG!');
+            if (!snapshot.hasData) return Loading();
             return myWidget(context, snapshot);
           }),
     );
@@ -49,10 +52,24 @@ class instList extends StatelessWidget {
 
   Widget myWidget(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
     return Scrollbar(
+      isAlwaysShown: true,
+      scrollbarOrientation: ScrollbarOrientation.right,
+      interactive: true,
       child: ListView.builder(
+        scrollDirection: Axis.vertical,
         padding: EdgeInsets.all(10),
         itemCount: snapshot.data.docs.length,
         itemBuilder: (context, index) {
+          double ratesAverage = 0;
+          List<String> rates = null;
+          rates = snapshot.data.docs[index]['rates'].split(",");
+          int ratesL = rates.length - 1;
+          print("The length of my array is $ratesL");
+          for (var i = 0; i < ratesL; i++) {
+            ratesAverage = ratesAverage + double.parse(rates[i]);
+          }
+          ratesAverage = ratesAverage / (ratesL);
+          print("the average is: $ratesAverage");
           return Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
@@ -77,7 +94,17 @@ class instList extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    subtitle: Text(snapshot.data.docs[index]['rates'] ?? ''),
+                    //
+                    subtitle: RatingBarIndicator(
+                      rating: ratesAverage,
+                      itemBuilder: (context, index) => Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
+                      itemCount: 5,
+                      itemSize: 20.0,
+                      direction: Axis.horizontal,
+                    ),
                   ),
                 ],
               ));
