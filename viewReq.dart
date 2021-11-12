@@ -56,27 +56,6 @@ class _ViewRequestsState extends State<ViewRequests> {
     Stream<QuerySnapshot<Map<String, dynamic>>> institutions =
         Provider.of<ViewRequestViewModel>(context, listen: false).requests;
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text('Current Requests'),
-          backgroundColor: Color.fromRGBO(48, 126, 80, 1),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(18),
-            ),
-          ),
-          /* leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_rounded,
-            color: Colors.white,
-          ),
-          tooltip: 'Show Snackbar',
-          onPressed: () async {
-            await _auth.signOut();
-          },
-        ),*/
-          toolbarHeight: 60.0,
-        ),
         backgroundColor: Colors.grey[50],
         body: StreamBuilder(
             stream: institutions,
