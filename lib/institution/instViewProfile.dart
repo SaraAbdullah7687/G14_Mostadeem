@@ -121,10 +121,9 @@ Padding(
   child:   listViewCatVesion2(context,userDocument),
 ),
 // Social media
-Padding(
-  padding: const EdgeInsets.only(top:15),
-  child:   contactIcons(userDocument),
-),
+SizedBox(height: 15,),
+contactIcons(userDocument),
+
   ],
   );
 }
