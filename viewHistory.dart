@@ -65,7 +65,7 @@ class _ViewHistoryState extends State<ViewHistory> {
               if (snapshot.data.docs.length == 0) {
                 return Center(
                   child: Text(
-                    "You don't have any old requests",
+                    "You don't have any completed requests",
                     style: TextStyle(
                       fontSize: 20,
                       color: Colors.grey,
@@ -93,7 +93,7 @@ class _ViewHistoryState extends State<ViewHistory> {
       ),
       child: Container(
         width: 100, // 250
-        height: 119, //160
+        height: 170, //160
         decoration: BoxDecoration(
           /*  border: Border.all(
                  color: Colors.green[900],
@@ -112,6 +112,7 @@ class _ViewHistoryState extends State<ViewHistory> {
           ),
         ),
       ),
+
       //  ),
     );
   }
@@ -121,6 +122,7 @@ class _ViewHistoryState extends State<ViewHistory> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
+        /*FIRST ROW */
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -136,70 +138,7 @@ class _ViewHistoryState extends State<ViewHistory> {
             ),
           ],
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 35.0, top: 3),
-              child: Icon(
-                Icons.check,
-                color: Color.fromRGBO(48, 126, 80, 1),
-                size: 20,
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                top: 3,
-                left: 3,
-              ),
-              child: Text(
-                document['status'],
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 15,
-                  //  fontWeight: FontWeight.bold
-                ),
-              ),
-            ),
-
-            /*third icon*/
-            Padding(
-              padding: const EdgeInsets.only(left: 9, top: 3, right: 2),
-              child: Icon(
-                Icons.category,
-                size: 14,
-                color: Color.fromRGBO(48, 126, 80, 1),
-              ),
-            ),
-            /* Container(
-              margin: EdgeInsets.only(
-                top: 3, left: 5, //left:18,
-              ),
-              child: Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Text(
-                    document['category'],
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12.0,
-                    ),
-                  ),
-                ),
-              ),
-            ),*/
-            Expanded(
-              child: Text(
-                document['category'],
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 15.0,
-                ),
-              ),
-            ),
-            /*fourth icon*/
-          ],
-        ),
+        /*SECOND ROW*/
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -252,21 +191,89 @@ class _ViewHistoryState extends State<ViewHistory> {
             ),
             Container(
               margin: EdgeInsets.only(
-                top: 2, //left: 5, //left:18,
+                left: 3,
               ),
-              child: IconButton(
-                icon: const Icon(Icons.location_on),
-                color: Color.fromRGBO(48, 126, 80, 1),
-                onPressed: () =>
-                    ourViewMode.openLocation(document.get("location")),
+              child: Text(
+                ourViewMode.convertTime(context, document),
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 15.0,
+                ),
               ),
             ),
             Container(
               margin: EdgeInsets.only(
-                  // left: 3,
-                  ),
+                top: 2, //left: 5, //left:18,
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.location_on),
+                color: Colors.blue,
+                onPressed: () =>
+                    ourViewMode.openLocation(document.get("location")),
+              ),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 32.0, top: 3),
+              child: Icon(
+                Icons.check,
+                color: Color.fromRGBO(48, 126, 80, 1),
+                size: 25,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                top: 3,
+                left: 3,
+              ),
               child: Text(
-                'click',
+                document['status'],
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 15,
+                  //  fontWeight: FontWeight.bold
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 9,
+              ),
+              child: Icon(
+                Icons.account_balance,
+                size: 20,
+                color: Color.fromRGBO(48, 126, 80, 1),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                left: 3,
+              ),
+              child: Text(
+                document['instName'],
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 15,
+                  //  fontWeight: FontWeight.bold
+                ),
+              ),
+            ),
+            /*third icon*/
+            Padding(
+              padding: const EdgeInsets.only(left: 9, top: 3, right: 2),
+              child: Icon(
+                Icons.category,
+                size: 18,
+                color: Color.fromRGBO(48, 126, 80, 1),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                document['category'],
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 15.0,
@@ -275,28 +282,31 @@ class _ViewHistoryState extends State<ViewHistory> {
             ),
           ],
         ),
-
-        /*   Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        /*THIRD ROW*/
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            if (document['status'] == 'rejected')
-              TextButton(
-                style: TextButton.styleFrom(
-                    padding: EdgeInsets.only(right: 20),
-                    alignment: Alignment.center),
-                onPressed: () {
-                  ourViewMode.cancelRequest(document.id);
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => ViewRequest()),
-                      (Route<dynamic> route) => false);
-                },
-                child: Text(
-                  'Cancel',
-                  style: TextStyle(color: Colors.red),
+            if (document['status'] == 'done')
+              Container(
+                margin: const EdgeInsets.only(right: 10, bottom: 10, top: 5),
+                child: SizedBox(
+                  height: 30,
+                  width: 90,
+                  child: RaisedButton(
+                    shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(25.0),
+                    ),
+                    color: Color.fromRGBO(48, 126, 80, 1),
+                    child: Text('Rate',
+                        style: TextStyle(
+                          color: Colors.white,
+                        )),
+                    onPressed: () => ourViewMode.cancelRequest(document.id),
+                  ),
                 ),
               ),
           ],
-        ),*/
+        ),
       ],
     );
   }
