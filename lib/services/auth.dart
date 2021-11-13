@@ -59,7 +59,8 @@ class AuthService {
         uid: user.uid,
         email: user.email,
         name: name,
-        phone: phone); //notifToken: await _fcm.getToken(),?? 
+        phone: phone,
+        points:0,); //notifToken: await _fcm.getToken(),?? 
 
         String _returnString = await DatabaseService().createUserContributor(_userCont); // maybe database service
         print("contributor created");
@@ -164,10 +165,7 @@ try {
 
 }
 
-Future<String> getName() async {
-  await Future.delayed(const Duration(seconds: 4), (){});
-String uid = getCurrentUserID();
-
+Future<String> getInstName(String uid) async {
 String name = await DatabaseService().getUserName(uid);
 return name;
 
@@ -179,8 +177,9 @@ String institutionID=getCurrentUserID();
 String result = DatabaseService().updateAppointment(appointmentID,status,institutionID);
 return result;
 }
-String updateRequestStatus(String status, String contID, String reqID){ // return string ?
-String result = DatabaseService().updateRequest(contID,status, reqID);
+Future<String> updateRequestStatus(String status, String contID, String reqID) async { // return string ?
+String institutionID=getCurrentUserID(); 
+String result = await DatabaseService().updateRequest(contID,status, reqID,institutionID);
 return result;
 
 }

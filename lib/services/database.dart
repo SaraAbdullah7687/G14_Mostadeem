@@ -37,6 +37,7 @@ Future<String> createUserContributor(ContributorModel user) async {
         'name': user.name,
         'email': user.email,
         'phone':user.phone,
+        'points':user.points,
         'userType': 'contributor',
         //'notifToken': user.notifToken,?? what should we add?
       });
@@ -105,7 +106,7 @@ print (snapshot['userType']+" in database method");
 Future<String> getUserName(String uid/*,BuildContext context*/) async{
 
 print(uid);
-final snapshot =await _contributorCollection.doc(uid).get();
+final snapshot =await _institutionCollection.doc(uid).get();
 print("after getting type");
 print (snapshot['name']+" in database method");
  String userName = snapshot['name'];
@@ -264,8 +265,10 @@ return result;
 
 }
 
-String updateRequest(String contID, String status, String reqID){
+Future<String> updateRequest(String contID, String status, String reqID,String instID) async {
 String result="nothing changed";
+String instName= await getUserName(instID); // اضفته
+
 // check condition approve or disapprove
 if(status =='accept'){// get current user uid
 _contributorCollection.doc(contID).collection("request").doc(reqID) // لحظة هذا الاي دي حق الدوك للابوينمنت؟
@@ -273,7 +276,23 @@ _contributorCollection.doc(contID).collection("request").doc(reqID) // لحظة 
     .then((_) => print(result='accepted'),)
     .catchError((error) => print(result='failed'),);
     result='accepted';
+
+_contributorCollection.doc(contID).collection("request").doc(reqID) // لحظة هذا الاي دي حق الدوك للابوينمنت؟
+    .update({'instID' : instID})
+    .then((_) => print(result='accepted'),)
+    .catchError((error) => print(result='failed'),);
+    result='accepted';    
+
+    _contributorCollection.doc(contID).collection("request").doc(reqID) // لحظة هذا الاي دي حق الدوك للابوينمنت؟
+    .update({'instName' : instName})
+    .then((_) => print(result='accepted'),)
+    .catchError((error) => print(result='failed'),);
+    result='accepted';    
 }
+
+
+
+
 else if(status=='reject'){  
 _contributorCollection.doc(contID).collection("request").doc(reqID)
     .update({'status' : 'rejected'})
@@ -339,6 +358,14 @@ var theRequest = FirebaseFirestore.instance.collectionGroup('appointment')
      }
 
    }
+}
+
+
+String updateContPoints(int numOfPoints, String contID){ 
+  String result="points not updated";
+  _contributorCollection.doc(contID).update({"points" : numOfPoints}).then((_) => print(result='rejected'),)
+    .catchError((error) => print(result='Fail reject'),);
+return result='points updated';
 }
 
 }
