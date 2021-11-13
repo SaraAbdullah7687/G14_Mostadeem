@@ -113,7 +113,7 @@ Padding(
 // Rating
 Padding(
   padding: const EdgeInsets.only(top:25),
-  child:   instRating(userDocument),
+  child:   Center(child: instRating(userDocument)),
 ),
 // Category
 Padding(
@@ -143,13 +143,20 @@ Widget instRating(dynamic userDocument){
           }
           ratesAverage = ratesAverage / (ratesL);
           print("the average is: $ratesAverage");
-         return RatingBarIndicator(
-           itemSize: 30,
-                      rating: ratesAverage,
-                      itemBuilder: (context, index) => Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                      ),);
+int avgRate=ratesAverage.floor();
+         return Row(
+           mainAxisAlignment: MainAxisAlignment.center,
+           children:<Widget> [
+             RatingBarIndicator(
+               itemSize: 30,
+                          rating: ratesAverage,
+                          itemBuilder: (context, index) => Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                          ),),
+           Text('('+avgRate.toString()+')', style: TextStyle(color: Colors.grey, fontSize: 15.0,),),
+           ],
+         );
  
 }
 
