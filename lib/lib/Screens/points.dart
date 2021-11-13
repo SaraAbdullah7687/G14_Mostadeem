@@ -1,7 +1,12 @@
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mostadeem/components/google_auth_api.dart';
 import 'package:mostadeem/globals/global.dart';
+import 'package:mostadeem/screens/home/home.dart';
+import 'package:mostadeem/screens/home/qr.dart';
+import 'package:mostadeem/screens/home/redeem.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:mostadeem/globals/global.dart' as globals;
 
@@ -25,9 +30,13 @@ class _pointsState extends State<points> {
 
 
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+
+          
+          
         centerTitle: true,
 
         title: const Text('My Rewards', style: TextStyle( color: Color.fromRGBO(48, 126, 80, 1))),
@@ -45,7 +54,10 @@ class _pointsState extends State<points> {
         icon: Icon(Icons.arrow_back , size: 35.0,
          color: Color.fromRGBO(48, 126, 80, 1),),
          onPressed: ()  {
-                Navigator.of(context).pop();
+           getPoints();
+                Navigator.pushAndRemoveUntil(
+                   context, MaterialPageRoute(builder: (context) => Home()),
+                   (route) => false);
                 
               },);} ),
 
@@ -53,7 +65,11 @@ class _pointsState extends State<points> {
           
         toolbarHeight: 70.0,
       ),
-      body: Center(
+      
+        body: Column(
+          children: <Widget>[
+            // construct the profile details widget here
+            Center(
 
         child: Container(
 
@@ -104,7 +120,7 @@ class _pointsState extends State<points> {
 
           
           
-          child: Text(userPoints.toString(), 
+          child: Text(getPoints(), 
           
           
           
@@ -131,7 +147,7 @@ class _pointsState extends State<points> {
 
           Positioned(
           top:110,
-          left: 100,  
+          left: 87,  
           child: 
           Container(
           margin: EdgeInsets.only(top:5),
@@ -165,7 +181,7 @@ class _pointsState extends State<points> {
           ),]),
           
             height: 30,
-            width: 150,
+            width: 180,
             
           ),),
 
@@ -184,55 +200,89 @@ class _pointsState extends State<points> {
 
 
         ),
-        
+          
         ),
-      );
-    
-  }
-}
+          
 
+          // the tab bar with two items
+            SizedBox(
+              
+              height: 50,
+              child: AppBar(
+                
+          backgroundColor: Color.fromRGBO(250, 250, 250, 1),
+          elevation: 0.0,
+          toolbarHeight:30.0, //was 50 
+          bottom:TabBar(
+            indicatorSize: TabBarIndicatorSize.label,
+            indicatorColor: Color.fromRGBO(48, 126, 80, 1),
+            labelColor:Color.fromRGBO(48, 126, 80, 1), 
+            unselectedLabelColor: Colors.grey,
+            
+                  tabs: [
+                    Tab(
+                      child: Text("Redeem Points", 
+                     style: TextStyle(
+                    fontSize: 13,
+                 fontWeight: FontWeight.bold,
+                 ),
+                    ),),
+                    Tab(
+                      child: Text("Valid QR codes", 
+                     style: TextStyle(
+                    fontSize: 13,
+                 fontWeight: FontWeight.bold,
+                 ),
+                      ),
+                    ),
 
-
-
-
-class TabBarDemo extends StatelessWidget {
-  const TabBarDemo({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return
-       DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: AppBar(
-            bottom: const TabBar(
-              tabs: [
-                Tab(icon: Icon(Icons.directions_transit)),
-                Tab(icon: Icon(Icons.directions_bike)),
-              ],
+                    Tab(
+                      child: Text("Invalid QR codes", 
+                     style: TextStyle(
+                    fontSize: 13,
+                 fontWeight: FontWeight.bold,
+                 ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            title: const Text('Tabs Demo'),
-          ),
-          body: const TabBarView(
-            children: [
-              Icon(Icons.directions_transit),
-              Icon(Icons.directions_bike),
-            ],
-          ),
-        ),
-      );
-    
+
+            // create widgets for each tab bar here
+            Expanded(
+              child: TabBarView(
+                children: [
+
+                  redeem(),
+
+                   qrCodes(),
+
+                   InvalidQRCodes()
+
+                   
+
+                
+                ],
+              ),
+            ),
+
+                  
+                  
+           ] ),
+      ),
+    );
   }
-
-
-
-  
 }
-void getPoints(){
+final firestoreInstance = FirebaseFirestore.instance;
+
+
+String getPoints(){
    
   var firebaseUser =  FirebaseAuth.instance.currentUser;
     firestoreInstance.collection("contributor").doc(firebaseUser.uid).get().then((value){
       int points =(value.data()['points']);
       globals.userPoints=points;
-      }) 
+      }) ;
+      return userPoints.toString();
       ;}
