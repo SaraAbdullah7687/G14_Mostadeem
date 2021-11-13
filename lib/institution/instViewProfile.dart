@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:mostadeem/Admin/components/social_icon.dart';
 import 'package:mostadeem/Admin/viViewModel.dart';
 import 'package:mostadeem/constants.dart';
@@ -105,36 +106,52 @@ Widget bottomWidgetContent(BuildContext context,dynamic userDocument){ // bring 
   return Column( // do we add button for initiate req??
    children: [
 // Name
-instName(userDocument),
+Padding(
+  padding: const EdgeInsets.only(top:50),
+  child:   instName(userDocument),
+),
 // Rating
-instRating(userDocument),
-// Category
 Padding(
   padding: const EdgeInsets.only(top:25),
+  child:   instRating(userDocument),
+),
+// Category
+Padding(
+  padding: const EdgeInsets.only(top:10),
   child:   listViewCatVesion2(context,userDocument),
 ),
 // Social media
-//Spacer(),
-SizedBox(height: 40,),
-contactIcons(userDocument),
+Padding(
+  padding: const EdgeInsets.only(top:15),
+  child:   contactIcons(userDocument),
+),
   ],
   );
 }
 Widget instName(dynamic userDocument){
-  return Padding(
-  padding: const EdgeInsets.only(
-    top: 30,
-    left: 30,// maybe i'll make it center
-    right: 30,
-  ),
-    child: Text(userDocument['name'],
+  return Text(userDocument['name'],
     style: TextStyle(color:kPrimaryColor, fontSize: 35.0,fontWeight: FontWeight.bold),
-    ),
-  
-  );
+    );
 }
 Widget instRating(dynamic userDocument){
-  return Text('rating');
+   double ratesAverage = 0;
+          List<String> rates = null;
+          rates = userDocument['rates'].split(",");
+          int ratesL = rates.length - 1; // why -1 ?
+          print("The length of my array is $ratesL");
+          for (var i = 0; i < ratesL; i++) {
+            ratesAverage = ratesAverage + double.parse(rates[i]);
+          }
+          ratesAverage = ratesAverage / (ratesL);
+          print("the average is: $ratesAverage");
+         return RatingBarIndicator(
+           itemSize: 30,
+                      rating: ratesAverage,
+                      itemBuilder: (context, index) => Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),);
+ 
 }
 
 Widget contactIcons(dynamic userDocument){
@@ -150,7 +167,7 @@ Widget contactIcons(dynamic userDocument){
           iconSize: 30,
           onPressed: ()=>  ourViewMode.sendingMails(userDocument["email"]),
           ),),
-    SizedBox(width: 30),
+    SizedBox(width: 40),
     Flexible( child:
           Container(
             height: 30,
@@ -162,7 +179,7 @@ Widget contactIcons(dynamic userDocument){
                     press: ()=> ourViewMode.goToTwitter(userDocument["twitterAccount"]),
                   ),
           ),),
-    SizedBox(width: 30),
+    SizedBox(width: 40),
     Flexible( child:
                 IconButton(
           icon: const Icon(Icons.phone),
