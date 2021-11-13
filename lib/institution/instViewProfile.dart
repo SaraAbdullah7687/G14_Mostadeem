@@ -7,11 +7,15 @@ import 'package:mostadeem/Admin/components/social_icon.dart';
 import 'package:mostadeem/Admin/viViewModel.dart';
 import 'package:mostadeem/constants.dart';
 import 'package:mostadeem/institution/vrViewModel.dart';
+import 'package:mostadeem/services/auth.dart';
+import 'package:mostadeem/services/database.dart';
 import 'package:provider/provider.dart';
 
 class InstViewProfile extends StatelessWidget {
-final ViewRequestViewModel ourViewMode=ViewRequestViewModel(); // use the other one in admin class
-String UID='CXbJCQp7PhZRveFPvp6G6j0uG4o2';
+final ViewInstitutionViewModel ourViewMode=ViewInstitutionViewModel(); // use the other one in admin class
+String UID='CXbJCQp7PhZRveFPvp6G6j0uG4o2'; // يجي من افنان
+AuthService auth = AuthService();
+DatabaseService db = DatabaseService();
 /*
 @override
   void initState() {
@@ -26,26 +30,35 @@ Widget build(BuildContext context) {
   //Stream<DocumentSnapshot> instProfile = Provider.of<ViewInstitutionViewModel>(context, listen: false)
   //.instProfile;
     return Scaffold(
-      body: Stack(
-        children: [
-          topWidget(context),
-          bottomWidget(context),
-          Positioned(
-            top: MediaQuery.of(context).size.height * .43 -(MediaQuery.of(context).size.width*.2),
-            left: MediaQuery.of(context).size.width * .26, 
-            
-            child: Container(
-              width: MediaQuery.of(context).size.width * .5,
-              height: MediaQuery.of(context).size.width * .5,
-             
-             /// child: ClipOval(
-                child: Image(
-                  image: AssetImage("assets/images/org2.png"),
+      body:  StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('institution').doc(UID).snapshots(),
+        builder: (context, snapshot) {
+           if (!snapshot.hasData) {
+          return new Text("Loading");
+        }
+        var userDocument = snapshot.data;
+          return Stack(
+            children: [
+              topWidget(context),
+              bottomWidget(context,userDocument),
+              Positioned(
+                top: MediaQuery.of(context).size.height * .43 -(MediaQuery.of(context).size.width*.2),
+                left: MediaQuery.of(context).size.width * .26, 
+                
+                child: Container(
+                  width: MediaQuery.of(context).size.width * .5,
+                  height: MediaQuery.of(context).size.width * .5,
+                 
+                 /// child: ClipOval(
+                    child: Image(
+                      image: AssetImage("assets/images/org2.png"),
+                    ),
+                  //),
                 ),
-              //),
-            ),
-          ),
-        ],
+              ),
+            ],
+          );
+        }
       ),
     );
   }
@@ -63,7 +76,7 @@ return Container(
 );
   }
 
-Widget bottomWidget(BuildContext context){
+Widget bottomWidget(BuildContext context, dynamic userDocument){
   return Align(
     alignment: Alignment.bottomCenter,
     child: Container(
@@ -83,55 +96,48 @@ Widget bottomWidget(BuildContext context){
         ),
        ],
     ),
-    child: bottomWidgetContent(context),
+    child: bottomWidgetContent(context,userDocument),
   ),
   );
 }
 
-Widget bottomWidgetContent(BuildContext context){ // bring from DB using inst UID
+Widget bottomWidgetContent(BuildContext context,dynamic userDocument){ // bring from DB using inst UID
   return Column( // do we add button for initiate req??
    children: [
 // Name
-instName(),
+instName(userDocument),
 // Rating
-instRating(),
+instRating(userDocument),
 // Category
 Padding(
-  padding: const EdgeInsets.only(top:45),
-  child:   listViewCat(context),
+  padding: const EdgeInsets.only(top:25),
+  child:   listViewCatVesion2(context,userDocument),
 ),
 // Social media
 //Spacer(),
 SizedBox(height: 40,),
-contactIcons(),
+contactIcons(userDocument),
   ],
   );
 }
-Widget instName(){
+Widget instName(dynamic userDocument){
   return Padding(
   padding: const EdgeInsets.only(
     top: 30,
     left: 30,// maybe i'll make it center
     right: 30,
   ),
-    child: Text('Ehsan Org',
+    child: Text(userDocument['name'],
     style: TextStyle(color:kPrimaryColor, fontSize: 35.0,fontWeight: FontWeight.bold),
     ),
   
   );
 }
-Widget instRating(){
+Widget instRating(dynamic userDocument){
   return Text('rating');
 }
-Widget instCategory(){
-  // bring photos of each cat, make them into listView
-  return Container( 
-                margin: EdgeInsets.only(top:7, left:5,//left:18, 
-                ), 
-                child:  Text("paper, glass",//document['category'],
-                style: TextStyle(color: Colors.grey, fontSize: 12.0,),),);
-}
-Widget contactIcons(){
+
+Widget contactIcons(dynamic userDocument){
     return  Flexible(
      child:Row( 
         mainAxisAlignment: MainAxisAlignment.center,
@@ -142,7 +148,7 @@ Widget contactIcons(){
           color: kPrimaryColor,
           tooltip: 'Send email',
           iconSize: 30,
-          onPressed: (){}//=>  ourViewMode.sendingMails(document.get("email")),
+          onPressed: ()=>  ourViewMode.sendingMails(userDocument["email"]),
           ),),
     SizedBox(width: 30),
     Flexible( child:
@@ -153,7 +159,7 @@ Widget contactIcons(){
                     iconSrc: "assets/icons/twitter.svg",
                     color: kPrimaryColor,
                     
-                    press: (){}//=> ourViewMode.goToTwitter(document.get("twitterAccount")),
+                    press: ()=> ourViewMode.goToTwitter(userDocument["twitterAccount"]),
                   ),
           ),),
     SizedBox(width: 30),
@@ -162,7 +168,7 @@ Widget contactIcons(){
           icon: const Icon(Icons.phone),
           color: kPrimaryColor,
           iconSize: 30,
-          onPressed: (){}//=> ourViewMode.goToWhatsapp(document.get("phone")),
+          onPressed: ()=> ourViewMode.goToWhatsapp(userDocument["phone"]),
           ),),
  
   ],),//),
@@ -170,9 +176,9 @@ Widget contactIcons(){
 }
 
 //there is maybe an error in the scrollbar
-Widget listViewCat(BuildContext context){
+Widget listViewCat(BuildContext context,dynamic userDocument){
 final scrollController = ScrollController(initialScrollOffset: 0);
-List<String> category =  ["Paper", "Plastic","Paper","Plastic"];
+List<String> category =  convertStringToArray(userDocument['category']);
 return Container( // see Nouf
 alignment: Alignment.center,
 padding: EdgeInsets.only(left: 50, right: 50),
@@ -190,13 +196,49 @@ padding: EdgeInsets.only(left: 50, right: 50),
 }
 
 Widget getListView(List<String> category,int index){
-  return  Container(
-      width: 100,
-      height: 100,
+  return  Center(
+      
       child: Image.asset(
-       "assets/images/" + category[index] + '.png'),
-    );;
+       "assets/images/" + category[index] + '.png',
+       fit: BoxFit.fill,
+       width: 85,
+       height: 85,),
+    );
 
 }
+
+List<String> convertStringToArray(String category){
+
+var list = category.split(',');
+int len=list.length;
+int start=1;
+if(len>1){ // more than 1 category
+for (start; start<len;start++){//elminate white space from the Beginning of each category
+list[start]= list[start].substring(1);
+
+}
+}
+return list;
+}
+
+Widget listViewCatVesion2(BuildContext context,dynamic userDocument){
+List<String> category =  convertStringToArray(userDocument['category']);
+print(category);
+return 
+  Container( // see Nouf
+  alignment: Alignment.center,
+  padding: EdgeInsets.only(left: 50, right: 50),
+     height: 120,
+      child:Center(child:ListView.builder(
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                itemCount: category.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Center(child: getListView(category,index));
+                }),),
+
+);
+}
+
 
 }
