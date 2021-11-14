@@ -35,13 +35,18 @@ class ViewCurrentRequests extends StatefulWidget {
 
 class _ViewCurrentRequestsState extends State<ViewCurrentRequests> {
   final AuthService _auth = AuthService();
-  List<Widget> myDialogWidgets=[];
-  String valueCat;
-  int widgetsCount=0;// count newly added widgets
+ // List<Widget> myDialogWidgets=[];
+ // String valueCat;
+ // List<String> categoryValue=[];
+ // int widgetsCount=0;// count newly added widgets
   int itemCount=0;
-  
+ // List<int> counterForItems=[]; // ممكن مكانها مو هنا
+final ScrollController _controllerOne = ScrollController();
+
+
  //final List<Flushbar> flushBars = []; 
  WebViewController controller;
+ 
 
 final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
 
@@ -58,7 +63,14 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
     await Provider.of<ViewRequestViewModel>(context, listen: false)
         .fetchCurrentRequests();
   }
+ 
+increment(counterForItems,index){
+if(mounted)setState(()=>counterForItems[index]++);
+}
 
+decrement(counterForItems,int index){
+  if(mounted)setState(()=>counterForItems[index]--);
+}
   @override
   Widget build(BuildContext context) {
     Stream<QuerySnapshot<Map<String, dynamic>>> institutions = Provider.of<ViewRequestViewModel>(context, listen: false)
@@ -234,6 +246,10 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
 }
 
 Widget requestStatus(BuildContext context, DocumentSnapshot document){
+
+var listOfCat=convertStringToArray(document['category']);
+//List<int> counterForItems= List<int> (listOfCat.length);
+List<int> counterForItems=List.filled(listOfCat.length, 0);
 return 
 
 SingleChildScrollView(
@@ -260,9 +276,8 @@ Padding(
           padding: EdgeInsets.only(top:3 , bottom: 3, right: 5, left: 5),
         ),
         onPressed: () {
-          openDialog(context,document['category'],);
-         // ourViewMode.showMyDialog("done", context,document.id,document);
-         //ourViewMode.showCustomAlert("done", "Are you sure you want to mark this request as done?", context, document.id, document);
+          openDialog(context,listOfCat,counterForItems,document['contribId'],); //هذي المعتمدة ، رجعيها
+         
         },
       ),
 ),
@@ -285,117 +300,175 @@ ElevatedButton.icon(
 
 
 
-Future openDialog(BuildContext context, String category) => showDialog(
+Future openDialog(BuildContext context, List<String> listOfCat,List<int> counterForItems,String contID) async => showDialog(
 
 context: context,
-builder: (context)=>AlertDialog(
-  title: Text("Number of items"),
-  content: dialogContent(category),
-  actions: [
-    TextButton(
-      child: Text('Submit'),
-      onPressed:(){} , // save data to FB
-    )
-  ],
-
-),
+builder: (context)=>StatefulBuilder(
+  builder: (context, setState) {
+  return  AlertDialog(
+     shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(padding1),
+        ),
+    title: Center(
+      child: Text("Number of items",style: TextStyle(
+              fontSize: 24.0,
+              fontWeight: FontWeight.w700,
+              color: kPrimaryColor, // added 
+            ),
+          ),
+    ),
+  
+    content: Container(
+      
+      width: 120,
+      height: 120,
+      decoration: BoxDecoration(
+        color: new Color.fromRGBO(48, 126, 80, 0.2),
+        borderRadius: BorderRadius.all(
+        Radius.circular(10.0) //                 <--- border radius here
+    ),
+      ),
+      
+           // width: MediaQuery.of(context).size.width / 1.3,
+           // height: MediaQuery.of(context).size.height / 2.5,
+           /* decoration: new BoxDecoration(
+              shape: BoxShape.rectangle,
+              color: const Color(0xFFFFFF),
+              borderRadius: new BorderRadius.all(new Radius.circular(32.0)),
+            ),*/
+            child:dialogContent(context,listOfCat,counterForItems), ),
+            actions: [
+            TextButton(
+            child: Text('Submit',style: TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.w300,
+              color: Colors.orange[700], // added 
+            ),
+          ),
+            onPressed:() async {
+          String result= await ourViewMode.countPoints(listOfCat,counterForItems,contID,);
+          if (result=="points updated"){
+            ourViewMode.showTopSnackBar(context,'Success','Request has been marked as done',Icons.check );
+  
+          }else // points not updated
+          ourViewMode.showTopSnackBar(context,'Couldn\'t mark the request','An error occurred while marking the request',Icons.cancel_outlined, );
+       Navigator.pop(context, 'OK');
+        } , 
+      )
+    ],
+  
+  );
+  },),
 );// end of show 
 
-Widget dialogContent(String category){
-
-int numOfCat;// maybe in class declare
-var listOfCat=convertStringToArray(category);
-
-      for(int i=0; i< listOfCat.length; i++){ // check cond
-      numOfCat+=1;
-      }
-
+Widget dialogContent(BuildContext context,List<String> listOfCat,List<int> counterForItems){
+var len=listOfCat.length;
 return  SingleChildScrollView(
                 child: Column(
+                  // mainAxisSize: MainAxisSize.min, 
                   crossAxisAlignment: CrossAxisAlignment.stretch, // may change
                   children: <Widget>[
-                  initialContent(listOfCat),
-                    
-
-                   numOfCat == widgetsCount+1 ? null: // else show + button, بس كذا راح يروح الماينس بوتن بعد
-
-        widgetsCount!=0? new  IconButton(icon: new Icon(Icons.remove),
-        onPressed: (){
-          // and delete widget
-        dynamicWidgets('remove',listOfCat);  
-        setState(()=>widgetsCount--);})
-
-        :new Container(), // وmeybe delete it
-        new IconButton(icon: new Icon(Icons.add),
-        onPressed: () { 
-          dynamicWidgets('add',listOfCat);
-          setState(()=>widgetsCount++); }),
-
+                  //_card(listOfCat,counterForItems),
+                  Container( // don't make the size static
+                    height: 110,
+                    width: 110,
+                    child: Scrollbar(
+                      controller: _controllerOne,
+                      isAlwaysShown: true,
+                      child: ListView.builder(
+                      controller: _controllerOne,
+                      itemCount:len ,
+                      itemBuilder: (BuildContext context, int index) {
+                       return ListTile(
+                        leading: Image.asset( // المشكلة الكاتيقوري بالطلب اول حرف يجي سمول
+                                "assets/images/" + listOfCat[index] + '.png',
+                                fit: BoxFit.fill,
+                                width: 65,
+                                height: 65,),
+                        /*title: Text(listOfCat[index],style:TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w300,
+                        color: kPrimaryColor, // added 
+                        ),
+                      ),*/
+                        trailing: counterItems(index,counterForItems),);}
+                      ),
+                    ),
+                  ),
                   ],
                 ),
 );
 
 }
 
-convertStringToArray(String category){
+List<String> convertStringToArray(String category){
 
 var list = category.split(',');
+int len=list.length;
+int start=1;
+if(len>1){ // more than 1 category
+for (start; start<len;start++){//elminate white space from the Beginning of each category
+list[start]= list[start].substring(1);
 
 }
-
-void dynamicWidgets(String status,var listOfCat){
-int index=myDialogWidgets.length;
-
-  setState(() {
-    if(status=='add'){
-    myDialogWidgets.add(initialContent(listOfCat));}
-    else
-    myDialogWidgets.removeAt(index);
-  }); 
-
+}
+return list;
 }
 
-Widget _card() {
+Widget counterItems(int index,List<int> counterForItems){
+
+  return StatefulBuilder(
+   builder: (context, setState) {
+  return Container(
+                    width: 100, // 60
+                    height: 32, // 32
+                    padding: EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: kPrimaryColor),//Theme.of(context).accentColor),
+                    child: Row(
+                      children: [
+                        InkWell(
+                            onTap: () {/*decrement(counterForItems,index);*/
+                            counterForItems[index]!=0? setState(()=>counterForItems[index]--): null;},
+                            child: Icon(
+                              Icons.remove,
+                              color: Colors.white,
+                              size: 16,
+                            )),
+                        Container(
+                          height: 25,
+                          width: 32,
+                          margin: EdgeInsets.symmetric(horizontal: 14), //3 
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 2, vertical: 1), // hor 3
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                              color: Colors.white),
+                          child:
+                            Center(
+                              child: Text(counterForItems[index].toString(),
+                              style: TextStyle(color: Colors.black, fontSize: 16),
+                          ),
+                            ),
+                        ),  
+                        InkWell(
+                            onTap: () {/*increment(counterForItems,index);*/
+                            setState(()=>counterForItems[index]++);},
+                            child: Icon(
+                              Icons.add,
+                              color: Colors.white,
+                              size: 16,
+                            )),
+                      ],
+                    ),
+                  );
+   });
+
+
+
+
 
 }
-
-Widget initialContent(var listOfCat){
-
-return Row(
-  mainAxisAlignment: MainAxisAlignment.start,
-  children:<Widget> [
-    Container(
-      width: 200,
-      padding: EdgeInsets.only(left:10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color:kPrimaryColor, width:1)
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          iconSize: 20,
-          icon: Icon(Icons.arrow_drop_down, color:kPrimaryColor,),
-          isExpanded: true,// change ir later
-          value: valueCat,
-          items: listOfCat.map(buildMenuItem).toList(),
-          onChanged: (value)=> setState(()=> value=valueCat),
-          ),
-      ),
-    )
-,
- itemCount!=0? new  IconButton(icon: new Icon(Icons.remove),onPressed: ()=>setState(()=>itemCount--),):new Container(),
-            new Text(itemCount.toString()),
-            new IconButton(icon: new Icon(Icons.add),onPressed: ()=>setState(()=>itemCount++))
-        
-
-],);
-}
-
-DropdownMenuItem<String> buildMenuItem(String item)=>DropdownMenuItem(
-  value: item,
-  child: Text(item,
-              style:TextStyle(fontSize: 12), ),
-
-);
 
 }// end of class
