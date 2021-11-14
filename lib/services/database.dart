@@ -256,7 +256,7 @@ result='Success reject';
 }
 else{ // status==done
 _institutionCollection.doc(instID).collection("appointment").doc(uid) // لحظة هذا الاي دي حق الدوك للابوينمنت؟
-    .update({'status' : 'done'}) 
+    .update({'status' : 'complete'}) 
     .then((_) => print(result='Success done'),)
     .catchError((error) => print(result='done failed'),);
     result='Success done';
@@ -302,7 +302,7 @@ result='Success reject';
 }
 else{// status==done
 _contributorCollection.doc(contID).collection("request").doc(reqID) // لحظة هذا الاي دي حق الدوك للابوينمنت؟
-    .update({'status' : 'done'})
+    .update({'status' : 'complete'})
     .then((_) => print(result='done'),)
     .catchError((error) => print(result='could not mark done'),);
     result='done';
@@ -360,6 +360,10 @@ var theRequest = FirebaseFirestore.instance.collectionGroup('appointment')
    }
 }
 
+Future<int> getContPoints(String contID) async {
+final snapshot =await _contributorCollection.doc(contID).get();
+return snapshot['points'];
+}
 
 String updateContPoints(int numOfPoints, String contID){ 
   String result="points not updated";
@@ -367,6 +371,14 @@ String updateContPoints(int numOfPoints, String contID){
     .catchError((error) => print(result='Fail reject'),);
 return result='points updated';
 }
+
+getInstDoc(String uid/*,BuildContext context*/){
+
+print(uid +" get inst doc");
+return _institutionCollection.doc(uid).snapshots();
+
+    }
+
 
 }
 
