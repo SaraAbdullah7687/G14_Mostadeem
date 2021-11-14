@@ -309,7 +309,7 @@ class _HomeZeroState extends State<HomeZero> {
   }
 
   // rating===============================================================================================================
-  AuthService _authRating = AuthService();
+  /* AuthService _authRating = AuthService();
   @override
   void initState() {
     super.initState();
@@ -337,6 +337,7 @@ class _HomeZeroState extends State<HomeZero> {
       String insName = "";
       String catFeildName = 'Category: ';
       if (request['status'] == 'pending') {
+        // Change to ^DONE #########################################################################################333###############3333
         print(
             'LINE 339 home0.dart AND i= $itrationDetecter===========================================');
         // NEED change to 'DONE'++++++++++++++++++++++++++++++=====================
@@ -470,6 +471,7 @@ class _HomeZeroState extends State<HomeZero> {
     print(
         'LINE 450 home0.dart AND i= $itrationDetecter===========================================');
   }
+  */
 }
 
 /*  QuerySnapshot query = await _firestore.collection("institution").get();

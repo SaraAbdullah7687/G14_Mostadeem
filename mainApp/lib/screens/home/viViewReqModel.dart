@@ -3,7 +3,12 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mostadeem/services/auth.dart';
+
 import 'package:url_launcher/url_launcher.dart';
+
+// RATING
+import 'package:rating_dialog/rating_dialog.dart';
+
 // import 'package:swe444/Models/request.dart';
 
 class ViewRequestViewModel with ChangeNotifier {
@@ -67,6 +72,176 @@ class ViewRequestViewModel with ChangeNotifier {
         .delete();
     print('WELL DONE!!!!!!');
   }
+
+// rating===============================================================================================================
+  AuthService _authRating = AuthService();
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> Rating(BuildContext context) async {
+    String uid = _authRating.getCurrentUserID();
+    int itrationDetecter = 0;
+
+    QuerySnapshot query = await _firestore
+        .collection("contributor")
+        .doc(uid)
+        .collection("request")
+        .get();
+    print("Docs number: ");
+    print(query.size);
+
+    query.docs.forEach((request) async {
+      print(
+          'LINE 335 home0.dart AND i= $itrationDetecter===========================================');
+      String insName = "";
+      String catFeildName = 'Category: ';
+      if (request['status'] == 'pending') {
+        // Change to ^DONE #########################################################################################333###############3333
+        print(
+            'LINE 339 home0.dart AND i= $itrationDetecter===========================================');
+        // NEED change to 'DONE'++++++++++++++++++++++++++++++=====================
+        if (",".allMatches(request["category"]).length >= 1) {
+          catFeildName = "Categories: ";
+        }
+        print(
+            'LINE 344 home0.dart AND i= $itrationDetecter===========================================');
+        // get insName
+        await _firestore
+            .collection("institution")
+            .doc(request["insID"])
+            .get()
+            .then((value) {
+          insName = value.data()['name'];
+          print(
+              'insNAme is: $insName===========================================');
+        });
+        print(
+            'LINE 359 home0.dart AND i= $itrationDetecter===========================================');
+        // dialog  *****
+        final _dialog = RatingDialog(
+          initialRating: 1.0,
+          starSize: 30,
+          // your app's name?
+          title: Text(
+            'Request Rating',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Color.fromRGBO(48, 126, 80, 1)),
+          ),
+          // encourage your user to leave a high rating?
+          message: Text(
+            'Title: ' +
+                request["title"] +
+                /* 
+               '\n' +
+                catFeildName +
+                request["category"] +
+                '\nDate: ' +
+                request["date"].toString().substring(0, 11) +
+                */
+                '\nInstitution: ' +
+                insName +
+                '\n\nTap a star to set your rating.',
+
+            //'Tap a star to set your rating.',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 15),
+          ),
+          // your app's logo?
+          image: Image.asset(
+            'assets/images/logo.png',
+            width: 100,
+            height: 100,
+          ),
+          submitButtonText: 'Submit',
+          enableComment: false,
+          //  commentHint: 'Set your custom comment hint',
+          onCancelled: () {
+            print('cancelled');
+            //  continue;
+          },
+          onSubmitted: (response) async {
+            print('rating: ${response.rating}, comment: ${response.comment}');
+
+            // TODO: add your own logic
+            // get the ins.
+            String oldRates = "";
+            await _firestore
+                .collection("institution")
+                .doc(request["insID"])
+                .get()
+                .then((value) async {
+              oldRates = value.data()['rates'];
+              print("oldRates is: $oldRates ============================");
+              await _firestore
+                  .collection("institution")
+                  .doc(request["insID"])
+                  .update({'rates': oldRates += '${response.rating},'});
+              // store comment ?
+              /*   await _firestore
+                  .collection("institution")
+                  .doc(request["insID"])
+                  .collection("appointment")
+                  .where("requestID", isEqualTo: request["reqID"])
+                  .get()
+                  .then((snapshots) => snapshots.docs.forEach((element) async {
+                        await _firestore
+                            .collection("appointment")
+                            .doc(element.id)
+                            .update({'comment': response.comment});
+                      }));*/
+            });
+            // END get the ins.
+            // store the comment in the appointment
+
+            //END  store the comment in the appointment
+
+            if (response.rating < 3.0) {
+              // send their comments to your email or anywhere you wish
+              // ask the user to contact you instead of leaving a bad review
+              print(
+                  'LINE 424 home0.dart AND i= $itrationDetecter===========================================');
+            } else {
+              //  _rateAndReviewApp();
+              print(
+                  'LINE 428 home0.dart AND i= $itrationDetecter===========================================');
+            }
+          },
+        );
+        print(
+            'LINE 433 home0.dart AND i= $itrationDetecter===========================================');
+        // show the dialog
+        showDialog(
+          context: context,
+          barrierDismissible:
+              true, // set to false if you want to force a rating
+          builder: (context) => _dialog,
+        );
+        print(
+            'LINE 442 home0.dart AND i= $itrationDetecter===========================================');
+      }
+      print("itration NO. :$itrationDetecter");
+      itrationDetecter++;
+      print(
+          'LINE 447 home0.dart AND i= $itrationDetecter===========================================');
+    });
+    print(
+        'LINE 450 home0.dart AND i= $itrationDetecter===========================================');
+  }
+/*
+      RoundedButton(
+              text: "Rate", // change size + font
+              icon: Icons.star_outline_rounded,
+              press: () {
+                Rating(context);
+              },
+            ),
+
+            */
+
+// END  RATING ==================================================================================================================
+
 /*
 void showTopSnackBar(BuildContext context ,String title,String message) => show(
         context,
