@@ -9,7 +9,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../constants.dart';
 
 
-class reqestsView extends StatelessWidget { 
+class requestsHistory extends StatelessWidget { 
    @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ViewRequestViewModel>(
@@ -17,23 +17,23 @@ class reqestsView extends StatelessWidget {
         child: Container(
             height: 1200,
             width: 450,
-            child: ViewRequests())
+            child: RequestsHistory())
     );
   }
 }
 
 
 
-class ViewRequests extends StatefulWidget {
- const ViewRequests({
+class RequestsHistory extends StatefulWidget {
+ const RequestsHistory({
     Key key,
   }) : super(key: key);
 
   @override
-  _ViewRequestsState createState() => _ViewRequestsState();
+  _RequestsHistoryState createState() => _RequestsHistoryState();
 }
 
-class _ViewRequestsState extends State<ViewRequests> {
+class _RequestsHistoryState extends State<RequestsHistory> {
   final AuthService _auth = AuthService();
  WebViewController controller;
   String contID;
@@ -51,26 +51,26 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
 
     setup() async {
     await Provider.of<ViewRequestViewModel>(context, listen: false)
-        .fetchRequests();
+        .fetchRequestsHistory();
    
   }
 
   @override
   Widget build(BuildContext context) {
-    Stream<QuerySnapshot<Map<String, dynamic>>> institutions = Provider.of<ViewRequestViewModel>(context, listen: false)
-        .requests;
+    Stream<QuerySnapshot<Map<String, dynamic>>> reqHistory = Provider.of<ViewRequestViewModel>(context, listen: false)
+        .requestsHistory;
     return Scaffold(
         backgroundColor: Colors.grey[50],
       body: 
              StreamBuilder(
-               stream: institutions,
+               stream: reqHistory,
                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
           if (!snapshot.hasData) return Loading();
         
         if (snapshot.data.docs.length==0){
           return Center(
         child: Text(
-          'No available requests',
+          'No requests in history',
           style: TextStyle(fontSize: 20, color: Colors.grey,),
         ),
       );
@@ -127,7 +127,7 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
             child:Text(document['reqTitle'],
             style: TextStyle(color: Colors.green[900], fontSize: 25.0,fontWeight: FontWeight.bold),),),
 
-             Row(
+            Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                    children: [
                      Padding(
@@ -198,36 +198,6 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
                    
                    ],
                  ),
-
- /* Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                   children: [
-                     Padding(
-                       padding: const EdgeInsets.only(left:12.0, top:7),
-                       child: Icon(
-                  Icons.access_time,
-                  size:20,
-                  color: kPrimaryColor,
-                ),
-                     ),
-                     Container( 
-            margin: EdgeInsets.only(top:10, left:10, ), 
-            child:
-            Text(ourViewMode.convertTime(context,document),
-            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
-                   ],
-                 ),
-*/
-
-          /* Container( margin: const EdgeInsets.all(5),
-              child: ElevatedButton.icon(
-                onPressed: ()=> _checkCR(document.get("CR"),context),
-                label: Text(document['CR'], style: TextStyle(color: Colors.blue[400], fontSize: 18.0,fontWeight: FontWeight.bold, decoration: TextDecoration.underline ),),
-                icon: Icon(Icons.receipt_long_rounded), // or assignment confirmation_num_sharp
-                style: ElevatedButton.styleFrom(
-                  primary: Color.fromRGBO(48, 126, 80, 1) // can be changed 
-                ),
-              )),*/
             lastRow(context,document),
   ],
     );
@@ -239,16 +209,14 @@ Widget lastRow(BuildContext context, DocumentSnapshot document){
     children: <Widget>[
 
 contactIcons(context,document),
-SizedBox(width: 6),
- requestStatus(context,document),
-  ],);//,),);
+  ],);
 }
 
 Widget contactIcons(BuildContext context, DocumentSnapshot document){
   return 
     Flexible(
      child:Row( 
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
   children: <Widget>[
     
@@ -261,13 +229,13 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
          // _sendingMails(document.get("email")),
           
           ),),
-    SizedBox(width: 12),
+    SizedBox(width: 50), //12
     Flexible( child:
                 IconButton(
           icon: const Icon(Icons.phone),
           color: kPrimaryColor,
           onPressed: ()=> ourViewMode.goToWhatsapp(document.get("contPhone")),),),
-    SizedBox(width: 12),
+    SizedBox(width: 50),
     Flexible( child:
                 IconButton(
           icon: const Icon(Icons.location_on),
@@ -278,55 +246,5 @@ Widget contactIcons(BuildContext context, DocumentSnapshot document){
   );
 }
 
-Widget requestStatus(BuildContext context, DocumentSnapshot document){
-return 
-
-SingleChildScrollView(
-                       scrollDirection: Axis.horizontal,
-                         child:
- Row( //direction: Axis.vertical,
- //alignment: WrapAlignment.end,
-mainAxisAlignment: MainAxisAlignment.end,
-   children: <Widget>[
-TextButton(
-    child: Text('Accept'),
-    style: ElevatedButton.styleFrom(
-      shape: new RoundedRectangleBorder(
-               borderRadius: new BorderRadius.circular(22.0),
-               ),
-      primary: kPrimaryColor, //Colors.green[400],
-      onPrimary: Colors.white,
-      onSurface: Colors.grey,
-      padding: EdgeInsets.only(top:1 , bottom:1, right: 3, left: 3),
-    ),
-    onPressed: () {
-     // ourViewMode.showMyDialog("accept", context,document.id,document);
-     ourViewMode.showCustomAlert("accept", "Are you sure you want to accept this request?", context, document.id, document);
-    },
-  ),
-SizedBox(width: 10), 
-
-ElevatedButton(
-    child: Text('Reject'),
-    style: ElevatedButton.styleFrom(
-      shape: new RoundedRectangleBorder(
-               borderRadius: new BorderRadius.circular(22.0),
-               ),
-      primary: Colors.red[400],
-      onPrimary: Colors.white,
-      onSurface: Colors.grey,
-      padding: EdgeInsets.all(3)
-    ),
-    onPressed: () {
-     // ourViewMode.showMyDialog("reject", context,document.id,document);
-     ourViewMode.showCustomAlert("reject", "Are you sure you want to reject this request?", context, document.id, document);
-    },
-
-),
-
-    ], ),
-   );
-
-}
 
 }// end of class

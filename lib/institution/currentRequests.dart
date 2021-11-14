@@ -64,13 +64,7 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
         .fetchCurrentRequests();
   }
  
-increment(counterForItems,index){
-if(mounted)setState(()=>counterForItems[index]++);
-}
 
-decrement(counterForItems,int index){
-  if(mounted)setState(()=>counterForItems[index]--);
-}
   @override
   Widget build(BuildContext context) {
     Stream<QuerySnapshot<Map<String, dynamic>>> institutions = Provider.of<ViewRequestViewModel>(context, listen: false)
@@ -140,26 +134,45 @@ decrement(counterForItems,int index){
       children: <Widget>[
            Container( // bring the name from another stream
             margin: EdgeInsets.only(top:13, left:18, ), 
-            child:  Text(document['contName'],
+            child:  Text(document['reqTitle'],
             style: TextStyle(color: Colors.green[900], fontSize: 25.0,fontWeight: FontWeight.bold),),),
 
-            Row(mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
+            
+             Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                   children: [
+                     Padding(
                        padding: const EdgeInsets.only(left:12.0, top:7),
+                       child: Icon(
+                  Icons.person,
+                  size:20,
+                  color: kPrimaryColor,
+                ),
+                     ),
+                     Container( 
+            margin: EdgeInsets.only(top:9, left:5, ), 
+            child:
+            Text('by '+document['contName'],
+            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
+                   
+               // time    
+            Padding(
+                       padding: const EdgeInsets.only(left:35.0, top:7),
                        child: Icon(
                   Icons.category,
                   size:20,
                   color: kPrimaryColor,
                 ),
                      ),
-                Container( 
-                margin: EdgeInsets.only(top:7, left:5,//left:18, 
-                ), 
-                child:  Text(document['category'],
-                style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
-              ],
-            ),
+                     Container( 
+            margin: EdgeInsets.only(top:10, left:5, ), 
+            child:
+            Text(document['category'],
+            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),       
+                   
+                   ],
+                 ),
+
 
                  Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -276,7 +289,7 @@ Padding(
           padding: EdgeInsets.only(top:3 , bottom: 3, right: 5, left: 5),
         ),
         onPressed: () {
-          openDialog(context,listOfCat,counterForItems,document['contribId'],); //هذي المعتمدة ، رجعيها
+          openDialog("complete",context,listOfCat,counterForItems,document['contribId'],document,); //هذي المعتمدة ، رجعيها
          
         },
       ),
@@ -300,7 +313,7 @@ ElevatedButton.icon(
 
 
 
-Future openDialog(BuildContext context, List<String> listOfCat,List<int> counterForItems,String contID) async => showDialog(
+Future openDialog(String status,BuildContext context, List<String> listOfCat,List<int> counterForItems,String contID,DocumentSnapshot document) async => showDialog(
 
 context: context,
 builder: (context)=>StatefulBuilder(
@@ -346,12 +359,12 @@ builder: (context)=>StatefulBuilder(
             ),
           ),
             onPressed:() async {
-          String result= await ourViewMode.countPoints(listOfCat,counterForItems,contID,);
-          if (result=="points updated"){
+          String result= await ourViewMode.countPoints(status,listOfCat,counterForItems,contID,context,document,document.id);
+          /*if (result=="points updated"){
             ourViewMode.showTopSnackBar(context,'Success','Request has been marked as done',Icons.check );
   
-          }else // points not updated
-          ourViewMode.showTopSnackBar(context,'Couldn\'t mark the request','An error occurred while marking the request',Icons.cancel_outlined, );
+          }else*/ // points not updated
+         // ourViewMode.showTopSnackBar(context,'Couldn\'t mark the request','An error occurred while marking the request',Icons.cancel_outlined, );
        Navigator.pop(context, 'OK');
         } , 
       )

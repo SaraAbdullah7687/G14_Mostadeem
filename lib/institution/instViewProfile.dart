@@ -133,7 +133,8 @@ Widget instName(dynamic userDocument){
     );
 }
 Widget instRating(dynamic userDocument){
-   double ratesAverage = 0;
+
+          double ratesAverage = 0;
           List<String> rates = null;
           rates = userDocument['rates'].split(",");
           int ratesL = rates.length - 1; // why -1 ?
@@ -143,7 +144,8 @@ Widget instRating(dynamic userDocument){
           }
           ratesAverage = ratesAverage / (ratesL);
           print("the average is: $ratesAverage");
-int avgRate=ratesAverage.floor();
+
+
          return Row(
            mainAxisAlignment: MainAxisAlignment.center,
            children:<Widget> [
@@ -154,7 +156,7 @@ int avgRate=ratesAverage.floor();
                             Icons.star,
                             color: Colors.amber,
                           ),),
-           Text('('+avgRate.toString()+')', style: TextStyle(color: Colors.grey, fontSize: 15.0,),),
+           Text('('+ratesL.toString()+')', style: TextStyle(color: Colors.grey, fontSize: 15.0,),),
            ],
          );
  

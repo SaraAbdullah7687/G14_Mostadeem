@@ -1,8 +1,8 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:mostadeem/Admin/ViewInstitution.dart';
 import 'package:mostadeem/institution/currentRequests.dart';
+import 'package:mostadeem/institution/requestsHistory.dart';
 import 'package:mostadeem/institution/viewRequests.dart';
 import 'package:mostadeem/services/auth.dart';
 
@@ -17,7 +17,7 @@ final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length:2,
+      length:3,
       child: Scaffold(
       //  backgroundColor: Colors.white,
         appBar: AppBar(
@@ -42,14 +42,16 @@ final AuthService _auth = AuthService();
             ),
             //indicatorWeight:3,
             tabs: [
-              Tab(child: Align(alignment: Alignment.center, child: Text('Requests'),)),
-              Tab(child: Align(alignment: Alignment.center, child: Text('Accepted requests'),)),
+              Tab(child: Align(alignment: Alignment.center, child: Text('New'),)),
+              Tab(child: Align(alignment: Alignment.center, child: Text('Accepted'),)),
+              Tab(child: Align(alignment: Alignment.center, child: Text('History'),)),
             ],
           ),
           ),
           body: TabBarView(children: [
             reqestsView(),
             currentRequestsView(), // to be updated to MY appointments
+            requestsHistory(),
           ],),
       ),
     );

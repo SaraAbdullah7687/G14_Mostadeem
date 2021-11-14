@@ -14,10 +14,11 @@ import 'package:another_flushbar/flushbar_route.dart';
 class ViewRequestViewModel with ChangeNotifier {
   Stream<QuerySnapshot<Map<String, dynamic>>> _requests;
   Stream<QuerySnapshot<Map<String, dynamic>>> _currentRequests;
-  Stream<QuerySnapshot<Map<String, dynamic>>> _contInfo;
+  Stream<QuerySnapshot<Map<String, dynamic>>> _requestsHistory;
   AuthService auth=AuthService();
   final List<Flushbar> flushBars = []; 
   final AuthService _auth = AuthService();
+  final DatabaseService db= DatabaseService();
 
   fetchRequests() async {
     String uid= auth.getCurrentUserID();
@@ -50,6 +51,23 @@ class ViewRequestViewModel with ChangeNotifier {
 
   Stream<QuerySnapshot<Map<String, dynamic>>> get currentRequests {
     return _currentRequests;
+  }
+
+  fetchRequestsHistory() async {
+    String uid= auth.getCurrentUserID();
+    DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+    print(uid+ "in view model");
+    var firebase=  FirebaseFirestore.instance
+        .collection("institution")
+        .doc(uid)
+        .collection("appointment");
+    _requestsHistory =
+        firebase.where("status", isEqualTo: "complete").where("date", isGreaterThanOrEqualTo: dateFormat.format(DateTime.now()), ).orderBy("date").snapshots(); // order by  + exclude old dates
+    notifyListeners();
+  }
+  
+  Stream<QuerySnapshot<Map<String, dynamic>>> get requestsHistory {
+    return _requestsHistory;
   }
 
 Future sendingMails(String email) async {
@@ -98,44 +116,6 @@ String convertTime(BuildContext context, DocumentSnapshot document){
 return time;
 }
 
-Future<void> showMyDialog(String status, BuildContext context, String uid,DocumentSnapshot document) async {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Request Status'),
-        content: Text('Are you sure you want to $status this request?'),
-        actions: <Widget>[
-          TextButton( // nothing should happen 
-              onPressed: () => Navigator.pop(context, 'Cancel'),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: (){
-                  //accepted
-                /* String result= _auth.updateInstitutionStatus(status,uid); // chsnge method
-                 if(result=='Success approve'){ // show another pop up 
-                   print('status has changed to approved');
-                   sendEmail("approveEmail",context,document);
-                   showTopSnackBar(context,'Success','Request has been moved to appoinments' );
-
-                 }
-                 else if(result=='Fail approve'){print('could not update status, procces failed');
-                 showTopSnackBar(context,'Fail','Approve institution failed' );
-                 }
-                 else{ print(result);}*/
-                
-                Navigator.pop(context, 'OK');},
-              child: const Text('Yes'),
-            ),
-          ],
-        //),
-      );
-    },
-  );
-}
-
 void showTopSnackBar(BuildContext context ,String title,String message, IconData icon) => show(
         context,
         Flushbar(
@@ -175,7 +155,7 @@ return CustomAlert(
         // send appointment doc id, and get inst id from auth class 
         String result= _auth.updateAppointmentStatus(status,uid);// appointment id
         if(result=='Success accept'){ 
-         String re2= _auth.updateRequestStatus(status,document['contribId'],document['requestID'] ); // تأكدي من اسامي الفيلدز
+         String re2= await _auth.updateRequestStatus(status,document['contribId'],document['requestID'] ); // تأكدي من اسامي الفيلدز
         
          if(re2=='accepted'){ // change status to rejected in other institutions
            String re3= await DatabaseService().updateRequestStatusInAllInst(status,document['requestID'] );
@@ -186,25 +166,25 @@ return CustomAlert(
            }
            else if(re3=='fail'){
              print("re3 failed");
-             showTopSnackBar(context,'Couldn\'t accept request','The request couldn\'t been accepted',Icons.cancel_outlined, );
+             showTopSnackBar(context,'Couldn\'t accept request','An error occurred while accepting the request',Icons.cancel_outlined, );
            }
            else if (re3=="no doc with same req"){
             showTopSnackBar(context,'Success','Request has been accepted',Icons.check );
            }
            else{
-             showTopSnackBar(context,'Fail','An error occured while accepthing the request',Icons.cancel_outlined, );
+             showTopSnackBar(context,'Couldn\'t accept request','An error occurred while accepting the request',Icons.cancel_outlined, );
              print(re3+' did not work');
            }
          }
          else if(re2=='failed'){
            print('could not update status, procces failed');
-           showTopSnackBar(context,'Fail','Accept request failed',Icons.cancel_outlined, );
+           showTopSnackBar(context,'Couldn\'t accept request','An error occurred while accepting the request',Icons.cancel_outlined, );
          }
          else print(re2);
                    
                  }
         else if(result=='Fail accept'){print('could not update status, procces failed');
-                 showTopSnackBar(context,'Fail','Accept request failed',Icons.cancel_outlined, );
+                 showTopSnackBar(context,'Couldn\'t accept request','An error occurred while accepting the request',Icons.cancel_outlined, );
                  }
         else{ print(result);}
         }// if accept
@@ -220,14 +200,14 @@ return CustomAlert(
         String re3= await DatabaseService().updateRequestStatusInAllInst(status,document['requestID'] ); 
            if(re3=='No inst has the request'){ // change status to rejected in req collection
          print(re3);
-           String re2= _auth.updateRequestStatus(status,document['contribId'],document['requestID'] );
+           String re2= await _auth.updateRequestStatus(status,document['contribId'],document['requestID'] );
                if(re2== "Success reject"){
              print("re2 Succeeded reject");
            showTopSnackBar(context,'Success','Request has been rejected',Icons.check );
            }
                else if(re2=='Fail reject'){
              print("re3 failed");
-             showTopSnackBar(context,'Fail','An error occured while rejecting the request',Icons.cancel_outlined, );
+             showTopSnackBar(context,'Couldn\'t reject request','An error occurred while rejecting the request',Icons.cancel_outlined, );
            }
                else{
              print(re2+' did not work');
@@ -240,8 +220,9 @@ return CustomAlert(
             else print(re3);
                    
                  }
-        else if(result=='Fail reject'){print('could not update status, procces failed');
-                 showTopSnackBar(context,'Fail','An error occured while rejecting the request',Icons.cancel_outlined, );
+        else if(result=='Fail reject'){
+          print('could not update status, procces failed');
+                 showTopSnackBar(context,'Couldn\'t reject request','An error occurred while rejecting the request',Icons.cancel_outlined, );
                  }
         else{ print(result);}
 
@@ -251,18 +232,18 @@ return CustomAlert(
     else { // status == done
     String result= _auth.updateAppointmentStatus(status,uid);// appointment id
     if(result=='Success done'){
-       String re2= _auth.updateRequestStatus(status,document['contribId'],document['requestID'] ); // تأكدي من اسامي الفيلدز
+       String re2= await _auth.updateRequestStatus(status,document['contribId'],document['requestID'] ); // تأكدي من اسامي الفيلدز
         if(re2=='done'){ // change status to rejected in other institutions
            showTopSnackBar(context,'Success','Request has been marked as done',Icons.check );
          }
          else if(re2=='could not mark done'){
            print('could not update status, procces failed');
-           showTopSnackBar(context,'Fail','Request couldn\'t be marked as done',Icons.cancel_outlined, );
+           showTopSnackBar(context,'Couldn\'t mark the request','An error occurred while marking the request',Icons.cancel_outlined, );
          }
          else print(re2);
         }
     else if(result=='done failed'){
-    showTopSnackBar(context,'Fail','Request couldn\'t be marked as done',Icons.cancel_outlined, );
+    showTopSnackBar(context,'Couldn\'t mark the request','An error occurred while marking the request',Icons.cancel_outlined, );
     }
     else{
       
@@ -275,5 +256,94 @@ return CustomAlert(
     );
                     });
 }
+
+Future<String> countPoints(String status,List<String> listOfCat, List<int>counterForItem, String contID,BuildContext context,DocumentSnapshot document,String uid) async { // جيبي الاي دي للكنتربيوتر عشان تعدلين البوينتس
+  // لست كاتيقوري ممكن فيها مشكلةانه من بداية السترنق الثاني باللست بيكون فيه وايت سبيس
+int length=listOfCat.length;
+String category="";
+int points=await db.getContPoints(contID);
+for(int i=0;i<length;i++){
+ switch(listOfCat[i].toLowerCase()){
+
+  case "paper": 
+      points+= counterForItem[i]* 2; // 2 is the value of paper, can be changed later
+      break;
+
+  case "cardboard": 
+      points+= counterForItem[i]* 2; // 2 is the value of paper, can be changed later
+      break;
+
+  case "glass":     
+      points+= counterForItem[i]* 2; // 2 is the value of paper, can be changed later
+      break;
+
+  case "plastic":   
+      points+= counterForItem[i]* 2; // 2 is the value of paper, can be changed later
+      break;
+
+  case "metals":
+      points+= counterForItem[i]* 4; // 4 is the value of paper, can be changed later
+      break;
+
+  case "electronics":
+      points+= counterForItem[i]* 4; // 4 is the value of paper, can be changed later
+      break;
+
+  case "nylon":
+      points+= counterForItem[i]* 2; // 2 is the value of paper, can be changed later
+      break;
+
+  case "cans":
+      points+= counterForItem[i]* 1; // 1 is the value of paper, can be changed later
+      break;  
+                    
+  case "batteries":
+      points+= counterForItem[i]* 1; // 1 is the value of paper, can be changed later
+      break;
+
+  case "furniture":
+      points+= counterForItem[i]* 10; // 10 is the value of paper, can be changed later
+      break;
+
+  case "cloths":
+      points+= counterForItem[i]* 8; // 8 is the value of paper, can be changed later
+      break;
+
+  case "food":
+      points+= counterForItem[i]* 2; // 2 is the value of paper, can be changed later
+      break;
+
+  default: print("not category"); break;
+}
+
+}
+
+     // status == done
+    String result= _auth.updateAppointmentStatus(status,uid);// appointment id
+    if(result=='Success done'){
+       String re2= await _auth.updateRequestStatus(status,document['contribId'],document['requestID'] ); // تأكدي من اسامي الفيلدز
+        if(re2=='done'){ // change status to rejected in other institutions
+           showTopSnackBar(context,'Success','Request has been marked as done',Icons.check );
+         }
+         else if(re2=='could not mark done'){
+           print('could not update status, procces failed');
+           showTopSnackBar(context,'Couldn\'t mark the request','An error occurred while marking the request',Icons.cancel_outlined, );
+         }
+         else print(re2);
+        }
+    else if(result=='done failed'){
+    showTopSnackBar(context,'Couldn\'t mark the request','An error occurred while marking the request',Icons.cancel_outlined, );
+    }
+    else{
+      
+    }
+
+
+
+//assign points to contributor
+return db.updateContPoints(points,contID);
+
+}
+
 
 } // end class
