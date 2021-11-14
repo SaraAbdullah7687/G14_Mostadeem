@@ -257,29 +257,31 @@ class _ViewRequestsState extends State<ViewRequests> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 9,
-              ),
-              child: Icon(
-                Icons.account_balance,
-                size: 20,
-                color: Color.fromRGBO(48, 126, 80, 1),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                left: 3,
-              ),
-              child: Text(
-                document['instName'],
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 15,
-                  //  fontWeight: FontWeight.bold
+            if (document['status'] == 'accepted')
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 9,
+                ),
+                child: Icon(
+                  Icons.account_balance,
+                  size: 20,
+                  color: Color.fromRGBO(48, 126, 80, 1),
                 ),
               ),
-            ),
+            if (document['status'] == 'accepted')
+              Container(
+                margin: EdgeInsets.only(
+                  left: 3,
+                ),
+                child: Text(
+                  document['instName'],
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 15,
+                    //  fontWeight: FontWeight.bold
+                  ),
+                ),
+              ),
             /*third icon*/
             Padding(
               padding: const EdgeInsets.only(left: 9, top: 3, right: 2),
