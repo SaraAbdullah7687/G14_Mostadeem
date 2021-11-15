@@ -3,6 +3,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:mostadeem/Admin/components/social_icon.dart';
 import 'package:mostadeem/Screens/request.dart';
 import 'package:mostadeem/screens/home/profile.dart';
+import 'package:mostadeem/screens/home/requestsHome.dart';
 import 'package:mostadeem/screens/home/viewReq.dart';
 import 'package:mostadeem/screens/viewInstituation.dart';
 import 'package:mostadeem/services/auth.dart';
@@ -50,7 +51,7 @@ class _HomeState extends State<Home> {
     // indexes Sensitive
     HomeZero(),
     initiateRequest(), // for request
-    ViewRequest(),
+    RequestsHome(),
     profile(), //profile
   ];
 

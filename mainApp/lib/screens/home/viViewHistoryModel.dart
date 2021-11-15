@@ -3,15 +3,10 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mostadeem/services/auth.dart';
-
 import 'package:url_launcher/url_launcher.dart';
-
-// RATING
-import 'package:rating_dialog/rating_dialog.dart';
-
 // import 'package:swe444/Models/request.dart';
 
-class ViewRequestViewModel with ChangeNotifier {
+class ViewHistoryViewModel with ChangeNotifier {
   Stream<QuerySnapshot<Map<String, dynamic>>> _requests;
   Stream<QuerySnapshot<Map<String, dynamic>>> _currentRequests;
   AuthService auth = AuthService();
@@ -25,7 +20,7 @@ class ViewRequestViewModel with ChangeNotifier {
         .doc(uid)
         .collection("request");
     _requests = firebase
-        .where("status", isNotEqualTo: ("done"))
+        .where("status", isEqualTo: ("done"))
         //  .orderBy("date")
         .snapshots();
     notifyListeners();
@@ -72,20 +67,6 @@ class ViewRequestViewModel with ChangeNotifier {
         .delete();
     print('WELL DONE!!!!!!');
   }
-
-/*
-      RoundedButton(
-              text: "Rate", // change size + font
-              icon: Icons.star_outline_rounded,
-              press: () {
-                Rating(context);
-              },
-            ),
-
-            */
-
-// END  RATING ==================================================================================================================
-
 /*
 void showTopSnackBar(BuildContext context ,String title,String message) => show(
         context,

@@ -56,27 +56,6 @@ class _ViewRequestsState extends State<ViewRequests> {
     Stream<QuerySnapshot<Map<String, dynamic>>> institutions =
         Provider.of<ViewRequestViewModel>(context, listen: false).requests;
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text('Current Requests'),
-          backgroundColor: Color.fromRGBO(48, 126, 80, 1),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(18),
-            ),
-          ),
-          /* leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_rounded,
-            color: Colors.white,
-          ),
-          tooltip: 'Show Snackbar',
-          onPressed: () async {
-            await _auth.signOut();
-          },
-        ),*/
-          toolbarHeight: 60.0,
-        ),
         backgroundColor: Colors.grey[50],
         body: StreamBuilder(
             stream: institutions,
@@ -114,7 +93,7 @@ class _ViewRequestsState extends State<ViewRequests> {
       ),
       child: Container(
         width: 100, // 250
-        height: 119, //160
+        height: 170, //160
         decoration: BoxDecoration(
           /*  border: Border.all(
                  color: Colors.green[900],
@@ -142,6 +121,7 @@ class _ViewRequestsState extends State<ViewRequests> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
+        /*FIRST ROW */
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -157,89 +137,7 @@ class _ViewRequestsState extends State<ViewRequests> {
             ),
           ],
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            if (document['status'] == 'pending')
-              Padding(
-                padding: const EdgeInsets.only(left: 35.0, top: 3),
-                child: Icon(
-                  Icons.pending_actions_rounded,
-                  color: Colors.orange,
-                  size: 20,
-                ),
-              ),
-            if (document['status'] == 'accepted')
-              Padding(
-                padding: const EdgeInsets.only(left: 35.0, top: 3),
-                child: Icon(
-                  Icons.check,
-                  color: Color.fromRGBO(48, 126, 80, 1),
-                  size: 20,
-                ),
-              ),
-            if (document['status'] == 'rejected')
-              Padding(
-                padding: const EdgeInsets.only(left: 35.0, top: 3),
-                child: Icon(
-                  Icons.cancel,
-                  color: Colors.red,
-                  size: 20,
-                ),
-              ),
-            Container(
-              margin: EdgeInsets.only(
-                top: 3,
-                left: 3,
-              ),
-              child: Text(
-                document['status'],
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 15,
-                  //  fontWeight: FontWeight.bold
-                ),
-              ),
-            ),
-
-            /*third icon*/
-            Padding(
-              padding: const EdgeInsets.only(left: 9, top: 3, right: 2),
-              child: Icon(
-                Icons.category,
-                size: 14,
-                color: Color.fromRGBO(48, 126, 80, 1),
-              ),
-            ),
-            /* Container(
-              margin: EdgeInsets.only(
-                top: 3, left: 5, //left:18,
-              ),
-              child: Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Text(
-                    document['category'],
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12.0,
-                    ),
-                  ),
-                ),
-              ),
-            ),*/
-            Expanded(
-              child: Text(
-                document['category'],
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 15.0,
-                ),
-              ),
-            ),
-            /*fourth icon*/
-          ],
-        ),
+        /*SECOND ROW*/
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -292,51 +190,143 @@ class _ViewRequestsState extends State<ViewRequests> {
             ),
             Container(
               margin: EdgeInsets.only(
+                left: 3,
+              ),
+              child: Text(
+                ourViewMode.convertTime(context, document),
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 15.0,
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
                 top: 2, //left: 5, //left:18,
               ),
               child: IconButton(
                 icon: const Icon(Icons.location_on),
-                color: Color.fromRGBO(48, 126, 80, 1),
+                color: Colors.blue,
                 onPressed: () =>
                     ourViewMode.openLocation(document.get("location")),
               ),
             ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            if (document['status'] == 'pending')
+              Padding(
+                padding: const EdgeInsets.only(left: 35.0, top: 3),
+                child: Icon(
+                  Icons.pending_actions_rounded,
+                  color: Colors.orange,
+                  size: 20,
+                ),
+              ),
+            if (document['status'] == 'accepted')
+              Padding(
+                padding: const EdgeInsets.only(left: 35.0, top: 3),
+                child: Icon(
+                  Icons.check,
+                  color: Color.fromRGBO(48, 126, 80, 1),
+                  size: 20,
+                ),
+              ),
             if (document['status'] == 'rejected')
-              TextButton(
-                style: TextButton.styleFrom(
-                    //    padding: EdgeInsets.only(left: 20),
-                    alignment: Alignment.centerRight),
-                onPressed: () => ourViewMode.cancelRequest(document.id),
+              Padding(
+                padding: const EdgeInsets.only(left: 35.0, top: 3),
+                child: Icon(
+                  Icons.cancel,
+                  color: Colors.red,
+                  size: 20,
+                ),
+              ),
+            Container(
+              margin: EdgeInsets.only(
+                top: 3,
+                left: 3,
+              ),
+              child: Text(
+                document['status'],
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 15,
+                  //  fontWeight: FontWeight.bold
+                ),
+              ),
+            ),
+            if (document['status'] == 'accepted')
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 9,
+                ),
+                child: Icon(
+                  Icons.account_balance,
+                  size: 20,
+                  color: Color.fromRGBO(48, 126, 80, 1),
+                ),
+              ),
+            if (document['status'] == 'accepted')
+              Container(
+                margin: EdgeInsets.only(
+                  left: 3,
+                ),
                 child: Text(
-                  'Delete',
+                  document['instName'],
                   style: TextStyle(
-                      color: Colors.red, decoration: TextDecoration.underline),
+                    color: Colors.grey,
+                    fontSize: 15,
+                    //  fontWeight: FontWeight.bold
+                  ),
+                ),
+              ),
+            /*third icon*/
+            Padding(
+              padding: const EdgeInsets.only(left: 9, top: 3, right: 2),
+              child: Icon(
+                Icons.category,
+                size: 18,
+                color: Color.fromRGBO(48, 126, 80, 1),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                document['category'],
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 15.0,
+                ),
+              ),
+            ),
+          ],
+        ),
+        /*THIRD ROW*/
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            if (document['status'] == 'rejected')
+              Container(
+                margin: const EdgeInsets.only(right: 10, bottom: 10, top: 5),
+                child: SizedBox(
+                  height: 30,
+                  width: 90,
+                  child: RaisedButton(
+                    shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(25.0),
+                    ),
+                    color: Colors.red,
+                    child: Text('Delete',
+                        style: TextStyle(
+                          color: Colors.white,
+                        )),
+                    onPressed: () => ourViewMode.cancelRequest(document.id),
+                  ),
                 ),
               ),
           ],
         ),
-
-        /*   Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (document['status'] == 'rejected')
-              TextButton(
-                style: TextButton.styleFrom(
-                    padding: EdgeInsets.only(right: 20),
-                    alignment: Alignment.center),
-                onPressed: () {
-                  ourViewMode.cancelRequest(document.id);
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => ViewRequest()),
-                      (Route<dynamic> route) => false);
-                },
-                child: Text(
-                  'Cancel',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-          ],
-        ),*/
       ],
     );
   }

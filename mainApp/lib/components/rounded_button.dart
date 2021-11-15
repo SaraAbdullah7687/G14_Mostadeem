@@ -33,7 +33,7 @@ class RoundedButton extends StatelessWidget {
     return ElevatedButton(
       child: Text(
         text,
-        style: TextStyle(color: textColor, fontSize:18), // changed font size
+        style: TextStyle(color: textColor, fontSize: 18), // changed font size
       ),
       onPressed: press,
       style: ElevatedButton.styleFrom(
