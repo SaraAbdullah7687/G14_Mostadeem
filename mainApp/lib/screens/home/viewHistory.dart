@@ -76,7 +76,7 @@ class _ViewHistoryState extends State<ViewHistory> {
           'LINE 335 home0.dart AND i= $itrationDetecter===========================================');
       String insName = "";
       String catFeildName = 'Category: ';
-      if (request['status'] == 'pending') {
+      if (request['status'] == 'done') {
         // Change to ^DONE #########################################################################################333###############3333
         print(
             'LINE 339 home0.dart AND i= $itrationDetecter===========================================');
@@ -89,7 +89,7 @@ class _ViewHistoryState extends State<ViewHistory> {
         // get insName
         await _firestore
             .collection("institution")
-            .doc(request["insID"])
+            .doc(request["instID"])
             .get()
             .then((value) {
           insName = value.data()['name'];
@@ -151,14 +151,14 @@ class _ViewHistoryState extends State<ViewHistory> {
             String oldRates = "";
             await _firestore
                 .collection("institution")
-                .doc(request["insID"])
+                .doc(request["instID"])
                 .get()
                 .then((value) async {
               oldRates = value.data()['rates'];
               print("oldRates is: $oldRates ============================");
               await _firestore
                   .collection("institution")
-                  .doc(request["insID"])
+                  .doc(request["instID"])
                   .update({'rates': oldRates += '${response.rating},'});
               // store comment ?
               /*   await _firestore
@@ -461,7 +461,7 @@ class _ViewHistoryState extends State<ViewHistory> {
                     child: Wrap(
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.only(right: 0.0),
+                          padding: const EdgeInsets.only(left: 5.0),
                           child: Icon(
                             Icons
                                 .star_outline_rounded, // replaced with 'icon' variable==========================================
