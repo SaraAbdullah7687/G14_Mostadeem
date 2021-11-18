@@ -266,7 +266,7 @@ packages:
     source: hosted
     version: "1.2.1"
   flutter_rating_bar:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_rating_bar
       url: "https://pub.dartlang.org"

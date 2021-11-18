@@ -76,7 +76,7 @@ dependencies:
 
   #Sara Rating
   rating_dialog: any
-
+  flutter_rating_bar: ^4.0.0
   
 
 dev_dependencies:

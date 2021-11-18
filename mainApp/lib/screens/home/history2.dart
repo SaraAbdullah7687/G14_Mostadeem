@@ -1,7 +1,6 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
 import 'package:mostadeem/Admin/components/social_icon.dart';
@@ -60,114 +59,132 @@ class _ViewHistoryState extends State<ViewHistory> {
   AuthService _authRating = AuthService();
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> Rating(DocumentSnapshot request) async {
+  Future<void> Rating() async {
     String uid = _authRating.getCurrentUserID();
     int itrationDetecter = 0;
 
-    print(
-        'LINE 335 home0.dart AND i= $itrationDetecter===========================================');
-    String insName = "";
-    String catFeildName = 'Category: ';
+    QuerySnapshot query = await _firestore
+        .collection("contributor")
+        .doc(uid)
+        .collection("request")
+        .get();
+    print("Docs number: ");
+    print(query.size);
 
-    if (request['status'] == 'done' && !request['isRated']) {
-      // Change to ^DONE #########################################################################################333###############3333
+    query.docs.forEach((request) async {
       print(
-          'LINE 339 home0.dart AND i= $itrationDetecter===========================================');
-      // NEED change to 'DONE'++++++++++++++++++++++++++++++=====================
-      if (",".allMatches(request["category"]).length >= 1) {
-        catFeildName = "Categories: ";
-      }
-      print(
-          'LINE 344 home0.dart AND i= $itrationDetecter===========================================');
+          'LINE 335 home0.dart AND i= $itrationDetecter===========================================');
+      String insName = "";
+      String catFeildName = 'Category: ';
 
-      // change isRated to true so the user do not rate more than oncw to each request
-      await _firestore
-          .collection("contributor")
-          .doc(uid)
-          .collection("request")
-          .doc(request.id)
-          .update({
-        'isRated': true,
-      });
-      print('LINE 113 viewHistory.dart AND request["reqID"]=' +
-          request.id +
-          '  AND ' +
-          request["isRated"].toString());
+      if (request['status'] == 'done' && !request['isRated'] != null) {
+        // Change to ^DONE #########################################################################################333###############3333
+        print(
+            'LINE 339 home0.dart AND i= $itrationDetecter===========================================');
+        // NEED change to 'DONE'++++++++++++++++++++++++++++++=====================
+        if (",".allMatches(request["category"]).length >= 1) {
+          catFeildName = "Categories: ";
+        }
+        print(
+            'LINE 344 home0.dart AND i= $itrationDetecter===========================================');
+        // get insName
+        await _firestore
+            .collection("institution")
+            .doc(request["instID"])
+            .get()
+            .then((value) {
+          insName = value.data()['name'];
+          print(
+              'insNAme is: $insName===========================================');
+        });
+        print(
+            'LINE 359 home0.dart AND i= $itrationDetecter===========================================');
+        // change isRated to true so the user do not rate more than oncw to each request
+        await _firestore
+            .collection("contributor")
+            .doc(uid)
+            .collection("request")
+            .doc(request["reqID"])
+            .get()
+            .then((value) async {
+          await _firestore
+              .collection("contributor")
+              .doc(uid)
+              .collection("request")
+              .doc(request["reqID"])
+              .update({
+            'isRated': true,
+          });
+        });
+        print('LINE 113 viewHistory.dart AND request["reqID"]=' +
+            request["reqID"] +
+            '  AND ' +
+            request["isRated"].toString());
 
-      // dialog  *****
-      final _dialog = RatingDialog(
-        initialRating: 1.0,
-        starSize: 30,
-        // your app's name?
-        title: Text(
-          'Request Rating',
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-              color: Color.fromRGBO(48, 126, 80, 1)),
-        ),
-        // encourage your user to leave a high rating?
-        message: Text(
-          'Title: ' +
-              request["title"] +
-              /* 
+        // dialog  *****
+        final _dialog = RatingDialog(
+          initialRating: 1.0,
+          starSize: 30,
+          // your app's name?
+          title: Text(
+            'Request Rating',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Color.fromRGBO(48, 126, 80, 1)),
+          ),
+          // encourage your user to leave a high rating?
+          message: Text(
+            'Title: ' +
+                request["title"] +
+                /* 
                '\n' +
                 catFeildName +
                 request["category"] +
                 '\nDate: ' +
                 request["date"].toString().substring(0, 11) +
                 */
-              '\nInstitution: ' +
-              request['instName'] +
-              '\n\nTap a star to set your rating.',
+                '\nInstitution: ' +
+                insName +
+                '\n\nTap a star to set your rating.',
 
-          //'Tap a star to set your rating.',
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 15),
-        ),
-        // your app's logo?
-        image: Image.asset(
-          'assets/images/logo.png',
-          width: 100,
-          height: 100,
-        ),
-        submitButtonText: 'Submit',
-        enableComment: false,
-        //  commentHint: 'Set your custom comment hint',
-        onCancelled: () {
-          print('cancelled');
-          //  continue;
-        },
-        onSubmitted: (response) async {
-          print('rating: ${response.rating}, comment: ${response.comment}');
+            //'Tap a star to set your rating.',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 15),
+          ),
+          // your app's logo?
+          image: Image.asset(
+            'assets/images/logo.png',
+            width: 100,
+            height: 100,
+          ),
+          submitButtonText: 'Submit',
+          enableComment: false,
+          //  commentHint: 'Set your custom comment hint',
+          onCancelled: () {
+            print('cancelled');
+            //  continue;
+          },
+          onSubmitted: (response) async {
+            print('rating: ${response.rating}, comment: ${response.comment}');
 
-          // TODO: add your own logic
-          // get the ins.
-          String oldRates = "";
-          await _firestore
-              .collection("institution")
-              .doc(request["instID"])
-              .get()
-              .then((value) async {
-            oldRates = value.data()['rates'];
-            print("oldRates is: $oldRates ============================");
+            // TODO: add your own logic
+            // get the ins.
+            String oldRates = "";
             await _firestore
                 .collection("institution")
                 .doc(request["instID"])
-                .update({'rates': oldRates += '${response.rating},'});
-
-            //##############################################################################333
-            await _firestore
-                .collection("contributor")
-                .doc(uid)
-                .collection("request")
-                .doc(request.id)
-                .update({
-              'reqRate': response.rating,
-            });
-            // store comment ?
-            /*   await _firestore
+                .get()
+                .then((value) async {
+              oldRates = value.data()['rates'];
+              print("oldRates is: $oldRates ============================");
+              await _firestore
+                  .collection("institution")
+                  .doc(request["instID"])
+                  .update({'rates': oldRates += '${response.rating},'});
+              // store comment ?
+              /*   await _firestore
                   .collection("institution")
                   .doc(request["insID"])
                   .collection("appointment")
@@ -179,40 +196,41 @@ class _ViewHistoryState extends State<ViewHistory> {
                             .doc(element.id)
                             .update({'comment': response.comment});
                       }));*/
-          });
-          // END get the ins.
-          // store the comment in the appointment
+            });
+            // END get the ins.
+            // store the comment in the appointment
 
-          //END  store the comment in the appointment
+            //END  store the comment in the appointment
 
-          if (response.rating < 3.0) {
-            // send their comments to your email or anywhere you wish
-            // ask the user to contact you instead of leaving a bad review
-            print(
-                'LINE 424 home0.dart AND i= $itrationDetecter===========================================');
-          } else {
-            //  _rateAndReviewApp();
-            print(
-                'LINE 428 home0.dart AND i= $itrationDetecter===========================================');
-          }
-        },
-      );
+            if (response.rating < 3.0) {
+              // send their comments to your email or anywhere you wish
+              // ask the user to contact you instead of leaving a bad review
+              print(
+                  'LINE 424 home0.dart AND i= $itrationDetecter===========================================');
+            } else {
+              //  _rateAndReviewApp();
+              print(
+                  'LINE 428 home0.dart AND i= $itrationDetecter===========================================');
+            }
+          },
+        );
+        print(
+            'LINE 433 home0.dart AND i= $itrationDetecter===========================================');
+        // show the dialog
+        showDialog(
+          context: context,
+          barrierDismissible:
+              true, // set to false if you want to force a rating
+          builder: (context) => _dialog,
+        );
+        print(
+            'LINE 442 home0.dart AND i= $itrationDetecter===========================================');
+      }
+      print("itration NO. :$itrationDetecter");
+      itrationDetecter++;
       print(
-          'LINE 433 home0.dart AND i= $itrationDetecter===========================================');
-      // show the dialog
-      showDialog(
-        context: context,
-        barrierDismissible: true, // set to false if you want to force a rating
-        builder: (context) => _dialog,
-      );
-      print(
-          'LINE 442 home0.dart AND i= $itrationDetecter===========================================');
-    }
-    print("itration NO. :$itrationDetecter");
-    itrationDetecter++;
-    print(
-        'LINE 447 home0.dart AND i= $itrationDetecter===========================================');
-
+          'LINE 447 home0.dart AND i= $itrationDetecter===========================================');
+    });
     print(
         'LINE 450 home0.dart AND i= $itrationDetecter===========================================');
   }
@@ -452,9 +470,7 @@ class _ViewHistoryState extends State<ViewHistory> {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            if (document['status'] == 'done' &&
-                document['isRated'] ==
-                    'false') // =================================================
+            if (document['status'] == 'done')
               Container(
                 margin: const EdgeInsets.only(right: 10, bottom: 10, top: 5),
                 child: SizedBox(
@@ -484,27 +500,8 @@ class _ViewHistoryState extends State<ViewHistory> {
                     ),
 
                     onPressed: () {
-                      Rating(document);
+                      Rating();
                     }, //========================================================================================
-                  ),
-                ),
-              ),
-            if (document['status'] == 'done' && document['isRated'] == 'false')
-              Container(
-                margin: const EdgeInsets.only(right: 10, bottom: 10, top: 5),
-                child: SizedBox(
-                  height: 30,
-                  width: 90,
-                  child: RatingBarIndicator(
-                    rating: document[
-                        'reqRate'], //############################################################3
-                    itemBuilder: (context, index) => Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                    ),
-                    itemCount: 5,
-                    itemSize: 20.0,
-                    direction: Axis.horizontal,
                   ),
                 ),
               ),
@@ -514,3 +511,4 @@ class _ViewHistoryState extends State<ViewHistory> {
     );
   }
 }
+//=============================================================
