@@ -51,7 +51,7 @@ twoButtonsAlert({
 
                 children: [
                   SizedBox(
-  width: 140.0,
+  width: 120.0,
   height: 40.0,
   child:
                   ElevatedButton(
@@ -87,7 +87,7 @@ twoButtonsAlert({
 
 
                   SizedBox(
-  width: 160.0,
+  width: 120.0,
   height: 40.0,
   child:
                   ElevatedButton(
