@@ -367,8 +367,8 @@ return snapshot['points'];
 
 String updateContPoints(int numOfPoints, String contID){ 
   String result="points not updated";
-  _contributorCollection.doc(contID).update({"points" : numOfPoints}).then((_) => print(result='rejected'),)
-    .catchError((error) => print(result='Fail reject'),);
+  _contributorCollection.doc(contID).update({"points" : numOfPoints}).then((_) => print(result='success'),)
+    .catchError((error) => print(result='Fail'),);
 return result='points updated';
 }
 
