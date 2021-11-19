@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mostadeem/institution/vrViewModel.dart';
-import 'package:mostadeem/services/auth.dart';
 import 'package:mostadeem/shared/loading.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -34,7 +33,6 @@ class RequestsHistory extends StatefulWidget {
 }
 
 class _RequestsHistoryState extends State<RequestsHistory> {
-  final AuthService _auth = AuthService();
  WebViewController controller;
   String contID;
 

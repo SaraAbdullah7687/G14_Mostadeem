@@ -416,7 +416,7 @@ return  SingleChildScrollView(
                       itemBuilder: (BuildContext context, int index) {
                        return ListTile(
                         leading: Image.asset( // المشكلة الكاتيقوري بالطلب اول حرف يجي سمول
-                                "assets/images/" + listOfCat[index] + '.png',
+                                "assets/images/" + capitalize(listOfCat[index]) + '.png',
                                 fit: BoxFit.fill,
                                 width: 65,
                                 height: 65,),
@@ -505,6 +505,8 @@ Widget counterItems(int index,List<int> counterForItems){
 
 
 }
+
+String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 
 }// end of class
 

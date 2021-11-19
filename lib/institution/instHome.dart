@@ -6,6 +6,7 @@ import 'package:mostadeem/institution/currentRequests.dart';
 import 'package:mostadeem/institution/requestsHistory.dart';
 import 'package:mostadeem/institution/viewRequests.dart';
 import 'package:mostadeem/services/auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 //import 'package:showcaseview/showcase_widget.dart';
 
@@ -24,17 +25,49 @@ final keyThree = GlobalKey();
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback(
+   /* WidgetsBinding.instance.addPostFrameCallback(
       (_)=> ShowCaseWidget.of(context).startShowCase([
         keyOne,
         keyTwo,
         keyThree,
       ])
     );
+ */
   }
 
   @override
   Widget build(BuildContext context) {
+
+ SharedPreferences preferences;
+
+    displayShowcase() async {
+      preferences = await SharedPreferences.getInstance();
+      bool showcaseVisibilityStatus = preferences.getBool("showShowcase");
+
+      if (showcaseVisibilityStatus == null) {
+        preferences.setBool("showShowcase", false).then((bool success) {
+          if (success)
+            print("Successfull in writing showshoexase");
+          else
+            print("some bloody problem occured");
+        });
+
+        return true;
+      }
+
+      return false;
+    }
+
+    displayShowcase().then((status) {
+      if (status) {
+        ShowCaseWidget.of(context).startShowCase([
+        keyOne,
+        keyTwo,
+        keyThree,
+        ]);
+      }
+    });
+
     return DefaultTabController(
       length:3,
       child: Scaffold(
