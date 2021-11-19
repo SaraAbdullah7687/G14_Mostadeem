@@ -1,14 +1,21 @@
+
+
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:test_project/models/ContributorModel.dart';
-import 'package:test_project/models/userMu.dart';
-import 'package:test_project/services/database.dart';
+import 'package:flutter/material.dart';
+import 'package:mostadeem/Screens/authenticate/bodyLogin.dart';
+import 'package:mostadeem/globals/global.dart';
+import 'package:mostadeem/models/ContributorModel.dart';
+import 'package:mostadeem/models/userMu.dart';
+import 'package:mostadeem/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../main.dart';
 
 class AuthService {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  final List<Flushbar> flushBars = [];
   // create user obj based on firebase user
   UserMu _userFromFirebaseUser(User user) { // was FirebaseUser instead of User
   print(user); // maybe wrong
@@ -23,7 +30,7 @@ class AuthService {
   }
 
   // sign in with email and password
-  Future <dynamic> signInWithEmailAndPassword(String email, String password) async {
+  Future <dynamic> signInWithEmailAndPassword(String email, String password,) async {
     try {
       UserCredential _result = await _auth.signInWithEmailAndPassword(email: email.trim(), password: password);
       User _user = _result.user; // was FirebaseUser instead of User
@@ -40,7 +47,7 @@ class AuthService {
   }
 
   // register with email and password
-  Future <dynamic>registerWithEmailAndPassword(String email, String password, String name) async { // خلي الميثود تقبل رقم جواله
+  Future <dynamic>registerWithEmailAndPassword(String email, String password, String name, String phone) async { // خلي الميثود تقبل رقم جواله
    String retVal = "retVal error";
    try {
      print("before registering contributor");
@@ -51,7 +58,9 @@ class AuthService {
        ContributorModel _userCont = ContributorModel(
         uid: user.uid,
         email: user.email,
-        name: name,); //notifToken: await _fcm.getToken(),?? 
+        name: name,
+        phone: phone,
+        points:0,); //notifToken: await _fcm.getToken(),?? 
 
         String _returnString = await DatabaseService().createUserContributor(_userCont); // maybe database service
         print("contributor created");
@@ -65,7 +74,7 @@ class AuthService {
      // await DatabaseService(uid: _user.uid).updateUserData('0','new crew member', 100);
       return _userFromFirebaseUser(user);
     } on FirebaseAuthException catch (signUpError) {
-      print("email exists");
+      print("catch error in register");
       //if (signUpError is PlatformException){
         switch(signUpError.code){
           case "ERROR_EMAIL_ALREADY_IN_USE": // ما تضبط
@@ -90,6 +99,14 @@ class AuthService {
       print(error.toString());
       return null;
     }
+
+   /* _auth.signOut().then((res) {
+            Navigator.pushReplacement(
+context, MaterialPageRoute(builder: (context) => MyApp()));
+        
+        });*/
+  
+  
   }
 
   //get the current user
@@ -111,14 +128,13 @@ return result;
 
 }
 
-Future<String> checkUserType (//BuildContext context
-)async{
+Future<String> checkUserType ()async{
 
 String uid = getCurrentUserID();
 print(uid);
 print("check user type method");
 //dynamic userType =
-await Future.delayed(const Duration(seconds: 3), (){});
+await Future.delayed(const Duration(seconds: 1), (){});
  return await DatabaseService().getUserType(uid//,context
  );
  
@@ -148,4 +164,50 @@ try {
 }
 
 }
+
+Future<String> getInstName(String uid) async {
+String name = await DatabaseService().getUserName(uid);
+return name;
+
 }
+
+String updateAppointmentStatus(String status, String appointmentID){ // return string ?
+
+String institutionID=getCurrentUserID(); 
+String result = DatabaseService().updateAppointment(appointmentID,status,institutionID);
+return result;
+}
+Future<String> updateRequestStatus(String status, String contID, String reqID) async { // return string ?
+String institutionID=getCurrentUserID(); 
+String result = await DatabaseService().updateRequest(contID,status, reqID,institutionID);
+return result;
+
+}
+
+void showTopSnackBar(BuildContext context, String title, String message,IconData icon) => show(
+        context,
+        Flushbar(
+          icon: Icon(icon, size: 32, color: Colors.white),
+          shouldIconPulse: false,
+          title: title,
+          message: message,
+          duration: Duration(seconds: 3),
+          flushbarPosition: FlushbarPosition.TOP,
+         // margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
+         borderRadius: BorderRadius.circular(6),
+           barBlur: 20,
+          backgroundColor: Colors.black.withOpacity(0.5),
+        ),
+      );
+
+
+          Future show(BuildContext context, Flushbar newFlushBar) async {
+           // await Future.delayed(const Duration(seconds: 2), (){});
+    await Future.wait(flushBars.map((flushBar) => flushBar.dismiss()).toList());
+    flushBars.clear();
+
+    newFlushBar.show(context);
+    flushBars.add(newFlushBar);
+  }
+
+} // end of class
