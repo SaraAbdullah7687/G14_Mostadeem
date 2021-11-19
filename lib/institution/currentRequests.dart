@@ -351,7 +351,7 @@ builder: (context)=>StatefulBuilder(
             ),*/
             child:dialogContent(context,listOfCat,counterForItems), ),
             actions: [
-            TextButton(
+           /* TextButton(
             child: Text('Submit',style: TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.w300,
@@ -367,7 +367,29 @@ builder: (context)=>StatefulBuilder(
          // ourViewMode.showTopSnackBar(context,'Couldn\'t mark the request','An error occurred while marking the request',Icons.cancel_outlined, );
        Navigator.pop(context, 'OK');
         } , 
-      )
+      )*/
+      Center(
+        child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Colors.orange[700]),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                              side: BorderSide(width: 0, color: Colors.transparent),
+                        ))
+                      ),
+                      child: Text("Submit", style: TextStyle(fontSize:15, color: Colors.white),),
+                      onPressed:() async {
+            String result= await ourViewMode.countPoints(status,listOfCat,counterForItems,contID,context,document,document.id);
+            /*if (result=="points updated"){
+              ourViewMode.showTopSnackBar(context,'Success','Request has been marked as done',Icons.check );
+  
+            }else*/ // points not updated
+           // ourViewMode.showTopSnackBar(context,'Couldn\'t mark the request','An error occurred while marking the request',Icons.cancel_outlined, );
+         Navigator.pop(context, 'OK');
+          } ,
+                      
+                    ),
+      ),
     ],
   
   );
@@ -485,3 +507,5 @@ Widget counterItems(int index,List<int> counterForItems){
 }
 
 }// end of class
+
+

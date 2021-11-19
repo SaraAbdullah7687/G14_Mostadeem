@@ -4,6 +4,8 @@ import 'package:mostadeem/institution/instHome.dart';
 import 'package:mostadeem/institution/instProfile.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:flutter/material.dart';
+//import 'package:showcaseview/showcase_widget.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 
 class StartInst extends StatefulWidget {
@@ -16,7 +18,8 @@ class _StartInstState extends State<StartInst> {
   final AuthService _auth = AuthService();
 
 final screens=[ // indexes Sensitive
-  InstHome(),
+  ShowCaseWidget(
+    builder:Builder (builder: (_)=> InstHome(),),),
   InstProfile(),
 ];
 int index =0;

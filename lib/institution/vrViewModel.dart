@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mostadeem/components/customAlert.dart';
+import 'package:mostadeem/components/twoButtonsAlert.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:mostadeem/services/database.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -343,6 +344,123 @@ for(int i=0;i<length;i++){
 //assign points to contributor
 return db.updateContPoints(points,contID);
 
+}
+
+showCustomAlert2(String status,String content, BuildContext context, String uid,DocumentSnapshot document) async {
+
+  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+return twoButtonsAlert(
+      icon:Icons.error_outline, // change it
+      btn1Content: "Cancel",
+      btn2Content: "Ok",
+      msgContent:content,
+      press:()  async { 
+        if(status=="accept"){ // then update status in both institution & contributor, and make the same request in other instituton as rejected
+        // send appointment doc id, and get inst id from auth class 
+        String result= _auth.updateAppointmentStatus(status,uid);// appointment id
+        if(result=='Success accept'){ 
+         String re2= await _auth.updateRequestStatus(status,document['contribId'],document['requestID'] ); // تأكدي من اسامي الفيلدز
+        
+         if(re2=='accepted'){ // change status to rejected in other institutions
+           String re3= await DatabaseService().updateRequestStatusInAllInst(status,document['requestID'] );
+           print(re3);
+           if(re3== "success"){
+             print("re3 Succeeded");
+           showTopSnackBar(context,'Success','Request has been accepted',Icons.check );
+           }
+           else if(re3=='fail'){
+             print("re3 failed");
+             showTopSnackBar(context,'Couldn\'t accept request','An error occurred while accepting the request',Icons.cancel_outlined, );
+           }
+           else if (re3=="no doc with same req"){
+            showTopSnackBar(context,'Success','Request has been accepted',Icons.check );
+           }
+           else{
+             showTopSnackBar(context,'Couldn\'t accept request','An error occurred while accepting the request',Icons.cancel_outlined, );
+             print(re3+' did not work');
+           }
+         }
+         else if(re2=='failed'){
+           print('could not update status, procces failed');
+           showTopSnackBar(context,'Couldn\'t accept request','An error occurred while accepting the request',Icons.cancel_outlined, );
+         }
+         else print(re2);
+                   
+                 }
+        else if(result=='Fail accept'){print('could not update status, procces failed');
+                 showTopSnackBar(context,'Couldn\'t accept request','An error occurred while accepting the request',Icons.cancel_outlined, );
+                 }
+        else{ print(result);}
+        }// if accept
+    
+    
+    
+    else if(status=="reject"){
+
+        // delete appointment from this inst
+        String result= _auth.updateAppointmentStatus(status,uid);// appointment id
+        if(result=='Success reject'){  
+       // check if  there's an instition that has the same request or not 
+        String re3= await DatabaseService().updateRequestStatusInAllInst(status,document['requestID'] ); 
+           if(re3=='No inst has the request'){ // change status to rejected in req collection
+         print(re3);
+           String re2= await _auth.updateRequestStatus(status,document['contribId'],document['requestID'] );
+               if(re2== "Success reject"){
+             print("re2 Succeeded reject");
+           showTopSnackBar(context,'Success','Request has been rejected',Icons.check );
+           }
+               else if(re2=='Fail reject'){
+             print("re3 failed");
+             showTopSnackBar(context,'Couldn\'t reject request','An error occurred while rejecting the request',Icons.cancel_outlined, );
+           }
+               else{
+             print(re2+' did not work');
+             showTopSnackBar(context,'Fail','An error occured while rejecting the request',Icons.cancel_outlined, );
+           }
+         }
+           else if(re3=='There is inst has the request'){// there is inst that have the same req
+           print('there is inst that have the same req');
+         }
+            else print(re3);
+                   
+                 }
+        else if(result=='Fail reject'){
+          print('could not update status, procces failed');
+                 showTopSnackBar(context,'Couldn\'t reject request','An error occurred while rejecting the request',Icons.cancel_outlined, );
+                 }
+        else{ print(result);}
+
+}
+
+
+    else { // status == done
+    String result= _auth.updateAppointmentStatus(status,uid);// appointment id
+    if(result=='Success done'){
+       String re2= await _auth.updateRequestStatus(status,document['contribId'],document['requestID'] ); // تأكدي من اسامي الفيلدز
+        if(re2=='done'){ // change status to rejected in other institutions
+           showTopSnackBar(context,'Success','Request has been marked as done',Icons.check );
+         }
+         else if(re2=='could not mark done'){
+           print('could not update status, procces failed');
+           showTopSnackBar(context,'Couldn\'t mark the request','An error occurred while marking the request',Icons.cancel_outlined, );
+         }
+         else print(re2);
+        }
+    else if(result=='done failed'){
+    showTopSnackBar(context,'Couldn\'t mark the request','An error occurred while marking the request',Icons.cancel_outlined, );
+    }
+    else{
+      
+    }
+
+
+}
+      Navigator.pop(context, 'OK');
+      },
+    );
+                    });
 }
 
 

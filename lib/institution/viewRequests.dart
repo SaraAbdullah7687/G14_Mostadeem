@@ -301,7 +301,7 @@ TextButton(
     ),
     onPressed: () {
      // ourViewMode.showMyDialog("accept", context,document.id,document);
-     ourViewMode.showCustomAlert("accept", "Are you sure you want to accept this request?", context, document.id, document);
+     ourViewMode.showCustomAlert2("accept", "Are you sure you want to accept this request?", context, document.id, document);
     },
   ),
 SizedBox(width: 10), 
