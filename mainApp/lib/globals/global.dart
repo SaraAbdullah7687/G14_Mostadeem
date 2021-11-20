@@ -9,6 +9,11 @@ String userName = '';
 String userPhone = '';
 String userEmail = '';
 
+// for specific request in specRequest.dart < sara
+bool isSpecific = true;
+String insName = 'recycle';
+// END
+
 List<bool> reqCat = [
   false,
   false,

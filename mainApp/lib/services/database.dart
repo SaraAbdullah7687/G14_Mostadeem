@@ -245,6 +245,7 @@ _usersCollection.doc(uid) // also delete it from users collecction
     }
     return retVal;
   }
+
   // END ADD appointment to instituations
 
   // Find institutions that has the selected category ----------------------------------------------------------------
@@ -299,10 +300,141 @@ _usersCollection.doc(uid) // also delete it from users collecction
     }
     return ids;
   }
+
   ///////////////////////////////////////////////
   ///
+//================SPRINT 3 SARA ===============================================================================
+// get all institutions for dropdown list in request
+  Future<List<QueryDocumentSnapshot>> getAllInstitutions() async {
+    List<QueryDocumentSnapshot> institutions = []; //list();
+    try {
+      QuerySnapshot query = await _firestore.collection("institution").get();
+      query.docs.forEach((element) {
+        institutions.add(element);
+      });
+      return institutions;
+    } catch (e) {
+      print(
+          "CATCH in getAllInstitutions() #######################################3");
+      print(e);
+    }
 
+    return institutions;
+  }
+// END getAllInstitutions()
+
+//addRequest
+  Future<String> addRequestForSpec(
+      String contId, requestModel request, String insName) async {
+    String retVal = "error";
+    String ID;
+    try {
+      CollectionReference _docRef = _firestore
+          .collection("contributor")
+          .doc(contId)
+          .collection("request");
+
+      DocumentReference dic1 = await _docRef.add({
+        'category': request.category.trim().toLowerCase(),
+        'contribId': contId,
+        'date': request.date.trim(),
+        'location': request.location.data,
+        'status': request.status.trim(),
+        'time': request.time.trim(),
+        'title': request.title,
+        'instID':
+            "notAssigened", //=======================================for rating====================================================================
+        'instName': "notAssigened",
+        'isRated': false,
+        'reqRate': 0.0,
+      });
+
+      _firestore
+          .collection("contributor")
+          .doc(contId)
+          .collection("request")
+          .doc(dic1.id)
+          .update({
+        'reqID': dic1.id,
+      });
+
+      addAppointmentToSpecIns(contId, request, dic1.id.toString(), insName);
+
+      retVal = "success";
+    } catch (e) {
+      print(
+          "DB in addRequestForSpec() ########################################################");
+
+      print(e);
+    }
+    return retVal;
+  }
+
+// ADD appointment to 1 instituation
+  Future<String> addAppointmentToSpecIns(String contribId, requestModel request,
+      String requestId, String insName) async {
+    String retVal = "error";
+    String contName;
+    String contEmail;
+    String contPhone;
+
+    FirebaseFirestore firestoreObj = FirebaseFirestore.instance;
+
+    /* TO GET NAME*/
+    firestoreObj.collection("contributor").doc(contribId).get().then((value) {
+      contName = (value.data()['name']);
+    });
+    /*TO GET EMAIL*/
+    firestoreObj.collection("contributor").doc(contribId).get().then((value) {
+      contEmail = (value.data()['email']);
+    });
+
+    /* TO GET PHONE*/
+    firestoreObj.collection("contributor").doc(contribId).get().then((value) {
+      contPhone = (value.data()['phone']);
+    });
+
+    try {
+      String insID;
+
+      QuerySnapshot query = await _firestore.collection("institution").get();
+      bool flag = false;
+      query.docs.forEach((element) {
+        if (element['name'] == insName) {
+          insID = element.id;
+          // need to exit the loop
+        }
+      });
+
+      DocumentReference _docRef = await _firestore
+          .collection("institution")
+          .doc(insID)
+          .collection("appointment")
+          .add({
+        'contribId':
+            contribId, ////----------------------------------------------------------------NEW ADDED
+        'category': request.category.trim().toLowerCase(),
+        'date': request.date.trim(),
+        'location': request.location.data,
+        'time': request.time.trim(),
+        'status': request.status.trim(),
+        'requestID': requestId,
+        'reqTitle': request.title.trim(),
+        'contName': contName,
+        'contEmail': contEmail,
+        'contPhone': contPhone,
+      });
+
+      // END outer foreach
+
+      retVal = "success";
+    } catch (e) {
+      print(e);
+      print(
+          "DB in addAppointmentToSpecIns() ########################################################");
+    }
+    return retVal;
+  }
+
+//=================================
 }
-
-//}
-// modify this class from the bookclub

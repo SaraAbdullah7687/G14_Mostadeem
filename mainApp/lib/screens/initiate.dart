@@ -8,6 +8,7 @@ import 'package:mostadeem/components/google_auth_api.dart';
 import 'package:mostadeem/screens/home/home.dart';
 import 'package:mostadeem/screens/home/viViewReqModel.dart';
 import 'package:mostadeem/screens/request.dart';
+import 'package:mostadeem/screens/specRequest.dart';
 import 'package:mostadeem/screens/viewInstituation.dart';
 import 'package:mostadeem/shared/loading.dart';
 import 'package:provider/provider.dart';
@@ -53,41 +54,73 @@ class _initiateRequestState extends State<initiateRequest> {
                 textAlign: TextAlign.center,
               ),
               Padding(
-                  padding: const EdgeInsets.only(top: 30),
-                  child: SizedBox(
-                    height: 50,
-                    width: 190,
-                    child: RaisedButton(
-                      shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(25.0),
-                      ),
-                      color: Color.fromRGBO(48, 126, 80, 1),
-                      child: Text(
-                        'Start recycling',
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          color: Colors.white,
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  // ViewIns()),
-                                  requestScreen()),
-                          (Route<dynamic> route) => false,
-                        );
-                        /*
+                padding: const EdgeInsets.only(top: 30),
+                child: Wrap(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 50,
+                      width: 190,
+                      child: Wrap(
+                        children: <Widget>[
+                          RaisedButton(
+                            shape: new RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(25.0),
+                            ),
+                            color: Color.fromRGBO(48, 126, 80, 1),
+                            child: Text(
+                              'Start recycling',
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        // ViewIns()),
+                                        requestScreen()),
+                                (Route<dynamic> route) => false,
+                              );
+                              /*
                         Navigator.of(context).pop();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => requestScreen()),
                         );*/
-                      },
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  )),
+                    //========================================================================================
+                    Container(
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    // ViewIns()),
+                                    specRequestScreen()),
+                            (Route<dynamic> route) => false,
+                          );
+                        },
+                        child: Text(
+                          'Already have specific institution in your mind?', //title
+                          textAlign: TextAlign.center, //aligment
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: Colors.orange[700],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ]),
       ),
     );

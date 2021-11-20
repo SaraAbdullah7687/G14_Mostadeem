@@ -266,6 +266,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:mostadeem/components/text_field_container.dart';
 import 'package:mostadeem/screens/request.dart';
+import 'package:mostadeem/screens/specRequest.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'locatin.dart';
 
@@ -323,12 +324,19 @@ class _MainPageState extends State<MainPage> {
   // when onPressed: BACK- take the cats and go to calendar screens
   void _goToCategory(BuildContext context) async {
     //AFNAN
-
-    Navigator.of(context).pop();
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => requestScreen()),
-    );
+    if (!global.isSpecific) {
+      Navigator.of(context).pop();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => requestScreen()),
+      );
+    } else {
+      Navigator.of(context).pop();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => specRequestScreen()),
+      );
+    }
   }
 
   // when onPressed: take the cats and go to calendar screens

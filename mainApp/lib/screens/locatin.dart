@@ -77,7 +77,12 @@ class _LocationAppState extends State<LocationApp> {
     // NEED PARAMETERS ==================================================================================================================
     String _returnString;
     await Firebase.initializeApp();
-    _returnString = await DatabaseService().addRequest(contId, request);
+    if (!global.isSpecific) {
+      _returnString = await DatabaseService().addRequest(contId, request);
+    } else {
+      _returnString = await DatabaseService()
+          .addRequestForSpec(contId, request, global.insName);
+    }
     print("add success inside if in location line 79");
 
     if (_returnString == "success") {

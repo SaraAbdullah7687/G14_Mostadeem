@@ -77,7 +77,9 @@ dependencies:
   #Sara Rating
   rating_dialog: any
   flutter_rating_bar: ^4.0.0
-  
+   
+  # SARA Dropdown list
+  awesome_dropdown:
 
 dev_dependencies:
   flutter_test:
