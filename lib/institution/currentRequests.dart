@@ -319,6 +319,7 @@ context: context,
 builder: (context)=>StatefulBuilder(
   builder: (context, setState) {
   return  AlertDialog(
+    contentPadding: EdgeInsets.zero,
      shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(padding1),
         ),
@@ -333,6 +334,7 @@ builder: (context)=>StatefulBuilder(
   
     content: Container(
       
+      margin: EdgeInsets.only(top:20,left:20,right:20),
       width: 120,
       height: 120,
       decoration: BoxDecoration(
@@ -351,44 +353,49 @@ builder: (context)=>StatefulBuilder(
             ),*/
             child:dialogContent(context,listOfCat,counterForItems), ),
             actions: [
-           /* TextButton(
-            child: Text('Submit',style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.w300,
-              color: Colors.orange[700], // added 
-            ),
-          ),
-            onPressed:() async {
-          String result= await ourViewMode.countPoints(status,listOfCat,counterForItems,contID,context,document,document.id);
-          /*if (result=="points updated"){
-            ourViewMode.showTopSnackBar(context,'Success','Request has been marked as done',Icons.check );
+           
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+           ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(Colors.grey),
+                            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                                  side: BorderSide(width: 0, color: Colors.transparent),
+                            ))
+                          ),
+                          child: Text("Cancle", style: TextStyle(fontSize:15, color: Colors.white),),
+                          onPressed:()  {
+                Navigator.pop(context, 'OK');
+              } ,
+                          
+                        ),
+          
+SizedBox(width: 20,),
+
+           ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(Colors.orange[700]),
+                            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                                  side: BorderSide(width: 0, color: Colors.transparent),
+                            ))
+                          ),
+                          child: Text("Submit", style: TextStyle(fontSize:15, color: Colors.white),),
+                          onPressed:() async {
+                String result= await ourViewMode.countPoints(status,listOfCat,counterForItems,contID,context,document,document.id);
+                /*if (result=="points updated"){
+                  ourViewMode.showTopSnackBar(context,'Success','Request has been marked as done',Icons.check );
   
-          }else*/ // points not updated
-         // ourViewMode.showTopSnackBar(context,'Couldn\'t mark the request','An error occurred while marking the request',Icons.cancel_outlined, );
-       Navigator.pop(context, 'OK');
-        } , 
-      )*/
-      Center(
-        child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.orange[700]),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                              side: BorderSide(width: 0, color: Colors.transparent),
-                        ))
-                      ),
-                      child: Text("Submit", style: TextStyle(fontSize:15, color: Colors.white),),
-                      onPressed:() async {
-            String result= await ourViewMode.countPoints(status,listOfCat,counterForItems,contID,context,document,document.id);
-            /*if (result=="points updated"){
-              ourViewMode.showTopSnackBar(context,'Success','Request has been marked as done',Icons.check );
-  
-            }else*/ // points not updated
-           // ourViewMode.showTopSnackBar(context,'Couldn\'t mark the request','An error occurred while marking the request',Icons.cancel_outlined, );
-         Navigator.pop(context, 'OK');
-          } ,
-                      
-                    ),
+                }else*/ // points not updated
+               // ourViewMode.showTopSnackBar(context,'Couldn\'t mark the request','An error occurred while marking the request',Icons.cancel_outlined, );
+             Navigator.pop(context, 'OK');
+              } ,
+                          
+                        ),
+          
+        ],
       ),
     ],
   
