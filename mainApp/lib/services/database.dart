@@ -436,5 +436,15 @@ _usersCollection.doc(uid) // also delete it from users collecction
     return retVal;
   }
 
+  Future<String> getCat(String insName) async {
+    QuerySnapshot query = await _firestore.collection("institution").get();
+
+    query.docs.forEach((element) {
+      if (element['name'] == insName) {
+        return element["category"];
+        // need to exit the loop
+      }
+    });
+  }
 //=================================
 }

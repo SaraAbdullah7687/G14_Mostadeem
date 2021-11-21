@@ -87,6 +87,7 @@ class specRequestScreenState extends State<specRequestScreen> {
 // add Controller, but which type? for cats selection---------
   var selectedIns; //=============================================================
   final list = ["kk", "ll"]; //insList2();
+  String categ2 = ' ';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,7 +166,17 @@ class specRequestScreenState extends State<specRequestScreen> {
                           onChanged: (newValue) {
                             setState(() {
                               selectedIns = newValue;
-                              print(selectedIns);
+                              snapshot.data.docs.forEach((element) {
+                                if (element['name'] == selectedIns) {
+                                  categ2 = element["category"];
+                                  // need to exit the loop
+                                }
+                              });
+                              global.isSpecific = true;
+                              global.insName =
+                                  selectedIns; //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+                              print(
+                                  "$selectedIns*******************************************");
                             });
                           },
                           value: selectedIns,
@@ -177,6 +188,8 @@ class specRequestScreenState extends State<specRequestScreen> {
                           ),
                         ),
                       ),
+                      /*  Text(
+                          " $selectedIns"),*/ //77777777777777777777777777777777777777777
                     ],
                   );
                 }
@@ -188,7 +201,8 @@ class specRequestScreenState extends State<specRequestScreen> {
           Container(
             margin: EdgeInsets.only(left: 10, top: 5),
             child: Text(
-              "Select at least one category",
+              //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+              "This institution accept: ",
               textAlign: TextAlign.left,
               style: TextStyle(
                   fontSize: 20,
@@ -197,7 +211,13 @@ class specRequestScreenState extends State<specRequestScreen> {
             ),
           ),
 
+          Container(
+              child: Wrap(children: <Widget>[
+            getCat(categ2),
+          ])),
+
           // START CAT Contauiner==========================================================================
+          /*
           Container(
               height: 460,
               margin: EdgeInsets.only(top: 5),
@@ -254,6 +274,7 @@ class specRequestScreenState extends State<specRequestScreen> {
                   }),
                 ),
               )),
+              */
           // END CAT Contauiner==========================================================================
           Container(
             margin: const EdgeInsets.only(left: 125),
@@ -273,7 +294,7 @@ class specRequestScreenState extends State<specRequestScreen> {
                   ),
                 ),
                 onPressed: () {
-                  bool check = hasSelected();
+                  bool check = true; //hasSelected();
 
                   if (!check) {
                     showDialog(
@@ -288,13 +309,66 @@ class specRequestScreenState extends State<specRequestScreen> {
                         });
                   } else {
                     _goToCalendar(context,
-                        categ); // NEED ACTUAL DATA ==================================================================================
+                        categ2); // NEED ACTUAL DATA ==================================================================================
                   }
                 },
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget getCat(String categ) {
+    // if (name=="Select")
+
+    List<String> catList = convertStringToArray(categ);
+    int catLength = catList.length;
+    if (categ2 != " ") {
+      return //Column(children: <Widget>[
+          Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.only(left: 50, right: 50),
+        height: 120,
+        child: Center(
+          child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemCount: catLength,
+              itemBuilder: (BuildContext context, int index) {
+                return Center(child: getListView(catList, index));
+              }),
+        ),
+      );
+    } else {
+      return Text("");
+    }
+    /* ]
+    );*/
+  }
+
+  List<String> convertStringToArray(var category) {
+    var list = category.split(',');
+    int len = list.length;
+    int start = 1;
+    if (len > 1) {
+      // more than 1 category
+      for (start; start < len; start++) {
+        //elminate white space from the Beginning of each category
+        list[start] = list[start].substring(1);
+      }
+    }
+    return list;
+  }
+
+  Widget getListView(List<String> category, int index) {
+    return Center(
+      child: Image.asset(
+        "assets/images/" + category[index] + '.png',
+        fit: BoxFit.fill,
+        width: 85,
+        height: 85,
       ),
     );
   }
@@ -379,7 +453,7 @@ class _DemoToggleButtonsState extends State<DemoToggleButtons> {
         ));
   }
 }
-
+/*
 bool hasSelected() {
   bool check = false;
 
@@ -401,4 +475,4 @@ bool hasSelected() {
     print('did not select');
 
   return check;
-}
+}*/
