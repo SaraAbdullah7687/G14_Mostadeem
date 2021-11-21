@@ -1,0 +1,23 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/modhiabdulaziz/tools/flutter/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.6.1/android/src/main/AndroidManifest.xml:1:1-4:12
+INJECTED from /Users/modhiabdulaziz/tools/flutter/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.6.1/android/src/main/AndroidManifest.xml:1:1-4:12
+INJECTED from /Users/modhiabdulaziz/tools/flutter/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.6.1/android/src/main/AndroidManifest.xml:1:1-4:12
+	package
+		ADDED from /Users/modhiabdulaziz/tools/flutter/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.6.1/android/src/main/AndroidManifest.xml:1:11-50
+		INJECTED from /Users/modhiabdulaziz/tools/flutter/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.6.1/android/src/main/AndroidManifest.xml
+		INJECTED from /Users/modhiabdulaziz/tools/flutter/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.6.1/android/src/main/AndroidManifest.xml
+	xmlns:tools
+		ADDED from /Users/modhiabdulaziz/tools/flutter/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.6.1/android/src/main/AndroidManifest.xml:2:5-51
+	xmlns:android
+		ADDED from /Users/modhiabdulaziz/tools/flutter/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.6.1/android/src/main/AndroidManifest.xml:1:1-4:12
+uses-sdk
+ADDED from /Users/modhiabdulaziz/tools/flutter/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.6.1/android/src/main/AndroidManifest.xml:3:3-71
+INJECTED from /Users/modhiabdulaziz/tools/flutter/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.6.1/android/src/main/AndroidManifest.xml:3:3-71
+INJECTED from /Users/modhiabdulaziz/tools/flutter/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.6.1/android/src/main/AndroidManifest.xml:3:3-71
+	tools:overrideLibrary
+		ADDED from /Users/modhiabdulaziz/tools/flutter/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.6.1/android/src/main/AndroidManifest.xml:3:13-68
+	android:minSdkVersion
+		INJECTED from /Users/modhiabdulaziz/tools/flutter/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.6.1/android/src/main/AndroidManifest.xml
+		ADDED from /Users/modhiabdulaziz/tools/flutter/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.6.1/android/src/main/AndroidManifest.xml:3:3-71
+		INJECTED from /Users/modhiabdulaziz/tools/flutter/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.6.1/android/src/main/AndroidManifest.xml

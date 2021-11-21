@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">684915991167-47bctdis9d671afq90vbffhfeu9vr4sg.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">684915991167</string>
+    <string name="google_api_key" translatable="false">AIzaSyB5ocelGj1xzr3_XTomuZPIeWolrySWr5w</string>
+    <string name="google_app_id" translatable="false">1:684915991167:android:24fb76ce333febaffd554a</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyB5ocelGj1xzr3_XTomuZPIeWolrySWr5w</string>
+    <string name="google_storage_bucket" translatable="false">mostadeem1.appspot.com</string>
+    <string name="project_id" translatable="false">mostadeem1</string>
+</resources>

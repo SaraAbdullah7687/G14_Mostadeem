@@ -1,0 +1,220 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.qr_scanner_app"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+9        android:targetSdkVersion="30" />
+10    <!--
+11         Flutter needs it to communicate with the running application
+12         to allow setting breakpoints, to provide hot reload, etc.
+13    -->
+14    <uses-permission android:name="android.permission.INTERNET" />
+14-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/debug/AndroidManifest.xml:6:5-66
+14-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/debug/AndroidManifest.xml:6:22-64
+15    <!-- Although the *SdkVersion is captured in gradle build files, this is required for non gradle builds -->
+16    <!-- <uses-sdk android:minSdkVersion="14" /> -->
+17    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+17-->[com.google.firebase:firebase-firestore:24.0.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/a215cc6e2704a749a6b559d8eb3b3102/jetified-firebase-firestore-24.0.0/AndroidManifest.xml:13:5-79
+17-->[com.google.firebase:firebase-firestore:24.0.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/a215cc6e2704a749a6b559d8eb3b3102/jetified-firebase-firestore-24.0.0/AndroidManifest.xml:13:22-76
+18    <uses-permission android:name="android.permission.CAMERA" /> <!-- Don't require camera, as this requires a rear camera. This allows it to work on the Nexus 7 -->
+18-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:22:5-65
+18-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:22:22-62
+19    <uses-feature
+19-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:25:5-27:36
+20        android:name="android.hardware.camera"
+20-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:26:9-47
+21        android:required="false" />
+21-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:27:9-33
+22    <uses-feature
+22-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:28:5-30:36
+23        android:name="android.hardware.camera.front"
+23-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:29:9-53
+24        android:required="false" /> <!-- TODO replace above two with next line after Android 4.2 -->
+24-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:30:9-33
+25    <!-- <uses-feature android:name="android.hardware.camera.any"/> -->
+26    <uses-feature
+26-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:33:5-35:36
+27        android:name="android.hardware.camera.autofocus"
+27-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:34:9-57
+28        android:required="false" />
+28-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:35:9-33
+29    <uses-feature
+29-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:36:5-38:36
+30        android:name="android.hardware.camera.flash"
+30-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:37:9-53
+31        android:required="false" />
+31-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:38:9-33
+32    <uses-feature
+32-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:39:5-41:36
+33        android:name="android.hardware.screen.landscape"
+33-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:40:9-57
+34        android:required="false" />
+34-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:41:9-33
+35    <uses-feature
+35-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:42:5-44:36
+36        android:name="android.hardware.wifi"
+36-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:43:9-45
+37        android:required="false" />
+37-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:44:9-33
+38
+39    <application
+39-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:3:4-40:19
+40        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+40-->[androidx.core:core:1.5.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/2643c0da951f6321b4f592fba76c6428/core-1.5.0/AndroidManifest.xml:24:18-86
+41        android:debuggable="true"
+42        android:icon="@mipmap/ic_launcher"
+42-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:5:9-43
+43        android:label="qr_scanner_app" >
+43-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:4:9-39
+44        <activity
+44-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:6:9-34:20
+45            android:name="com.example.qr_scanner_app.MainActivity"
+45-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:7:13-41
+46            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+46-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:10:13-163
+47            android:hardwareAccelerated="true"
+47-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:11:13-47
+48            android:launchMode="singleTop"
+48-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:8:13-43
+49            android:theme="@style/LaunchTheme"
+49-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:9:13-47
+50            android:windowSoftInputMode="adjustResize" >
+50-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:12:13-55
+51
+52            <!--
+53                 Specifies an Android theme to apply to this Activity as soon as
+54                 the Android process has started. This theme is visible to the user
+55                 while the Flutter UI initializes. After that, this theme continues
+56                 to determine the Window background behind the Flutter UI.
+57            -->
+58            <meta-data
+58-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:17:13-20:17
+59                android:name="io.flutter.embedding.android.NormalTheme"
+59-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:18:15-70
+60                android:resource="@style/NormalTheme" />
+60-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:19:15-52
+61            <!--
+62                 Displays an Android View that continues showing the launch screen
+63                 Drawable until Flutter paints its first frame, then this splash
+64                 screen fades out. A splash screen is useful to avoid any visual
+65                 gap between the end of Android's launch screen and the painting of
+66                 Flutter's first frame.
+67            -->
+68            <meta-data
+68-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:26:13-29:17
+69                android:name="io.flutter.embedding.android.SplashScreenDrawable"
+69-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:27:15-79
+70                android:resource="@drawable/launch_background" />
+70-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:28:15-61
+71
+72            <intent-filter>
+72-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:30:13-33:29
+73                <action android:name="android.intent.action.MAIN" />
+73-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:31:17-68
+73-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:31:25-66
+74
+75                <category android:name="android.intent.category.LAUNCHER" />
+75-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:32:17-76
+75-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:32:27-74
+76            </intent-filter>
+77        </activity>
+78        <!--
+79             Don't delete the meta-data below.
+80             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+81        -->
+82        <meta-data
+82-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:37:9-39:33
+83            android:name="flutterEmbedding"
+83-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:38:13-44
+84            android:value="2" />
+84-->/Users/modhiabdulaziz/qr_scanner_app/android/app/src/main/AndroidManifest.xml:39:13-30
+85
+86        <service
+86-->[:firebase_database] /Users/modhiabdulaziz/qr_scanner_app/build/firebase_database/intermediates/library_manifest/debug/AndroidManifest.xml:8:9-12:19
+87            android:name="com.google.firebase.components.ComponentDiscoveryService"
+87-->[:firebase_database] /Users/modhiabdulaziz/qr_scanner_app/build/firebase_database/intermediates/library_manifest/debug/AndroidManifest.xml:8:18-89
+88            android:directBootAware="true"
+88-->[com.google.firebase:firebase-common:20.0.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/d743e2f135b4b07104c7861c96109c08/jetified-firebase-common-20.0.0/AndroidManifest.xml:35:13-43
+89            android:exported="false" >
+89-->[com.google.firebase:firebase-firestore:24.0.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/a215cc6e2704a749a6b559d8eb3b3102/jetified-firebase-firestore-24.0.0/AndroidManifest.xml:19:13-37
+90            <meta-data
+90-->[:firebase_database] /Users/modhiabdulaziz/qr_scanner_app/build/firebase_database/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-11:85
+91                android:name="com.google.firebase.components:io.flutter.plugins.firebase.database.FlutterFirebaseAppRegistrar"
+91-->[:firebase_database] /Users/modhiabdulaziz/qr_scanner_app/build/firebase_database/intermediates/library_manifest/debug/AndroidManifest.xml:10:17-127
+92                android:value="com.google.firebase.components.ComponentRegistrar" />
+92-->[:firebase_database] /Users/modhiabdulaziz/qr_scanner_app/build/firebase_database/intermediates/library_manifest/debug/AndroidManifest.xml:11:17-82
+93            <meta-data
+93-->[:cloud_firestore] /Users/modhiabdulaziz/qr_scanner_app/build/cloud_firestore/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-11:85
+94                android:name="com.google.firebase.components:io.flutter.plugins.firebase.firestore.FlutterFirebaseFirestoreRegistrar"
+94-->[:cloud_firestore] /Users/modhiabdulaziz/qr_scanner_app/build/cloud_firestore/intermediates/library_manifest/debug/AndroidManifest.xml:10:17-134
+95                android:value="com.google.firebase.components.ComponentRegistrar" />
+95-->[:cloud_firestore] /Users/modhiabdulaziz/qr_scanner_app/build/cloud_firestore/intermediates/library_manifest/debug/AndroidManifest.xml:11:17-82
+96            <meta-data
+96-->[:firebase_core] /Users/modhiabdulaziz/qr_scanner_app/build/firebase_core/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-11:85
+97                android:name="com.google.firebase.components:io.flutter.plugins.firebase.core.FlutterFirebaseCoreRegistrar"
+97-->[:firebase_core] /Users/modhiabdulaziz/qr_scanner_app/build/firebase_core/intermediates/library_manifest/debug/AndroidManifest.xml:10:17-124
+98                android:value="com.google.firebase.components.ComponentRegistrar" />
+98-->[:firebase_core] /Users/modhiabdulaziz/qr_scanner_app/build/firebase_core/intermediates/library_manifest/debug/AndroidManifest.xml:11:17-82
+99            <meta-data
+99-->[com.google.firebase:firebase-firestore:24.0.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/a215cc6e2704a749a6b559d8eb3b3102/jetified-firebase-firestore-24.0.0/AndroidManifest.xml:20:13-22:85
+100                android:name="com.google.firebase.components:com.google.firebase.firestore.FirestoreRegistrar"
+100-->[com.google.firebase:firebase-firestore:24.0.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/a215cc6e2704a749a6b559d8eb3b3102/jetified-firebase-firestore-24.0.0/AndroidManifest.xml:21:17-111
+101                android:value="com.google.firebase.components.ComponentRegistrar" />
+101-->[com.google.firebase:firebase-firestore:24.0.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/a215cc6e2704a749a6b559d8eb3b3102/jetified-firebase-firestore-24.0.0/AndroidManifest.xml:22:17-82
+102            <meta-data
+102-->[com.google.firebase:firebase-database:20.0.2] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/0cebf5c536fffcc707b7e2d7e9eaf13c/jetified-firebase-database-20.0.2/AndroidManifest.xml:32:13-34:85
+103                android:name="com.google.firebase.components:com.google.firebase.database.DatabaseRegistrar"
+103-->[com.google.firebase:firebase-database:20.0.2] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/0cebf5c536fffcc707b7e2d7e9eaf13c/jetified-firebase-database-20.0.2/AndroidManifest.xml:33:17-109
+104                android:value="com.google.firebase.components.ComponentRegistrar" />
+104-->[com.google.firebase:firebase-database:20.0.2] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/0cebf5c536fffcc707b7e2d7e9eaf13c/jetified-firebase-database-20.0.2/AndroidManifest.xml:34:17-82
+105        </service>
+106
+107        <provider
+107-->[com.google.firebase:firebase-common:20.0.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/d743e2f135b4b07104c7861c96109c08/jetified-firebase-common-20.0.0/AndroidManifest.xml:26:9-31:39
+108            android:name="com.google.firebase.provider.FirebaseInitProvider"
+108-->[com.google.firebase:firebase-common:20.0.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/d743e2f135b4b07104c7861c96109c08/jetified-firebase-common-20.0.0/AndroidManifest.xml:27:13-77
+109            android:authorities="com.example.qr_scanner_app.firebaseinitprovider"
+109-->[com.google.firebase:firebase-common:20.0.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/d743e2f135b4b07104c7861c96109c08/jetified-firebase-common-20.0.0/AndroidManifest.xml:28:13-72
+110            android:directBootAware="true"
+110-->[com.google.firebase:firebase-common:20.0.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/d743e2f135b4b07104c7861c96109c08/jetified-firebase-common-20.0.0/AndroidManifest.xml:29:13-43
+111            android:exported="false"
+111-->[com.google.firebase:firebase-common:20.0.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/d743e2f135b4b07104c7861c96109c08/jetified-firebase-common-20.0.0/AndroidManifest.xml:30:13-37
+112            android:initOrder="100" />
+112-->[com.google.firebase:firebase-common:20.0.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/d743e2f135b4b07104c7861c96109c08/jetified-firebase-common-20.0.0/AndroidManifest.xml:31:13-36
+113
+114        <activity
+114-->[com.google.android.gms:play-services-base:17.1.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/0cd0c95cf645f00d921c59b7970ea12e/jetified-play-services-base-17.1.0/AndroidManifest.xml:23:9-26:75
+115            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+115-->[com.google.android.gms:play-services-base:17.1.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/0cd0c95cf645f00d921c59b7970ea12e/jetified-play-services-base-17.1.0/AndroidManifest.xml:24:13-79
+116            android:exported="false"
+116-->[com.google.android.gms:play-services-base:17.1.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/0cd0c95cf645f00d921c59b7970ea12e/jetified-play-services-base-17.1.0/AndroidManifest.xml:25:13-37
+117            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+117-->[com.google.android.gms:play-services-base:17.1.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/0cd0c95cf645f00d921c59b7970ea12e/jetified-play-services-base-17.1.0/AndroidManifest.xml:26:13-72
+118
+119        <meta-data
+119-->[com.google.android.gms:play-services-basement:17.0.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/0567fadfeac8c30ea568515537a0e8da/jetified-play-services-basement-17.0.0/AndroidManifest.xml:23:9-25:69
+120            android:name="com.google.android.gms.version"
+120-->[com.google.android.gms:play-services-basement:17.0.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/0567fadfeac8c30ea568515537a0e8da/jetified-play-services-basement-17.0.0/AndroidManifest.xml:24:13-58
+121            android:value="@integer/google_play_services_version" />
+121-->[com.google.android.gms:play-services-basement:17.0.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/0567fadfeac8c30ea568515537a0e8da/jetified-play-services-basement-17.0.0/AndroidManifest.xml:25:13-66
+122
+123        <activity
+123-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:47:9-53:63
+124            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+124-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:48:13-74
+125            android:clearTaskOnLaunch="true"
+125-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:49:13-45
+126            android:screenOrientation="sensorLandscape"
+126-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:50:13-56
+127            android:stateNotNeeded="true"
+127-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:51:13-42
+128            android:theme="@style/zxing_CaptureTheme"
+128-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:52:13-54
+129            android:windowSoftInputMode="stateAlwaysHidden" />
+129-->[com.journeyapps:zxing-android-embedded:4.2.0] /Users/modhiabdulaziz/.gradle/caches/transforms-2/files-2.1/dd77d0dfa7e95dd556114281fad92c1d/jetified-zxing-android-embedded-4.2.0/AndroidManifest.xml:53:13-60
+130    </application>
+131
+132</manifest>

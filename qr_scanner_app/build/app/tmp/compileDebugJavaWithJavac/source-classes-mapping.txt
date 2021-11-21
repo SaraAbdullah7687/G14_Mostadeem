@@ -1,0 +1,4 @@
+io/flutter/plugins/GeneratedPluginRegistrant.java
+ io.flutter.plugins.GeneratedPluginRegistrant
+com/example/qr_scanner_app/BuildConfig.java
+ com.example.qr_scanner_app.BuildConfig
