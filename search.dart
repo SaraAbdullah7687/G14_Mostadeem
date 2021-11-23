@@ -1,28 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
-import 'package:mostadeem/Admin/viViewModel.dart';
-import 'package:mostadeem/components/google_auth_api.dart';
 import 'package:mostadeem/models/Institution.dart';
 import 'package:mostadeem/screens/inst_card.dart';
-import 'package:mostadeem/screens/search.dart';
 import 'package:mostadeem/screens/viViewInstModel.dart';
-import 'package:mostadeem/services/auth.dart';
-import 'package:flushbar/flushbar.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server/gmail.dart';
-import 'package:mostadeem/Admin/components/social_icon.dart';
-import 'package:mostadeem/components/google_auth_api.dart';
-import 'package:mostadeem/screens/home/viViewReqModel.dart';
-import 'package:mostadeem/services/auth.dart';
-import 'package:mostadeem/shared/loading.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:mostadeem/screens/inst_card.dart';
 
 class searchInst extends StatelessWidget {
   @override
@@ -98,12 +80,23 @@ class _SearchInstList extends State<SearchInstList> {
   getInsts() async {
     var data = await FirebaseFirestore.instance
         .collection("institution")
-        .orderBy('ratesAvg', descending: true)
         .where("status", isEqualTo: "approved")
+        .orderBy('ratesAvg', descending: true)
         .get();
     setState(() {
       _allResults = data.docs;
     });
+    if (data.docs.length == 0) {
+      return Center(
+        child: Text(
+          "There is no istituations",
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.grey,
+          ),
+        ),
+      );
+    }
     searchResultsList();
     return "complet";
   }
@@ -125,10 +118,25 @@ class _SearchInstList extends State<SearchInstList> {
       ),
       body: Column(
         children: [
-          TextField(
-            controller: _searchController,
-            decoration: InputDecoration(prefixIcon: Icon(Icons.search)),
+          Form(
+            child: TextField(
+              controller: _searchController,
+              maxLength: 15,
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                hintText: 'Search by name',
+              ),
+            ),
           ),
+          if (_resultsList.isEmpty)
+            Container(
+                child: Text(
+              "No results for ${_searchController.text}",
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.grey,
+              ),
+            )),
           Expanded(
             child: ListView.builder(
               itemCount: _resultsList.length,
