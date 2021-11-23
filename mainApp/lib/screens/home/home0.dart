@@ -1,25 +1,59 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mostadeem/components/google_auth_api.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:mostadeem/institution/instViewProfile.dart';
+import 'package:mostadeem/models/Institution.dart';
+import 'package:mostadeem/screens/home/points.dart';
+import 'package:mostadeem/screens/home/regulations.dart';
+import 'package:mostadeem/screens/home/stores.dart';
+import 'package:mostadeem/screens/search.dart';
 import 'package:mostadeem/services/auth.dart';
-import 'package:flushbar/flushbar.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server/gmail.dart';
-import 'package:mostadeem/Admin/components/social_icon.dart';
-import 'package:mostadeem/components/google_auth_api.dart';
-import 'package:mostadeem/screens/home/viViewReqModel.dart';
-import 'package:mostadeem/services/auth.dart';
 import 'package:mostadeem/shared/loading.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:mostadeem/globals/global.dart' as globals;
+
+import '../inst_card.dart';
 
 class HomeZero extends StatelessWidget {
+  calculates(DocumentSnapshot document) {
+    final institution1 = Institution.fromSnapshot(document);
+
+    double ratesAverage = 0;
+    List<String> rates = null;
+    rates = institution1.rates.split(",");
+    int ratesL = rates.length - 2;
+    print("The length of my array is $ratesL");
+    for (var i = 0; i < ratesL + 1; i++) {
+      ratesAverage = ratesAverage + double.parse(rates[i]);
+    }
+    if (ratesL != 0) {
+      ratesAverage = ratesAverage / (ratesL);
+    }
+
+    print("the average is: $ratesAverage");
+    FirebaseFirestore.instance
+        .collection("institution")
+        .doc(document.id)
+        .update({
+      'ratesAvg': ratesAverage.toString(),
+    });
+    FirebaseFirestore.instance
+        .collection("institution")
+        .doc(document.id)
+        .update({
+      'ratesNo': ratesL,
+    });
+    print("${institution1.name}");
+    print("${institution1.ratesNo.toString()}");
+  }
+
   final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext context) {
+    getPoints();
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -48,14 +82,53 @@ class HomeZero extends StatelessWidget {
         toolbarHeight: 60.0,
       ),
       body: Column(children: <Widget>[
-        Container(
-          margin: EdgeInsets.only(top: 30, right: 10, bottom: 20),
-          child: Text('Instituations',
-              style: TextStyle(
-                fontSize: 20,
-                color: Color.fromRGBO(48, 126, 80, 1),
-                fontWeight: FontWeight.bold,
-              )),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(left: 90),
+              child: Text('Instituations',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Color.fromRGBO(48, 126, 80, 1),
+                    fontWeight: FontWeight.bold,
+                  )),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                  //    padding: EdgeInsets.only(left: 20),
+                  alignment: Alignment.bottomLeft),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SearchInstList()), //instList()),
+                );
+              },
+              child: Container(
+                margin: EdgeInsets.only(left: 40),
+                child: Text(
+                  'View all',
+                  style: TextStyle(
+                      color: Colors.grey, decoration: TextDecoration.underline),
+                ),
+              ),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(right: 230, bottom: 9),
+              child: Text('Top rated',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: const Color(0xFFF57C00),
+                    fontWeight: FontWeight.bold,
+                  )),
+            ),
+          ],
         ),
         Container(
           height: 180,
@@ -64,10 +137,10 @@ class HomeZero extends StatelessWidget {
               stream: FirebaseFirestore.instance
                   .collection("institution")
                   .where("status", isEqualTo: "approved")
-                  .orderBy("dateCreated")
+                  .orderBy('ratesAvg', descending: true)
                   .snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (!snapshot.hasData) return Text('SOMETHINGWRONG!');
+                if (!snapshot.hasData) return Loading();
                 return myWidget(context, snapshot);
               }),
         ),
@@ -85,12 +158,16 @@ class HomeZero extends StatelessWidget {
                 ),
               ),
               child: IconButton(
-                icon: const Icon(
-                  Icons.card_giftcard_rounded,
-                  size: 33,
-                  color: Color.fromRGBO(48, 126, 80, 1),
-                ),
-              ),
+                  icon: const Icon(
+                    Icons.card_giftcard_rounded,
+                    size: 33,
+                    color: const Color(0xFFF57C00),
+                  ),
+                  onPressed: () {
+                    getPoints();
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => points()));
+                  }),
             ),
             Container(
               margin: EdgeInsets.only(top: 30, left: 25, bottom: 30),
@@ -107,8 +184,15 @@ class HomeZero extends StatelessWidget {
                 icon: const Icon(
                   Icons.store,
                   size: 33,
-                  color: Color.fromRGBO(48, 126, 80, 1),
+                  color: const Color(0xFFF57C00),
                 ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => stores()), //instList()),
+                  );
+                },
               ),
             ),
             Container(
@@ -127,8 +211,15 @@ class HomeZero extends StatelessWidget {
                 icon: const Icon(
                   Icons.help,
                   size: 33,
-                  color: Color.fromRGBO(48, 126, 80, 1),
+                  color: const Color(0xFFF57C00),
                 ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => regulations()), //instList()),
+                  );
+                },
               ),
             ),
           ],
@@ -164,58 +255,57 @@ class HomeZero extends StatelessWidget {
   }
 
   Widget myWidget(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-    return Scrollbar(
-        isAlwaysShown: true,
-        scrollbarOrientation: ScrollbarOrientation.top,
-        interactive: true,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: snapshot.data.docs.length,
-          itemBuilder: (context, index) =>
-              buildCard(context, snapshot.data.docs[index]),
-        ));
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: 3,
+      itemBuilder: (context, index) =>
+          buildCard(context, snapshot.data.docs[index]),
+    );
   }
 
-  Widget buildCard(BuildContext context, DocumentSnapshot document) => Card(
+  Widget buildCard(BuildContext context, DocumentSnapshot document) {
+    calculates(document);
+    return Card(
       color: Colors.white70,
       //  elevation: 14.0, //14
       // shadowColor: Color(0x802196F3),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       margin: EdgeInsets.only(
-        //    bottom: 80,
-        left: 20,
+        right: 10,
+        left: 14,
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Color.fromRGBO(236, 232, 202, 0.3),
-          borderRadius: BorderRadius.circular(25),
-        ),
-        width: 150,
-        height: 320,
-        child: Column(children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(
-              top: 20,
-            ),
-            child: Text(
-              document['name'],
-              style: TextStyle(
-                color: Color.fromRGBO(48, 126, 80, 1),
-                fontSize: 25.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+      child: InkWell(
+        child: Container(
+          decoration: BoxDecoration(
+            color: Color.fromRGBO(236, 232, 202, 0.3),
+            borderRadius: BorderRadius.circular(25),
           ),
-          Container(
-            // padding: EdgeInsets.only(top: 50, left: 13, right: 10),
-            margin: EdgeInsets.only(top: 20, left: 5, right: 10),
-            child: Text(document['category'],
+          width: 150,
+          height: 320,
+          child: Column(children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(
+                top: 20,
+              ),
+              child: Text(
+                document['name'],
                 style: TextStyle(
                   color: Color.fromRGBO(48, 126, 80, 1),
-                  fontSize: 15.0,
-                )),
-          ),
-          Container(
+                  fontSize: 25.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Container(
+              // padding: EdgeInsets.only(top: 50, left: 13, right: 10),
+              margin: EdgeInsets.only(top: 20, left: 5, right: 10),
+              child: Text(document['category'],
+                  style: TextStyle(
+                    color: Color.fromRGBO(48, 126, 80, 1),
+                    fontSize: 15.0,
+                  )),
+            ),
+            /*   Container(
             padding: EdgeInsets.only(top: 20, left: 13, right: 10),
             child: Row(
               children: [
@@ -252,8 +342,8 @@ class HomeZero extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-          /*   TextButton(
+          ),*/
+            /*   TextButton(
               onPressed: () {},
               child: Text(
                 'View more...',
@@ -262,8 +352,47 @@ class HomeZero extends StatelessWidget {
                   decoration: TextDecoration.underline,
                 ),
               )),*/
-        ]),
-      ));
+            /* display rating*/
+
+            Container(
+              padding: EdgeInsets.only(top: 20, left: 13, right: 10),
+              child: Row(children: [
+                /* margin: EdgeInsets.only(
+                  left: 15,
+                ),*/
+                RatingBarIndicator(
+                  rating: double.parse(document['ratesAvg']),
+                  itemBuilder: (context, index) => Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                  itemCount: 5,
+                  itemSize: 20.0,
+                  direction: Axis.horizontal,
+                ),
+                Text(
+                  '(' + document['ratesNo'].toString() + ')',
+                  style: TextStyle(
+                    fontSize: 12.0,
+                  ),
+                ),
+              ]),
+            )
+          ]),
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => InstViewProfile(
+                UID: document.id,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   Future _sendingMails(String email) async {
     String url = 'mailto:$email'; // specify mail from snapchot
@@ -298,4 +427,20 @@ class HomeZero extends StatelessWidget {
       throw 'Could not launch $url';
     }
   }
+}
+
+final firestoreInstance = FirebaseFirestore.instance;
+
+String getPoints() {
+  var firebaseUser = FirebaseAuth.instance.currentUser;
+
+  firestoreInstance
+      .collection('contributor')
+      .doc(firebaseUser.uid)
+      .get()
+      .then((value) {
+    int points = (value.data()['points']);
+    globals.userPoints = points;
+  });
+  return globals.userPoints.toString();
 }
