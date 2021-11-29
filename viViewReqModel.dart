@@ -10,7 +10,6 @@ class ViewRequestViewModel with ChangeNotifier {
   Stream<QuerySnapshot<Map<String, dynamic>>> _requests;
   Stream<QuerySnapshot<Map<String, dynamic>>> _currentRequests;
   AuthService auth = AuthService();
-  final List<Flushbar> flushBars = [];
 
   fetchRequests() async {
     String uid = auth.getCurrentUserID();
@@ -21,13 +20,9 @@ class ViewRequestViewModel with ChangeNotifier {
         .doc(uid)
         .collection("request");
     _requests = firebase
-        //    .where("status", isEqualTo: "pending")
-        .where(
-          "date",
-          isGreaterThanOrEqualTo: dateFormat.format(DateTime.now()),
-        )
-        .orderBy("date")
-        .snapshots(); // order by  + exclude old dates
+        .where("status", isEqualTo: ("accepted"))
+        //  .orderBy("date")
+        .snapshots();
     notifyListeners();
   }
 
@@ -61,6 +56,17 @@ class ViewRequestViewModel with ChangeNotifier {
     return time;
   }
 
+  Future cancelRequest(String id) async {
+    String uid = auth.getCurrentUserID();
+    print('THE ID IS' + uid);
+    FirebaseFirestore.instance
+        .collection('contributor')
+        .doc(uid)
+        .collection("request")
+        .doc(id)
+        .delete();
+    print('WELL DONE!!!!!!');
+  }
 /*
 void showTopSnackBar(BuildContext context ,String title,String message) => show(
         context,
@@ -88,59 +94,3 @@ Future show(BuildContext context, Flushbar newFlushBar) async {
   }*/
 
 } // end class
-
-///////////////////
-/*
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-// import 'package:swe444/Models/request.dart';
-
-class ViewRequestViewModel {
-/* for ID*/
-  var firebaseUser = FirebaseAuth.instance.currentUser;
-
-  /* to store docs*/
-  List itemsList = [];
-
-  final CollectionReference requestList = FirebaseFirestore.instance
-      .collection('contributor')
-      .doc('HjwkryLRi4loaSunp9Pv')
-      .collection('request');
-
-/* To retrive requests*/
-  Future getRequestList() async {
-    try {
-      // Get docs from collection reference
-      QuerySnapshot querySnapshot = await requestList
-          //  .where("status", isEqualTo: "new")
-          //  .orderBy("dateCreated")
-          .get();
-      print('I am here line 27 vi vi');
-
-      querySnapshot.docs.forEach((element) {
-        itemsList.add(element.data());
-      });
-
-      return itemsList;
-    } catch (e) {
-      print(e.toString());
-      return null;
-    }
-  }
-/*
-  Future cancelRequest(int index) async {
-    var docRef = FirebaseFirestore.instance
-        .collection('contributor')
-        .doc("X01gyr2qkFMP47ClkZHX")
-        .collection("request")
-        .doc();
-
-// delete the document
-    docRef.delete();
-    print('WELL DONE!!!!!!');
-  }*/
-}
-*/
