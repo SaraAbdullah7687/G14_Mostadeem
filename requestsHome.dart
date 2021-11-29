@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mostadeem/screens/home/viewCurrent.dart';
 import 'package:mostadeem/screens/home/viewHistory.dart';
 import 'package:mostadeem/screens/home/viewReq.dart';
 import 'package:mostadeem/services/auth.dart';
@@ -14,13 +15,13 @@ class _RequestsState extends State<RequestsHome> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         //  backgroundColor: Colors.white,
         appBar: AppBar(
-          /* centerTitle: true,
-          title: Text('Req'),
-          titleSpacing:1.5,*/
+          centerTitle: true,
+          title: Text('Requests'),
+          titleSpacing: 1.5,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
               bottom: Radius.circular(18),
@@ -47,7 +48,12 @@ class _RequestsState extends State<RequestsHome> {
               Tab(
                   child: Align(
                 alignment: Alignment.center,
-                child: Text('current request'),
+                child: Text('Current'),
+              )),
+              Tab(
+                  child: Align(
+                alignment: Alignment.center,
+                child: Text('Accepted'),
               )),
               Tab(
                   child: Align(
@@ -59,8 +65,12 @@ class _RequestsState extends State<RequestsHome> {
         ),
         body: TabBarView(
           children: [
+            ViewCurrent(),
             ViewRequest(),
-            viewHistory(), // to be updated to MY appointments
+
+            viewHistory(),
+
+            // to be updated to MY appointments
           ],
         ),
       ),
