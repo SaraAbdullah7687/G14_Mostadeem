@@ -65,7 +65,7 @@ class _ViewRequestsState extends State<ViewRequests> {
               if (snapshot.data.docs.length == 0) {
                 return Center(
                   child: Text(
-                    "You don't have any requests",
+                    "You don't have any accepted requests",
                     style: TextStyle(
                       fontSize: 20,
                       color: Colors.grey,
@@ -190,23 +190,11 @@ class _ViewRequestsState extends State<ViewRequests> {
             ),
             Container(
               margin: EdgeInsets.only(
-                left: 3,
-              ),
-              child: Text(
-                ourViewMode.convertTime(context, document),
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 15.0,
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(
                 top: 2, //left: 5, //left:18,
               ),
               child: IconButton(
                 icon: const Icon(Icons.location_on),
-                color: Colors.blue,
+                color: const Color(0xFFF57C00),
                 onPressed: () =>
                     ourViewMode.openLocation(document.get("location")),
               ),
@@ -216,33 +204,14 @@ class _ViewRequestsState extends State<ViewRequests> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            if (document['status'] == 'pending')
-              Padding(
-                padding: const EdgeInsets.only(left: 35.0, top: 3),
-                child: Icon(
-                  Icons.pending_actions_rounded,
-                  color: Colors.orange,
-                  size: 20,
-                ),
+            Padding(
+              padding: const EdgeInsets.only(left: 35.0, top: 3),
+              child: Icon(
+                Icons.check,
+                color: Color.fromRGBO(48, 126, 80, 1),
+                size: 20,
               ),
-            if (document['status'] == 'accepted')
-              Padding(
-                padding: const EdgeInsets.only(left: 35.0, top: 3),
-                child: Icon(
-                  Icons.check,
-                  color: Color.fromRGBO(48, 126, 80, 1),
-                  size: 20,
-                ),
-              ),
-            if (document['status'] == 'rejected')
-              Padding(
-                padding: const EdgeInsets.only(left: 35.0, top: 3),
-                child: Icon(
-                  Icons.cancel,
-                  color: Colors.red,
-                  size: 20,
-                ),
-              ),
+            ),
             Container(
               margin: EdgeInsets.only(
                 top: 3,
@@ -257,31 +226,29 @@ class _ViewRequestsState extends State<ViewRequests> {
                 ),
               ),
             ),
-            if (document['status'] == 'accepted')
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 9,
-                ),
-                child: Icon(
-                  Icons.account_balance,
-                  size: 20,
-                  color: Color.fromRGBO(48, 126, 80, 1),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 9,
+              ),
+              child: Icon(
+                Icons.account_balance,
+                size: 20,
+                color: Color.fromRGBO(48, 126, 80, 1),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                left: 3,
+              ),
+              child: Text(
+                document['instName'],
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 15,
+                  //  fontWeight: FontWeight.bold
                 ),
               ),
-            if (document['status'] == 'accepted')
-              Container(
-                margin: EdgeInsets.only(
-                  left: 3,
-                ),
-                child: Text(
-                  document['instName'],
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 15,
-                    //  fontWeight: FontWeight.bold
-                  ),
-                ),
-              ),
+            ),
             /*third icon*/
             Padding(
               padding: const EdgeInsets.only(left: 9, top: 3, right: 2),
@@ -300,31 +267,6 @@ class _ViewRequestsState extends State<ViewRequests> {
                 ),
               ),
             ),
-          ],
-        ),
-        /*THIRD ROW*/
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            if (document['status'] == 'rejected')
-              Container(
-                margin: const EdgeInsets.only(right: 10, bottom: 10, top: 5),
-                child: SizedBox(
-                  height: 30,
-                  width: 90,
-                  child: RaisedButton(
-                    shape: new RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(25.0),
-                    ),
-                    color: Colors.red,
-                    child: Text('Delete',
-                        style: TextStyle(
-                          color: Colors.white,
-                        )),
-                    onPressed: () => ourViewMode.cancelRequest(document.id),
-                  ),
-                ),
-              ),
           ],
         ),
       ],
