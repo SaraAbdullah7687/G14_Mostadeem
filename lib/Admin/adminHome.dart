@@ -1,5 +1,7 @@
 
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:mostadeem/Admin/Add/info.dart';
+import 'package:mostadeem/Admin/Add/startAdd.dart';
 import 'package:mostadeem/Admin/viewins.dart';
 import 'package:flutter/material.dart';
 import 'addAdvices.dart';
@@ -16,7 +18,7 @@ class AdminHome extends StatefulWidget {
 class _AdminHomeState extends State<AdminHome> {
 final screens=[ // indexes Sensitive
   institutionView(), // this is the home
-  AddAdvices(),
+  StartAdd(),
 ];
 int index =0;
 final items =<Widget>[

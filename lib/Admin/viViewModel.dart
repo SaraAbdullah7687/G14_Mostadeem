@@ -1,5 +1,6 @@
 //import 'dart:js';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -8,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 class ViewInstitutionViewModel with ChangeNotifier {
   Stream<QuerySnapshot<Map<String, dynamic>>> _institutions;
   Stream<QuerySnapshot<Map<String, dynamic>>> _instProfile;
+    final List<Flushbar> flushBars = []; 
 
   fetchInstitutions() async {
     var firebase=  FirebaseFirestore.instance
@@ -60,7 +62,46 @@ if (await canLaunch(url)) {
   }
 }
 
+Future openLocation(Map location) async {
+print("in view model openLocation ");
+print(location['geopoint'].latitude);
+final String lat=location['geopoint'].latitude.toString();
+final String lng=location['geopoint'].longitude.toString();
+final String googleMapsUrl= 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
 
+if (await canLaunch(googleMapsUrl)) {
+    await launch(googleMapsUrl);
+  } else {
+    throw 'Could not launch $googleMapsUrl';
+  }
+
+}
+
+
+void showTopSnackBar(BuildContext context ,String title,String message, IconData icon) => show(
+        context,
+        Flushbar(
+          icon: Icon(icon, size: 32, color: Colors.white),
+          shouldIconPulse: false,
+          title: title,
+          message: message, // change message
+          borderRadius: BorderRadius.circular(6),
+          duration: Duration(seconds: 3),
+          flushbarPosition: FlushbarPosition.TOP,
+        //  margin: EdgeInsets.fromLTRB(8, kToolbarHeight + 8, 8, 0),
+          
+           barBlur: 20,
+          backgroundColor: Colors.black.withOpacity(0.5),
+        ),
+      );
+
+Future show(BuildContext context, Flushbar newFlushBar) async {
+    await Future.wait(flushBars.map((flushBar) => flushBar.dismiss()).toList());
+    flushBars.clear();
+
+    newFlushBar.show(context);
+    flushBars.add(newFlushBar);
+  }
 
 
 }

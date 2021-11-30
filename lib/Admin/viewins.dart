@@ -352,11 +352,11 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid,Docum
                  if(result=='Success approve'){ // show another pop up 
                    print('status has changed to approved');
                    sendEmail("approveEmail",context,document);
-                   showTopSnackBar(context,'Success','Institution has been approved',Icons.check );
+                   ourViewMode.showTopSnackBar(context,'Success','Institution has been approved',Icons.add_task );
 
                  }
                  else if(result=='Fail approve'){print('could not update status, procces failed');
-                 showTopSnackBar(context,'Fail','Approve institution failed',Icons.cancel_outlined, );
+                 ourViewMode.showTopSnackBar(context,'Fail','Approve institution failed',Icons.cancel_outlined, );
                  }
                  else{ print(result);}
                 }
@@ -368,12 +368,12 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid,Docum
                  if(result=='Success disapprove'){ // show another pop up 
                    print('intitution has been deleted'); // may change it
                    sendEmail("disapproveEmail",context,document);
-                   showTopSnackBar(context,'Success','Institution has been disapproved',Icons.check  );
+                   ourViewMode.showTopSnackBar(context,'Success','Institution has been disapproved',Icons.add_task  );
 
                  }
                  else if(result=='Fail disapprove') {
                  print('could not delete institution, procces failed');
-                 showTopSnackBar(context,'Fail','Dispprove institution failed', Icons.cancel_outlined, );
+                 ourViewMode.showTopSnackBar(context,'Fail','Dispprove institution failed', Icons.cancel_outlined, );
                  
                  }
                   else{ print(result);}
@@ -446,6 +446,7 @@ controller.evaluateJavascript("document.getElementById('ctl00_ctl74_g_3aefad74_1
 
 }
 
+/*
 void showTopSnackBar(BuildContext context ,String title,String message,IconData icon) => show(
         context,
         Flushbar(
@@ -470,6 +471,7 @@ Future show(BuildContext context, Flushbar newFlushBar) async {
     flushBars.add(newFlushBar);
   }
 
+*/
 showCustomAlert(String status, BuildContext context, String uid,DocumentSnapshot document) async {
 
   showDialog(
@@ -486,11 +488,11 @@ return CustomAlert(
                  if(result=='Success approve'){ // show another pop up 
                    print('status has changed to approved');
                    sendEmail("approveEmail",context,document);
-                   showTopSnackBar(context,'Success','Institution has been approved',Icons.check );
+                   ourViewMode.showTopSnackBar(context,'Success','Institution has been approved',Icons.add_task ); // تأكدي يضبط
 
                  }
                  else if(result=='Fail approve'){print('could not update status, procces failed');
-                 showTopSnackBar(context,'Couldn\'t approve','An error occurred while approving institution',Icons.cancel_outlined, );
+                ourViewMode.showTopSnackBar(context,'Couldn\'t approve','An error occurred while approving institution',Icons.cancel_outlined, );// تأكدي يضبط
                  }
                  else{ print(result);}
                 }
@@ -502,12 +504,12 @@ return CustomAlert(
                  if(result=='Success disapprove'){ // show another pop up 
                    print('intitution has been deleted'); // may change it
                    sendEmail("disapproveEmail",context,document);
-                   showTopSnackBar(context,'Success','Institution has been disapproved',Icons.check  );
+                   ourViewMode.showTopSnackBar(context,'Success','Institution has been disapproved',Icons.add_task  );
 
                  }
                  else if(result=='Fail disapprove') {
                  print('could not delete institution, procces failed');
-                 showTopSnackBar(context,'Couldn\'t disapprove','An error occurred while disapproving institution', Icons.cancel_outlined, );
+                 ourViewMode.showTopSnackBar(context,'Couldn\'t disapprove','An error occurred while disapproving institution', Icons.cancel_outlined, );
                  
                  }
                   else{ print(result);}
