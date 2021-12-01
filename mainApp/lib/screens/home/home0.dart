@@ -7,19 +7,21 @@ import 'package:mostadeem/models/Institution.dart';
 import 'package:mostadeem/screens/home/points.dart';
 import 'package:mostadeem/screens/home/regulations.dart';
 import 'package:mostadeem/screens/home/stores.dart';
-import 'package:mostadeem/screens/search.dart';
+import 'package:mostadeem/screens/request.dart';
+import 'package:mostadeem/screens/viViewCategories.dart';
+import '../../screens/searchName.dart';
+import 'package:mostadeem/screens/searchName.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mostadeem/shared/loading.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mostadeem/globals/global.dart' as globals;
 
-import '../inst_card.dart';
+import '../viewCategories.dart';
 
 class HomeZero extends StatelessWidget {
   calculates(DocumentSnapshot document) {
     final institution1 = Institution.fromSnapshot(document);
-
     double ratesAverage = 0;
     List<String> rates = null;
     rates = institution1.rates.split(",");
@@ -50,6 +52,7 @@ class HomeZero extends StatelessWidget {
   }
 
   final AuthService _auth = AuthService();
+  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     getPoints();
@@ -144,85 +147,186 @@ class HomeZero extends StatelessWidget {
                 return myWidget(context, snapshot);
               }),
         ),
-        Row(
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(top: 30, left: 50, bottom: 30),
-              width: 70,
-              height: 70,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Color.fromRGBO(48, 126, 80, 1),
-                  width: 2,
+        Scrollbar(
+          isAlwaysShown: true,
+          controller: _scrollController,
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            scrollDirection: Axis.horizontal,
+            child: InkWell(
+              child: Container(
+                padding: EdgeInsets.only(bottom: 40),
+                child: Row(
+                  children: <Widget>[
+                    /// first cat 1
+                    Container(
+                        margin: EdgeInsets.only(top: 30, left: 20, bottom: 30),
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Color.fromRGBO(48, 126, 80, 1),
+                            width: 2,
+                          ),
+                        ),
+                        child: Image.asset("assets/images/Food.png")),
+
+                    ///second cat 2
+                    Container(
+                        margin: EdgeInsets.only(top: 30, left: 12, bottom: 30),
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Color.fromRGBO(48, 126, 80, 1),
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Image.asset("assets/images/Glass.png")),
+                    //fourth ct 4
+                    Container(
+                        margin: EdgeInsets.only(top: 30, left: 12, bottom: 30),
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          //  color: Color.fromRGBO(48, 126, 80, 1),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Color.fromRGBO(48, 126, 80, 1),
+                            width: 2,
+                          ),
+                        ),
+                        child: Image.asset("assets/images/Paper.png")),
+
+                    ///5
+                    Container(
+                        margin: EdgeInsets.only(top: 30, left: 12, bottom: 30),
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          //  color: Color.fromRGBO(48, 126, 80, 1),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Color.fromRGBO(48, 126, 80, 1),
+                            width: 2,
+                          ),
+                        ),
+                        child: Image.asset("assets/images/Batteries.png")),
+
+                    ///6
+                    Container(
+                        margin: EdgeInsets.only(top: 30, left: 12, bottom: 30),
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          //  color: Color.fromRGBO(48, 126, 80, 1),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Color.fromRGBO(48, 126, 80, 1),
+                            width: 2,
+                          ),
+                        ),
+                        child: Image.asset("assets/images/Electronics.png")),
+
+                    ///7
+                    Container(
+                        margin: EdgeInsets.only(top: 30, left: 12, bottom: 30),
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          //  color: Color.fromRGBO(48, 126, 80, 1),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Color.fromRGBO(48, 126, 80, 1),
+                            width: 2,
+                          ),
+                        ),
+                        child: Image.asset("assets/images/Nylon.png")),
+
+                    ///8
+                    Container(
+                        margin: EdgeInsets.only(top: 30, left: 12, bottom: 30),
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          //  color: Color.fromRGBO(48, 126, 80, 1),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Color.fromRGBO(48, 126, 80, 1),
+                            width: 2,
+                          ),
+                        ),
+                        child: Image.asset("assets/images/Metals.png")),
+                    //10
+                    Container(
+                        margin: EdgeInsets.only(top: 30, left: 12, bottom: 30),
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          //  color: Color.fromRGBO(48, 126, 80, 1),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Color.fromRGBO(48, 126, 80, 1),
+                            width: 2,
+                          ),
+                        ),
+                        child: Image.asset("assets/images/Cans.png")),
+                    //11
+                    Container(
+                        margin: EdgeInsets.only(top: 30, left: 12, bottom: 30),
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          //  color: Color.fromRGBO(48, 126, 80, 1),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Color.fromRGBO(48, 126, 80, 1),
+                            width: 2,
+                          ),
+                        ),
+                        child: Image.asset("assets/images/Cardboard.png")),
+                    //12
+                    Container(
+                        margin: EdgeInsets.only(top: 30, left: 12, bottom: 30),
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          //  color: Color.fromRGBO(48, 126, 80, 1),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Color.fromRGBO(48, 126, 80, 1),
+                            width: 2,
+                          ),
+                        ),
+                        child: Image.asset("assets/images/Clothes.png")),
+                    //13
+                    Container(
+                        margin: EdgeInsets.only(
+                            top: 30, left: 12, right: 20, bottom: 30),
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          //  color: Color.fromRGBO(48, 126, 80, 1),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Color.fromRGBO(48, 126, 80, 1),
+                            width: 2,
+                          ),
+                        ),
+                        child: Image.asset("assets/images/Furniture.png")),
+                  ],
                 ),
               ),
-              child: IconButton(
-                  icon: const Icon(
-                    Icons.card_giftcard_rounded,
-                    size: 33,
-                    color: const Color(0xFFF57C00),
-                  ),
-                  onPressed: () {
-                    getPoints();
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => points()));
-                  }),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => viViewCategory()),
+                );
+              },
             ),
-            Container(
-              margin: EdgeInsets.only(top: 30, left: 25, bottom: 30),
-              width: 70,
-              height: 70,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Color.fromRGBO(48, 126, 80, 1),
-                  width: 2,
-                ),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.store,
-                  size: 33,
-                  color: const Color(0xFFF57C00),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => stores()), //instList()),
-                  );
-                },
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 30, left: 25, bottom: 30),
-              width: 70,
-              height: 70,
-              decoration: BoxDecoration(
-                //  color: Color.fromRGBO(48, 126, 80, 1),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Color.fromRGBO(48, 126, 80, 1),
-                  width: 2,
-                ),
-              ),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.help,
-                  size: 33,
-                  color: const Color(0xFFF57C00),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => regulations()), //instList()),
-                  );
-                },
-              ),
-            ),
-          ],
+          ),
         ),
         Container(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -257,7 +361,7 @@ class HomeZero extends StatelessWidget {
   Widget myWidget(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
-      itemCount: 3,
+      itemCount: snapshot.data.docs.length,
       itemBuilder: (context, index) =>
           buildCard(context, snapshot.data.docs[index]),
     );
