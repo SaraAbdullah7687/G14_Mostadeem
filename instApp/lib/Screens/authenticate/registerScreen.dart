@@ -196,7 +196,12 @@ static final RegExp nameRegExp = RegExp('[a-zA-Z]');
         ),
       ),
       controller: _passwordController,
-      onChanged: (value) => setState(() => password = value),
+      onChanged: (value) => 
+              setState(() {
+      password = value; 
+      pass=false;}),
+
+
       obscureText: _isHidden,
     )),
     
@@ -447,6 +452,7 @@ Container buildAllCategories(){
               Navigator.of(context).pop(
               MaterialPageRoute(builder: (context)=>logIn(),));
                getName();
+               isSelected = [false, false, false, false, false, false,false, false, false, false, false, false]; 
                showDialog(context: context, builder: (BuildContext context){
                return AdvanceCustomAlertNew(icon: Icons.check,
                msgContent: 'Your registration has been sent. Please wait for approval', btnContent: 'Ok');
@@ -552,7 +558,11 @@ Container buildAllCategories(){
     String phone='phone';
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context){
+  //isSelected = [false, false, false, false, false, false,false, false, false, false, false, false]; 
+  
+  
+   return Scaffold(
      backgroundColor: Colors.white, 
      appBar: AppBar(
      centerTitle: true,
@@ -600,7 +610,7 @@ Container buildAllCategories(){
       ],
       ),
     ),
-      );
+      );}
     
 
 
