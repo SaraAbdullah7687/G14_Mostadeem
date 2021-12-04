@@ -10,11 +10,12 @@ class RoundedPasswordField extends StatelessWidget {
   final TextEditingController controllerPw;
   final bool isSignUp;
   final Function press;
-  const RoundedPasswordField({
+  //const 
+  RoundedPasswordField({
     Key key,
     this.onSaved,
     this.press,
-   this.isSignUp,
+    this.isSignUp,
     this.onChanged,
     this.controllerPw, TextInputAction textInputAction,
   }) : super(key: key);
