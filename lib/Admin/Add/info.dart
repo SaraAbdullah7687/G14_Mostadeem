@@ -18,8 +18,8 @@ class Info extends StatefulWidget {
 class _InfoState extends State<Info> {
 final AuthService _auth = AuthService();
 final ViewInstitutionViewModel ourViewMode=ViewInstitutionViewModel();
-  final RegExp titleRegExp = RegExp('[a-zA-Z]'); // make it accepts numbers and special characters but not only one of them
-  Map<String, String> _authData = { // can use variables instead of map 
+final RegExp titleRegExp = RegExp('[a-zA-Z]'); // make it accepts numbers and special characters but not only one of them
+Map<String, String> _authData = { // can use variables instead of map 
     'title': '',
     'description': '',
   }; 
@@ -125,7 +125,7 @@ Widget title(){
       ? 'Required'
       : (titleRegExp.hasMatch(value) 
           ? null 
-          : 'Not a valid Title'),
+          : 'Not a valid title'),
                         onSaved: (value) {
                         // or _emailController.text = value!;
                         _authData['title'] = value; },

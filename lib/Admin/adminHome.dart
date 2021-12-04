@@ -4,7 +4,6 @@ import 'package:mostadeem/Admin/Add/info.dart';
 import 'package:mostadeem/Admin/Add/startAdd.dart';
 import 'package:mostadeem/Admin/viewins.dart';
 import 'package:flutter/material.dart';
-import 'addAdvices.dart';
 
 class AdminHome extends StatefulWidget {
  const AdminHome({Key key, this.feedback,

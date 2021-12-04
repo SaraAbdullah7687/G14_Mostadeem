@@ -7,6 +7,7 @@ import 'package:mailer/smtp_server/gmail.dart';
 import 'package:mostadeem/Admin/viViewModel.dart';
 import 'package:mostadeem/components/customAlert.dart';
 import 'package:mostadeem/components/google_auth_api.dart';
+import 'package:mostadeem/components/twoButtonsAlert.dart';
 import 'package:mostadeem/services/auth.dart';
 import 'package:mostadeem/shared/loading.dart';
 import 'package:provider/provider.dart';
@@ -392,7 +393,9 @@ Future<void> _showMyDialog(String status, BuildContext context, String uid,Docum
  sendEmail(String uid,BuildContext context,DocumentSnapshot document) async{
   
 FirebaseFirestore.instance.collection('sendEmail').doc(uid).get().then((DocumentSnapshot emailMess) async{
+  print('before google sign in');
 final user  = await GoogleAuthApi.signIn();
+print('after google sign in');
 print('inside sendEmail method');
 if (user ==null) return;
 print('inside sendEmail method after user check');
@@ -422,6 +425,39 @@ try{
     
 }
 
+ sendEmailByMailer(String uid,BuildContext context,DocumentSnapshot document) async {
+   String username = 'p8713915@gmail.com';
+  String password = 'project444@Modhi';
+
+  final smtpServer = gmail(username, password);
+  // Use the SmtpServer class to configure an SMTP server:
+  // final smtpServer = SmtpServer('smtp.domain.com');
+  // See the named arguments of SmtpServer for further configuration
+  // options.  
+FirebaseFirestore.instance.collection('sendEmail').doc(uid).get().then((DocumentSnapshot emailMess) async{
+  // Create our message.
+  final message = Message()
+    ..from = Address(username, 'Mostadeem team')
+    ..recipients.add(document.get("email"))
+    //..ccRecipients.addAll(['destCc1@example.com', 'destCc2@example.com'])
+   // ..bccRecipients.add(Address('bccAddress@example.com'))
+    ..subject = emailMess['subject']
+    ..text = '\n'+emailMess['text'] + 
+'\n\n'+emailMess['details']+ 
+'\n\n\n'+ emailMess['moreInfo'];
+    //..html = "<h1>Test</h1>\n<p>Hey! Here's some HTML content</p>";
+
+  try {
+    final sendReport = await send(message, smtpServer);
+    print('Message sent: ' + sendReport.toString());
+  } on MailerException catch (e) {
+    print('Message not sent.');
+    for (var p in e.problems) {
+      print('Problem: ${p.code}: ${p.msg}');
+    }
+  }
+});
+ }
  _checkCR(String CR, BuildContext context){
   // String url='https://mc.gov.sa/ar/eservices/Pages/Commercial-data.aspx';
      Navigator.push(
@@ -477,9 +513,10 @@ showCustomAlert(String status, BuildContext context, String uid,DocumentSnapshot
   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-return CustomAlert(
+return twoButtonsAlert(
       icon:Icons.error_outline,
-      msgTitle: "Institution Status\n",
+      btn1Content: "Cancel",
+      btn2Content: "Ok",
       msgContent:'Are you sure you want to $status this intitution?',
       press:(){
       if(status=="approve"){
@@ -487,7 +524,7 @@ return CustomAlert(
                  String result= _auth.updateInstitutionStatus(status,uid);
                  if(result=='Success approve'){ // show another pop up 
                    print('status has changed to approved');
-                   sendEmail("approveEmail",context,document);
+                   sendEmailByMailer("approveEmail",context,document);
                    ourViewMode.showTopSnackBar(context,'Success','Institution has been approved',Icons.add_task ); // تأكدي يضبط
 
                  }
@@ -503,7 +540,7 @@ return CustomAlert(
                   String result= _auth.updateInstitutionStatus(status,uid);
                  if(result=='Success disapprove'){ // show another pop up 
                    print('intitution has been deleted'); // may change it
-                   sendEmail("disapproveEmail",context,document);
+                   sendEmailByMailer("disapproveEmail",context,document); // updated
                    ourViewMode.showTopSnackBar(context,'Success','Institution has been disapproved',Icons.add_task  );
 
                  }

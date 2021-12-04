@@ -3,6 +3,9 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mostadeem/components/twoButtonsAlert.dart';
+import 'package:mostadeem/services/auth.dart';
+import 'package:mostadeem/services/database.dart';
 import 'package:url_launcher/url_launcher.dart';
 // import 'package:swe444/Models/request.dart';
 
@@ -10,6 +13,7 @@ class ViewInstitutionViewModel with ChangeNotifier {
   Stream<QuerySnapshot<Map<String, dynamic>>> _institutions;
   Stream<QuerySnapshot<Map<String, dynamic>>> _instProfile;
     final List<Flushbar> flushBars = []; 
+    final AuthService _auth = AuthService();
 
   fetchInstitutions() async {
     var firebase=  FirebaseFirestore.instance
@@ -102,6 +106,5 @@ Future show(BuildContext context, Flushbar newFlushBar) async {
     newFlushBar.show(context);
     flushBars.add(newFlushBar);
   }
-
 
 }
