@@ -38,6 +38,7 @@ class ViewRequestViewModel with ChangeNotifier {
     return _requests;
   }
 
+
   fetchCurrentRequests() async {
     String uid= auth.getCurrentUserID();
     print(uid+ "in view model current");
@@ -54,6 +55,7 @@ class ViewRequestViewModel with ChangeNotifier {
     return _currentRequests;
   }
 
+// updated tell Nof to take this version
   fetchRequestsHistory() async {
     String uid= auth.getCurrentUserID();
     DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
@@ -63,7 +65,7 @@ class ViewRequestViewModel with ChangeNotifier {
         .doc(uid)
         .collection("appointment");
     _requestsHistory =
-        firebase.where("status", isEqualTo: "complete").where("date", isGreaterThanOrEqualTo: dateFormat.format(DateTime.now()), ).orderBy("date").snapshots(); // order by  + exclude old dates
+        firebase.where("status", isEqualTo: "complete").snapshots(); // عدلتها
     notifyListeners();
   }
   
@@ -142,122 +144,6 @@ Future show(BuildContext context, Flushbar newFlushBar) async {
     flushBars.add(newFlushBar);
   }
 
-showCustomAlert(String status,String content, BuildContext context, String uid,DocumentSnapshot document) async {
-
-  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-return CustomAlert(
-      icon:Icons.error_outline,
-      msgTitle: "Request Status\n",
-      msgContent:content,
-      press:()  async { 
-        if(status=="accept"){ // then update status in both institution & contributor, and make the same request in other instituton as rejected
-        // send appointment doc id, and get inst id from auth class 
-        String result= _auth.updateAppointmentStatus(status,uid);// appointment id
-        if(result=='Success accept'){ 
-         String re2= await _auth.updateRequestStatus(status,document['contribId'],document['requestID'] ); // تأكدي من اسامي الفيلدز
-        
-         if(re2=='accepted'){ // change status to rejected in other institutions
-           String re3= await DatabaseService().updateRequestStatusInAllInst(status,document['requestID'] );
-           print(re3);
-           if(re3== "success"){
-             print("re3 Succeeded");
-           showTopSnackBar(context,'Success','Request has been accepted',Icons.check );
-           }
-           else if(re3=='fail'){
-             print("re3 failed");
-             showTopSnackBar(context,'Couldn\'t accept request','An error occurred while accepting the request',Icons.cancel_outlined, );
-           }
-           else if (re3=="no doc with same req"){
-            showTopSnackBar(context,'Success','Request has been accepted',Icons.check );
-           }
-           else{
-             showTopSnackBar(context,'Couldn\'t accept request','An error occurred while accepting the request',Icons.cancel_outlined, );
-             print(re3+' did not work');
-           }
-         }
-         else if(re2=='failed'){
-           print('could not update status, procces failed');
-           showTopSnackBar(context,'Couldn\'t accept request','An error occurred while accepting the request',Icons.cancel_outlined, );
-         }
-         else print(re2);
-                   
-                 }
-        else if(result=='Fail accept'){print('could not update status, procces failed');
-                 showTopSnackBar(context,'Couldn\'t accept request','An error occurred while accepting the request',Icons.cancel_outlined, );
-                 }
-        else{ print(result);}
-        }// if accept
-    
-    
-    
-    else if(status=="reject"){
-
-        // delete appointment from this inst
-        String result= _auth.updateAppointmentStatus(status,uid);// appointment id
-        if(result=='Success reject'){  
-       // check if  there's an instition that has the same request or not 
-        String re3= await DatabaseService().updateRequestStatusInAllInst(status,document['requestID'] ); 
-           if(re3=='No inst has the request'){ // change status to rejected in req collection
-         print(re3);
-           String re2= await _auth.updateRequestStatus(status,document['contribId'],document['requestID'] );
-               if(re2== "Success reject"){
-             print("re2 Succeeded reject");
-           showTopSnackBar(context,'Success','Request has been rejected',Icons.check );
-           }
-               else if(re2=='Fail reject'){
-             print("re3 failed");
-             showTopSnackBar(context,'Couldn\'t reject request','An error occurred while rejecting the request',Icons.cancel_outlined, );
-           }
-               else{
-             print(re2+' did not work');
-             showTopSnackBar(context,'Fail','An error occured while rejecting the request',Icons.cancel_outlined, );
-           }
-         }
-           else if(re3=='There is inst has the request'){// there is inst that have the same req
-           print('there is inst that have the same req');
-         }
-            else print(re3);
-                   
-                 }
-        else if(result=='Fail reject'){
-          print('could not update status, procces failed');
-                 showTopSnackBar(context,'Couldn\'t reject request','An error occurred while rejecting the request',Icons.cancel_outlined, );
-                 }
-        else{ print(result);}
-
-}
-
-
-    else { // status == done
-    String result= _auth.updateAppointmentStatus(status,uid);// appointment id
-    if(result=='Success done'){
-       String re2= await _auth.updateRequestStatus(status,document['contribId'],document['requestID'] ); // تأكدي من اسامي الفيلدز
-        if(re2=='done'){ // change status to rejected in other institutions
-           showTopSnackBar(context,'Success','Request has been marked as done',Icons.check );
-         }
-         else if(re2=='could not mark done'){
-           print('could not update status, procces failed');
-           showTopSnackBar(context,'Couldn\'t mark the request','An error occurred while marking the request',Icons.cancel_outlined, );
-         }
-         else print(re2);
-        }
-    else if(result=='done failed'){
-    showTopSnackBar(context,'Couldn\'t mark the request','An error occurred while marking the request',Icons.cancel_outlined, );
-    }
-    else{
-      
-    }
-
-
-}
-      Navigator.pop(context, 'OK');
-      },
-    );
-                    });
-}
-
 Future<String> countPoints(String status,List<String> listOfCat, List<int>counterForItem, String contID,BuildContext context,DocumentSnapshot document,String uid) async { // جيبي الاي دي للكنتربيوتر عشان تعدلين البوينتس
   // لست كاتيقوري ممكن فيها مشكلةانه من بداية السترنق الثاني باللست بيكون فيه وايت سبيس
 int length=listOfCat.length;
@@ -271,47 +157,47 @@ for(int i=0;i<length;i++){
       break;
 
   case "cardboard": 
-      points+= counterForItem[i]* 2; // 2 is the value of paper, can be changed later
+      points+= counterForItem[i]* 2; // 2 is the value of cardboard, can be changed later
       break;
 
   case "glass":     
-      points+= counterForItem[i]* 2; // 2 is the value of paper, can be changed later
+      points+= counterForItem[i]* 2; // 2 is the value of glass, can be changed later
       break;
 
   case "plastic":   
-      points+= counterForItem[i]* 2; // 2 is the value of paper, can be changed later
+      points+= counterForItem[i]* 2; // 2 is the value of plastic, can be changed later
       break;
 
   case "metals":
-      points+= counterForItem[i]* 4; // 4 is the value of paper, can be changed later
+      points+= counterForItem[i]* 4; // 4 is the value of metals, can be changed later
       break;
 
   case "electronics":
-      points+= counterForItem[i]* 4; // 4 is the value of paper, can be changed later
+      points+= counterForItem[i]* 4; // 4 is the value of electronics, can be changed later
       break;
 
   case "nylon":
-      points+= counterForItem[i]* 2; // 2 is the value of paper, can be changed later
+      points+= counterForItem[i]* 2; // 2 is the value of nylon, can be changed later
       break;
 
   case "cans":
-      points+= counterForItem[i]* 1; // 1 is the value of paper, can be changed later
+      points+= counterForItem[i]* 2; // 1 is the value of cans, can be changed later
       break;  
                     
   case "batteries":
-      points+= counterForItem[i]* 1; // 1 is the value of paper, can be changed later
+      points+= counterForItem[i]* 8; // 1 is the value of batteries, can be changed later
       break;
 
   case "furniture":
-      points+= counterForItem[i]* 10; // 10 is the value of paper, can be changed later
+      points+= counterForItem[i]* 10; // 10 is the value of furniture, can be changed later
       break;
 
-  case "cloths":
-      points+= counterForItem[i]* 8; // 8 is the value of paper, can be changed later
+  case "clothes":
+      points+= counterForItem[i]* 8; // 8 is the value of clothes, can be changed later
       break;
 
   case "food":
-      points+= counterForItem[i]* 2; // 2 is the value of paper, can be changed later
+      points+= counterForItem[i]* 2; // 2 is the value of food, can be changed later
       break;
 
   default: print("not category"); break;
@@ -346,13 +232,13 @@ return db.updateContPoints(points,contID);
 
 }
 
-showCustomAlert2(String status,String content, BuildContext context, String uid,DocumentSnapshot document) async {
+showCustomAlert2(String status,String content, BuildContext context, String uid,DocumentSnapshot document, IconData icon) async {
 
   showDialog(
                     context: context,
                     builder: (BuildContext context) {
 return twoButtonsAlert(
-      icon:Icons.error_outline, // change it
+      icon:icon, // change it
       btn1Content: "Cancel",
       btn2Content: "Ok",
       msgContent:content,

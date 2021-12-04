@@ -99,7 +99,7 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
     );
   }
 
- Widget buildInstitutionCard(BuildContext context, DocumentSnapshot document) {
+  Widget buildInstitutionCard(BuildContext context, DocumentSnapshot document) {
     return  Padding(
             padding: const EdgeInsets.only(left:20,right:20,top:20,),
             child: Container(
@@ -127,18 +127,97 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
           );
     }
 
+//updated 
  Widget myDetailsContainer1(BuildContext context, DocumentSnapshot document) {
- return Column(
+ return Column( // container
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-           Container( // bring the name from another stream
+           Container( 
             margin: EdgeInsets.only(top:13, left:18, ), 
-            child:  Text(document['reqTitle'],
+            child:Text(document['reqTitle'],
             style: TextStyle(color: Colors.green[900], fontSize: 25.0,fontWeight: FontWeight.bold),),),
-
-            
-             Row(
+Row(
+  mainAxisAlignment: MainAxisAlignment.start,
+  children: <Widget>[
+  Column( mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    //Name
+    Row(children: [
+    Padding(
+                  padding: const EdgeInsets.only(left:12.0, top:7),
+                  child: Icon(
+                  Icons.person,
+                  size:20,
+                  color: kPrimaryColor,
+                ),
+                     ),
+                     Container( 
+            margin: EdgeInsets.only(top:9, left:5, ), 
+            child:
+            Text('by '+document['contName'],
+            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
+ ],),
+ 
+ //Calendar
+ Row(children: [
+  Padding(
+                       padding: const EdgeInsets.only(left:12.0, top:7),
+                       child: Icon(
+                  Icons.calendar_today_sharp,
+                  size:20,
+                  color: kPrimaryColor,
+                ),
+                     ),
+                     Container( 
+            margin: EdgeInsets.only(top:9, left:5, ), 
+            child:
+            Text(ourViewMode.convertDate(context,document),
+            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
+ ],)
+  ],),
+ 
+  Column(
+     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    //category
+    Row(children: [
+ Padding(
+                       padding: const EdgeInsets.only(left:35.0, top:7),
+                       child: Icon(
+                  Icons.category,
+                  size:20,
+                  color: kPrimaryColor,
+                ),
+                     ),
+                     Container( 
+            margin: EdgeInsets.only(top:10, left:5, ), 
+            child:
+            Text(document['category'],
+            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),      
+ ],),
+ //time
+Row(children: [
+  Padding(
+                       padding: const EdgeInsets.only(left:35.0, top:7),
+                       child: Icon(
+                  Icons.access_time,
+                  size:20,
+                  color: kPrimaryColor,
+                ),
+                     ),
+                     Container( 
+            margin: EdgeInsets.only(top:10, left:5, ), 
+            child:
+            Text(ourViewMode.convertTime(context,document),
+            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),       
+  ],),
+  ],),
+],),
+ /*           
+ Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                    children: [
                      Padding(
@@ -155,7 +234,7 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
             Text('by '+document['contName'],
             style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
                    
-               // time    
+               // category    
             Padding(
                        padding: const EdgeInsets.only(left:35.0, top:7),
                        child: Icon(
@@ -173,8 +252,8 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
                    ],
                  ),
 
-
-                 Row(
+            
+ Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                    children: [
                      Padding(
@@ -208,7 +287,8 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
                    
                    ],
                  ),
-            lastRow(context,document),
+*/
+ lastRow(context,document),
   ],
     );
 
@@ -359,13 +439,13 @@ builder: (context)=>StatefulBuilder(
         children: [
            ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(Colors.grey),
+                            backgroundColor: MaterialStateProperty.all(Colors.orange[700]),
                             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                                   side: BorderSide(width: 0, color: Colors.transparent),
                             ))
                           ),
-                          child: Text("Cancle", style: TextStyle(fontSize:15, color: Colors.white),),
+                          child: Text("Cancel", style: TextStyle(fontSize:15, color: Colors.white),),
                           onPressed:()  {
                 Navigator.pop(context, 'OK');
               } ,
@@ -376,7 +456,7 @@ SizedBox(width: 20,),
 
            ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(Colors.orange[700]),
+                            backgroundColor: MaterialStateProperty.all(kPrimaryColor),
                             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                                   side: BorderSide(width: 0, color: Colors.transparent),
@@ -516,5 +596,3 @@ Widget counterItems(int index,List<int> counterForItems){
 String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 
 }// end of class
-
-

@@ -145,7 +145,7 @@ Widget instRating(dynamic userDocument){
           ratesAverage = ratesAverage / (ratesL);
           print("the average is: $ratesAverage");
 
-
+//Updated
          return Row(
            mainAxisAlignment: MainAxisAlignment.center,
            children:<Widget> [
@@ -156,7 +156,19 @@ Widget instRating(dynamic userDocument){
                             Icons.star,
                             color: Colors.amber,
                           ),),
-           Text('('+ratesL.toString()+')', style: TextStyle(color: Colors.grey, fontSize: 15.0,),),
+           
+           Row(children: [
+             Text('(',style: TextStyle(color: Colors.grey, fontSize: 15.0,),),
+             Icon(
+                  Icons.person,
+                  size:15,
+                  color: Colors.grey,
+                ),
+
+           
+           
+           Text(ratesL.toString()+' )', style: TextStyle(color: Colors.grey, fontSize: 15.0,),),
+           ],),
            ],
          );
  

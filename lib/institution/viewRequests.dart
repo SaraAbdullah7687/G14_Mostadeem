@@ -94,7 +94,7 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
             padding: const EdgeInsets.only(left:21,right:21,top:18,),
             child: Container(
                width: 140, // 250
-               height: 145, //160
+               height: 155, //160,145
                decoration: BoxDecoration(
               /*  border: Border.all(
                  color: Colors.green[900],
@@ -117,8 +117,9 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
           );
     }
 
+//updated
  Widget myDetailsContainer1(BuildContext context, DocumentSnapshot document) {
- return Column(
+ return Column( // container
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -126,8 +127,87 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
             margin: EdgeInsets.only(top:13, left:18, ), 
             child:Text(document['reqTitle'],
             style: TextStyle(color: Colors.green[900], fontSize: 25.0,fontWeight: FontWeight.bold),),),
-
-             Row(
+Row(
+  mainAxisAlignment: MainAxisAlignment.start,
+  children: <Widget>[
+  Column( mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    //Name
+    Row(children: [
+    Padding(
+                  padding: const EdgeInsets.only(left:12.0, top:7),
+                  child: Icon(
+                  Icons.person,
+                  size:20,
+                  color: kPrimaryColor,
+                ),
+                     ),
+                     Container( 
+            margin: EdgeInsets.only(top:9, left:5, ), 
+            child:
+            Text('by '+document['contName'],
+            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
+ ],),
+ 
+ //Calendar
+ Row(children: [
+  Padding(
+                       padding: const EdgeInsets.only(left:12.0, top:7),
+                       child: Icon(
+                  Icons.calendar_today_sharp,
+                  size:20,
+                  color: kPrimaryColor,
+                ),
+                     ),
+                     Container( 
+            margin: EdgeInsets.only(top:9, left:5, ), 
+            child:
+            Text(ourViewMode.convertDate(context,document),
+            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
+ ],)
+  ],),
+ 
+  Column(
+     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    //category
+    Row(children: [
+ Padding(
+                       padding: const EdgeInsets.only(left:35.0, top:7),
+                       child: Icon(
+                  Icons.category,
+                  size:20,
+                  color: kPrimaryColor,
+                ),
+                     ),
+                     Container( 
+            margin: EdgeInsets.only(top:10, left:5, ), 
+            child:
+            Text(document['category'],
+            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),      
+ ],),
+ //time
+Row(children: [
+  Padding(
+                       padding: const EdgeInsets.only(left:35.0, top:7),
+                       child: Icon(
+                  Icons.access_time,
+                  size:20,
+                  color: kPrimaryColor,
+                ),
+                     ),
+                     Container( 
+            margin: EdgeInsets.only(top:10, left:5, ), 
+            child:
+            Text(ourViewMode.convertTime(context,document),
+            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),       
+  ],),
+  ],),
+],),
+ /*           
+ Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                    children: [
                      Padding(
@@ -144,7 +224,7 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
             Text('by '+document['contName'],
             style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
                    
-               // time    
+               // category    
             Padding(
                        padding: const EdgeInsets.only(left:35.0, top:7),
                        child: Icon(
@@ -162,9 +242,8 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
                    ],
                  ),
 
-
             
-                 Row(
+ Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                    children: [
                      Padding(
@@ -198,37 +277,8 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
                    
                    ],
                  ),
-
- /* Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                   children: [
-                     Padding(
-                       padding: const EdgeInsets.only(left:12.0, top:7),
-                       child: Icon(
-                  Icons.access_time,
-                  size:20,
-                  color: kPrimaryColor,
-                ),
-                     ),
-                     Container( 
-            margin: EdgeInsets.only(top:10, left:10, ), 
-            child:
-            Text(ourViewMode.convertTime(context,document),
-            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
-                   ],
-                 ),
 */
-
-          /* Container( margin: const EdgeInsets.all(5),
-              child: ElevatedButton.icon(
-                onPressed: ()=> _checkCR(document.get("CR"),context),
-                label: Text(document['CR'], style: TextStyle(color: Colors.blue[400], fontSize: 18.0,fontWeight: FontWeight.bold, decoration: TextDecoration.underline ),),
-                icon: Icon(Icons.receipt_long_rounded), // or assignment confirmation_num_sharp
-                style: ElevatedButton.styleFrom(
-                  primary: Color.fromRGBO(48, 126, 80, 1) // can be changed 
-                ),
-              )),*/
-            lastRow(context,document),
+ lastRow(context,document),
   ],
     );
 
@@ -301,7 +351,7 @@ TextButton(
     ),
     onPressed: () {
      // ourViewMode.showMyDialog("accept", context,document.id,document);
-     ourViewMode.showCustomAlert2("accept", "Are you sure you want to accept this request?", context, document.id, document);
+     ourViewMode.showCustomAlert2("accept", "Are you sure you want to accept this request?", context, document.id, document, Icons.add_task);
     },
   ),
 SizedBox(width: 10), 
@@ -319,7 +369,7 @@ ElevatedButton(
     ),
     onPressed: () {
      // ourViewMode.showMyDialog("reject", context,document.id,document);
-     ourViewMode.showCustomAlert("reject", "Are you sure you want to reject this request?", context, document.id, document);
+     ourViewMode.showCustomAlert2( "reject", "Are you sure you want to reject this request?", context, document.id, document, Icons.cancel_outlined);
     },
 
 ),

@@ -114,9 +114,9 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
               ),
           );
     }
-
+//updated
  Widget myDetailsContainer1(BuildContext context, DocumentSnapshot document) {
- return Column(
+ return Column( // container
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -124,8 +124,87 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
             margin: EdgeInsets.only(top:13, left:18, ), 
             child:Text(document['reqTitle'],
             style: TextStyle(color: Colors.green[900], fontSize: 25.0,fontWeight: FontWeight.bold),),),
-
-            Row(
+Row(
+  mainAxisAlignment: MainAxisAlignment.start,
+  children: <Widget>[
+  Column( mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    //Name
+    Row(children: [
+    Padding(
+                  padding: const EdgeInsets.only(left:12.0, top:7),
+                  child: Icon(
+                  Icons.person,
+                  size:20,
+                  color: kPrimaryColor,
+                ),
+                     ),
+                     Container( 
+            margin: EdgeInsets.only(top:9, left:5, ), 
+            child:
+            Text('by '+document['contName'],
+            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
+ ],),
+ 
+ //Calendar
+ Row(children: [
+  Padding(
+                       padding: const EdgeInsets.only(left:12.0, top:7),
+                       child: Icon(
+                  Icons.calendar_today_sharp,
+                  size:20,
+                  color: kPrimaryColor,
+                ),
+                     ),
+                     Container( 
+            margin: EdgeInsets.only(top:9, left:5, ), 
+            child:
+            Text(ourViewMode.convertDate(context,document),
+            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
+ ],)
+  ],),
+ 
+  Column(
+     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    //category
+    Row(children: [
+ Padding(
+                       padding: const EdgeInsets.only(left:35.0, top:7),
+                       child: Icon(
+                  Icons.category,
+                  size:20,
+                  color: kPrimaryColor,
+                ),
+                     ),
+                     Container( 
+            margin: EdgeInsets.only(top:10, left:5, ), 
+            child:
+            Text(document['category'],
+            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),      
+ ],),
+ //time
+Row(children: [
+  Padding(
+                       padding: const EdgeInsets.only(left:35.0, top:7),
+                       child: Icon(
+                  Icons.access_time,
+                  size:20,
+                  color: kPrimaryColor,
+                ),
+                     ),
+                     Container( 
+            margin: EdgeInsets.only(top:10, left:5, ), 
+            child:
+            Text(ourViewMode.convertTime(context,document),
+            style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),       
+  ],),
+  ],),
+],),
+ /*           
+ Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                    children: [
                      Padding(
@@ -142,7 +221,7 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
             Text('by '+document['contName'],
             style: TextStyle(color: Colors.grey, fontSize: 12.0,),),),
                    
-               // time    
+               // category    
             Padding(
                        padding: const EdgeInsets.only(left:35.0, top:7),
                        child: Icon(
@@ -160,9 +239,8 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
                    ],
                  ),
 
-
             
-                 Row(
+ Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                    children: [
                      Padding(
@@ -196,11 +274,13 @@ final ViewRequestViewModel ourViewMode=ViewRequestViewModel();
                    
                    ],
                  ),
-            lastRow(context,document),
+*/
+ lastRow(context,document),
   ],
     );
 
  }
+
 
 Widget lastRow(BuildContext context, DocumentSnapshot document){
   return Row( 
