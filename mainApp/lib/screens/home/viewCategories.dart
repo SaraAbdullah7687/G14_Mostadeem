@@ -1,14 +1,80 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mostadeem/globals/global.dart';
 import 'package:mostadeem/models/Institution.dart';
 import 'package:mostadeem/screens/inst_card.dart';
 import 'package:mostadeem/screens/viViewInstModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 
-class SearchCategory extends StatelessWidget {
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  List cat = [];
+class viewCat extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<ViewInstViewModel>(
+        create: (_) => ViewInstViewModel(),
+        child: Container(height: 1200, width: 450, child: ViewCatList()));
+  }
+}
+
+class ViewCatList extends StatefulWidget {
+  const ViewCatList({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _ViewCatList createState() => _ViewCatList();
+}
+
+class _ViewCatList extends State<ViewCatList> {
+  List _allResults = [];
+  List _resultsList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getInsts();
+  }
+
+  searchResultsList() {
+    var showResults = [];
+    for (var instSnapshot in _allResults) {
+      var categories =
+          Institution.fromSnapshot(instSnapshot).categories.toLowerCase();
+      print(categories);
+      if (categories.contains(cat)) {
+        showResults.add(instSnapshot);
+      }
+    }
+
+    setState(() {
+      _resultsList = showResults;
+    });
+  }
+
+  /*TO GET INSTITUATIONS*/
+  getInsts() async {
+    var data = await FirebaseFirestore.instance
+        .collection("institution")
+        .where("status", isEqualTo: "approved")
+        .orderBy('ratesAvg', descending: true)
+        .get();
+    setState(() {
+      _allResults = data.docs;
+    });
+    if (data.docs.length == 0) {
+      return Center(
+        child: Text(
+          "There is no istituations",
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.grey,
+          ),
+        ),
+      );
+    }
+    searchResultsList();
+    return "complet";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,27 +91,28 @@ class SearchCategory extends StatelessWidget {
         elevation: 0.0,
         toolbarHeight: 60.0,
       ),
-      body: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection("institution")
-              .where("status", isEqualTo: "approved")
-              // .where("category".contains("plastic"))
-              .orderBy('ratesAvg', descending: true)
-              .snapshots(),
-          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            print(snapshot.data.docs.length);
-            if (!snapshot.hasData) return Text("zg"); //Loading();
-            return myWidget(context, snapshot);
-          }),
+      body: Column(
+        children: [
+          if (_resultsList.isEmpty)
+            Container(
+                margin: EdgeInsets.only(top: 200, left: 20, right: 20),
+                child: Text(
+                  "Sorry there is no instituation with ${cat} categoty",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.grey,
+                  ),
+                )),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _resultsList.length,
+              itemBuilder: (BuildContext context, int index) =>
+                  buildInstCard(context, _resultsList[index]),
+            ),
+          ),
+        ],
+      ),
     );
   }
-}
-
-Widget myWidget(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-  return ListView.builder(
-    // scrollDirection: Axis.horizontal,
-    itemCount: snapshot.data.docs.length,
-    itemBuilder: (context, index) =>
-        buildInstCard(context, snapshot.data.docs[index]),
-  );
 }
