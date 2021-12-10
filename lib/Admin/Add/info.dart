@@ -100,6 +100,7 @@ Widget title(){
                 autofocus: false,
                 controller: _titleController, 
                 cursorColor: kPrimaryColor,
+                maxLength: 15,
                 textInputAction: TextInputAction.next, // added it
              // keyboardType: TextInputType.number, //for phone there's one for email
       
@@ -146,6 +147,7 @@ Widget description(){
                 keyboardType: TextInputType.multiline,
             //  minLines: 1,//Normal textInputField will be displayed
                 maxLines: 5,// when user presses enter it will adapt to it
+                maxLength: 250, // ???
                 autofocus: false,
                 controller: _desController, 
                 cursorColor: kPrimaryColor,

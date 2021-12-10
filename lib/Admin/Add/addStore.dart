@@ -5,11 +5,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mostadeem/Admin/viViewModel.dart';
+import 'package:mostadeem/components/advancedAlertNew.dart';
 import 'package:mostadeem/components/rounded_button.dart';
 import 'package:mostadeem/components/text_field_container.dart';
 import 'package:mostadeem/services/auth.dart';
-
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:mostadeem/services/database.dart';
 import '../../constants.dart';
+
 
 class AddStore extends StatefulWidget {
   @override
@@ -28,6 +31,7 @@ final RegExp titleRegExp = RegExp('[a-zA-Z]'); // make it accepts numbers and sp
   final ViewInstitutionViewModel ourViewMode=ViewInstitutionViewModel();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // added it
   File image;
+  RegExp instagramRegex = new RegExp( "@[A-Za-z0-9_]{1,15}");
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -69,10 +73,10 @@ final RegExp titleRegExp = RegExp('[a-zA-Z]'); // make it accepts numbers and sp
 
                 image!=null?
                  Padding(
-            padding: const EdgeInsets.only(top:10,left:15),
+            padding: const EdgeInsets.only(left:10),
             child: Image.file(image,
-            width:40,
-            height:40,
+            width:150,
+            height:150,
             fit:BoxFit.cover)
           )
         :
@@ -181,8 +185,10 @@ return  GestureDetector(
                 cursorColor: kPrimaryColor,
                 textInputAction: TextInputAction.done, // added it
                 decoration: InputDecoration(
-                  prefixIcon: Icon( Icons.link, color: kPrimaryColor, // change it to instgram icon
-                  ),
+                  prefixIcon: Image.asset("assets/images/instagram.png",
+                  width: 5,
+                  height: 5,),//Icon( Icons.link, color: kPrimaryColor,), // change it to instgram icon
+                  
                   hintText: "Instagram account @xxx",
                   // contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15), // make it smaller
              //  border: InputBorder.none,
@@ -198,17 +204,11 @@ return  GestureDetector(
                   ),
                 ),
                 ),
-                 validator: (value) {
-    if(value==null){
-      return 'Required';
-    } 
-    String pattern =
-       "@[A-Za-z0-9_]{1,15}";
-    RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(value))
-      return 'Invalid Instgram Account';
-      return null;
-        },
+                validator: (value) => value.isEmpty 
+      ? 'Required'
+      : (instagramRegex.hasMatch(value) 
+          ? null 
+          : 'Not a valid Instagram account'),
                         onSaved: (value) {
                         // or _emailController.text = value!;
                         _authData['IG'] = value; },
@@ -227,13 +227,23 @@ return  GestureDetector(
                   text: "Submit",
                   press: () async{ 
                   if(_formKey.currentState.validate()){
-                  // for validation display pop up
+                    if(image!=null){
+                    dynamic checkStoreResult= await DatabaseService().checkStoreExists(_authData['name'].toLowerCase());
+                      if(checkStoreResult=='No store'){ // the store has not been added before
+                  // check first if store exists or not
+                  dynamic result= await _auth.addStore(_authData['name'].toLowerCase().trim(),_authData['IG'].trim());
 
-                  dynamic result= await _auth.addInformation(_authData['name'].trim(),_authData['IG'].trim());
+                  if(result=="success add"){ // add photo 
 
-                  if(result=="success add"){
-                    ourViewMode. showTopSnackBar(context,'Success','Store has been added successfully',Icons.add_task ); // change 
-                    Navigator.of(context).pop();
+                  dynamic uploadResult= await uploadImageToFirebase();
+
+                    if (uploadResult=='success uploading') {
+  ourViewMode. showTopSnackBar(context,'Success','Store has been added successfully',Icons.add_task ); // change 
+  Navigator.of(context).pop();
+}else {
+  ourViewMode.showTopSnackBar(context,'Couldn\'t add','An error occurred while adding store',Icons.cancel_outlined, );// change
+                    // clear text fields
+}
                   }
                   else // error
                   {
@@ -242,6 +252,30 @@ return  GestureDetector(
                     _nameController.clear();
                     _igController.clear();
                   }
+                    }
+                    else {
+                       showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AdvanceCustomAlertNew(
+                      icon: Icons.error_outline,
+                        msgContent: _authData['name']+' has been added before',
+                        btnContent: 'Ok',
+                    );
+                  });
+                    }
+                   }
+                   else {
+                      showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AdvanceCustomAlertNew(
+                      icon: Icons.error_outline,
+                        msgContent: 'Please select a photo',
+                        btnContent: 'Ok',
+                    );
+                  });
+                   }
                     }//
                   },
                 );
@@ -264,16 +298,16 @@ return  GestureDetector(
           ),),
           image!=null?
           Padding(
-            padding: const EdgeInsets.only(top:10,left:15),
+            padding: const EdgeInsets.only(top:2,left:30),
             child: Image.file(image,
-            width:20,
-            height:20,
+            width:24,
+            height:24,
             fit:BoxFit.cover),
           )
         :
           Padding(
-            padding: const EdgeInsets.only(top:10.0, left:4),
-            child: Icon(Icons.add, color:kPrimaryColor,size:15,), // maybe deleted
+            padding: const EdgeInsets.only(top:2, left:33),
+            child: Icon(Icons.upload, color:kPrimaryColor,size:18,), // maybe deleted
           ),
         
         ],
@@ -297,13 +331,40 @@ return  GestureDetector(
      final image= await ImagePicker().pickImage(source:ImageSource.gallery );
      if (image==null)
      return;
-     
      final tempImage=File(image.path);
-     setState (){this.image=tempImage;}
+     setState( (){this.image=tempImage;});
    } on Exception catch (e) {
      print("catch platform ex in image picker");
    }
 
   }
 
+  Future<String> uploadImageToFirebase() async {
+
+    try {
+      final fileName= _authData['name'];
+      final destination = 'storeImages/$fileName';
+      
+      final ref = FirebaseStorage.instance.ref(destination);
+      ref.putFile(image);
+      return 'success uploading';
+    } on FirebaseException catch (e) {
+      return 'error uploading';
+    }
+
+  }
+  
 }
+
+
+/*
+  Future uploadImageToFirebase(BuildContext context) async {
+    String fileName = basename(_authData['name']);
+    StorageReference firebaseStorageRef =
+        FirebaseStorage.instance.ref().child('uploads/$fileName');
+    StorageUploadTask uploadTask = firebaseStorageRef.putFile(image);
+    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    taskSnapshot.ref.getDownloadURL().then(
+          (value) => print("Done: $value"),
+        );
+  }*/

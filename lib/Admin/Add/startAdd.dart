@@ -45,13 +45,16 @@ class StartAdd extends StatelessWidget {
         ),
         
       body:
-      Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-        buildCard1(context),
-        buildCard2(context),
+      Padding(
+        padding: const EdgeInsets.only(top:100),
+        child: Column(
+          //mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+          buildCard1(context),
+          buildCard2(context),
 
-      ],),);
+        ],),
+      ),);
   }
 
 
@@ -161,7 +164,7 @@ return Container(
                   )
                     :// not padding but margin!!
                      Padding(
-                       padding: const EdgeInsets.only(left:5),
+                       padding: const EdgeInsets.only(left:1),
                        child: Image.asset(image,
                     fit: BoxFit.cover,
                     width: 80,
