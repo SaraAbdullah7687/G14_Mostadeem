@@ -3,7 +3,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mostadeem/Admin/components/social_icon.dart';
 import 'package:mostadeem/Admin/viViewModel.dart';
 import 'package:mostadeem/components/advancedAlertNew.dart';
 import 'package:mostadeem/components/rounded_button.dart';
@@ -32,6 +34,7 @@ final RegExp titleRegExp = RegExp('[a-zA-Z]'); // make it accepts numbers and sp
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // added it
   File image;
   RegExp instagramRegex = new RegExp( "@[A-Za-z0-9_]{1,15}");
+  RegExp insReg= new RegExp('(?=[a-zA-Z0-9._]{2,20})(?!.*[_.]{2})[^_.].*[^_.]'); // try
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -140,6 +143,7 @@ return  GestureDetector(
                 autofocus: false,
                 controller: _nameController, 
                 cursorColor: kPrimaryColor,
+                maxLength: 15,
                 textInputAction: TextInputAction.next, // added it
                 decoration: InputDecoration(
                   prefixIcon: Icon( Icons.store_mall_directory_rounded, color: kPrimaryColor,
@@ -184,10 +188,9 @@ return  GestureDetector(
                 controller: _igController, 
                 cursorColor: kPrimaryColor,
                 textInputAction: TextInputAction.done, // added it
+                maxLength: 30,
                 decoration: InputDecoration(
-                  prefixIcon: Image.asset("assets/images/instagram.png",
-                  width: 5,
-                  height: 5,),//Icon( Icons.link, color: kPrimaryColor,), // change it to instgram icon
+                  prefixIcon:Icon( Icons.link, color: kPrimaryColor,), // change it to instgram icon
                   
                   hintText: "Instagram account @xxx",
                   // contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15), // make it smaller
@@ -296,7 +299,7 @@ return  GestureDetector(
             fontWeight: FontWeight.w600,
             color: kPrimaryColor,
           ),),
-          image!=null?
+         /* image!=null?
           Padding(
             padding: const EdgeInsets.only(top:2,left:30),
             child: Image.file(image,
@@ -304,7 +307,7 @@ return  GestureDetector(
             height:24,
             fit:BoxFit.cover),
           )
-        :
+        :*/
           Padding(
             padding: const EdgeInsets.only(top:2, left:33),
             child: Icon(Icons.upload, color:kPrimaryColor,size:18,), // maybe deleted
