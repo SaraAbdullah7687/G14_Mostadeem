@@ -210,4 +210,16 @@ void showTopSnackBar(BuildContext context, String title, String message,IconData
     flushBars.add(newFlushBar);
   }
 
+
+addInformation(String title,String des ){
+  String uid=getCurrentUserID();
+  return DatabaseService().addInfo(uid, title,des);
+}
+
+addStore(String name,String ig){ // image path as parameter
+ String uid=getCurrentUserID();
+  return DatabaseService().addStore(uid, name,ig);
+}
+
+
 } // end of class

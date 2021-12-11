@@ -20,6 +20,7 @@ class DatabaseService {
   final CollectionReference _contributorCollection = FirebaseFirestore.instance.collection('contributor'); // was Firestore instead of FirebaseFirestore
   final CollectionReference _institutionCollection = FirebaseFirestore.instance.collection('institution'); // was Firestore instead of FirebaseFirestore
   final CollectionReference _usersCollection = FirebaseFirestore.instance.collection('users'); // was Firestore instead of FirebaseFirestore
+  final CollectionReference _adminCollection = FirebaseFirestore.instance.collection('admin'); // was Firestore instead of FirebaseFirestore
   // get institution stream
     FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CollectionReference _sendEmailCollection = FirebaseFirestore.instance.collection('sendEmail'); // was Firestore instead of FirebaseFirestore
@@ -256,7 +257,7 @@ result='Success reject';
 }
 else{ // status==done
 _institutionCollection.doc(instID).collection("appointment").doc(uid) // لحظة هذا الاي دي حق الدوك للابوينمنت؟
-    .update({'status' : 'complete'}) 
+    .update({'status' : 'done'}) 
     .then((_) => print(result='Success done'),)
     .catchError((error) => print(result='done failed'),);
     result='Success done';
@@ -302,7 +303,7 @@ result='Success reject';
 }
 else{// status==done
 _contributorCollection.doc(contID).collection("request").doc(reqID) // لحظة هذا الاي دي حق الدوك للابوينمنت؟
-    .update({'status' : 'complete'})
+    .update({'status' : 'done'})
     .then((_) => print(result='done'),)
     .catchError((error) => print(result='could not mark done'),);
     result='done';
@@ -379,6 +380,69 @@ return _institutionCollection.doc(uid).snapshots();
 
     }
 
+Future<String> addInfo(String uid, String title, String des) async {
+
+CollectionReference infoCollection=_adminCollection.doc(uid).collection("information");
+String retVal = "error info";
+
+ try {
+      print("create info collection");
+     DocumentReference doc1= await infoCollection.add({
+        'title':title,
+        'description': des,
+        //'notifToken': user.notifToken,?? what should we add?
+      });
+    infoCollection.doc(doc1.id).update({
+      'reqID':doc1.id,
+    });
+      
+      retVal = "success info";
+    } catch (e) {
+      print(e);
+    }
+return retVal;
+}
+
+Future<String> addStore(String uid, String name, String ig) async {
+
+CollectionReference storeCollection=FirebaseFirestore.instance.collection('store');
+//CollectionReference infoCollection=_adminCollection.doc(uid).collection("stores");
+String retVal = "error info";
+
+ try {
+      print("create info collection");
+     DocumentReference doc1= await storeCollection.add({
+        'name':name,
+        'instagram': ig,
+        // image path
+        //'notifToken': user.notifToken,?? what should we add?
+      });
+    storeCollection.doc(doc1.id).update({
+      'docID':doc1.id,
+    });
+      
+      retVal = "success add";
+    } catch (e) {
+      print(e);
+    }
+return retVal;
+}
+
+Future<String> checkStoreExists(String name) async {
+  String result="initial";
+var theRequest = FirebaseFirestore.instance.collection('store')
+   .where("name", isEqualTo: name);
+
+QuerySnapshot<Map<String, dynamic>> query = await theRequest.get();
+List<QueryDocumentSnapshot<Map<String, dynamic>>> document= query.docs;
+print('before checking doc length');
+     if (document.length==0){ // no inst has the req => change status in request collection
+      return "No store";
+     }
+     else{
+       return "there is store";
+     }
+}
 
 }
 
