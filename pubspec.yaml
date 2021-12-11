@@ -43,6 +43,8 @@ dependencies:
   another_flushbar: ^1.10.24 
   showcaseview: ^1.1.3
   shared_preferences: 
+  image_picker:
+  firebase_storage: ^10.2.0
 
   # Afnan
   geolocator: ^7.6.0
