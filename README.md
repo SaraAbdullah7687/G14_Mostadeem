@@ -1,5 +1,5 @@
 # Mostadeem ♻️
-<img width="500" alt="Picturjje1" src="https://user-images.githubusercontent.com/59771760/150033082-fb278dc9-cfd3-4882-b443-77b60a497401.png" style="margin-left: 100px;">
+<img width="500" alt="Picturjje1" src="https://github.com/SaraAbdullah7687/G14_Mostadeem/blob/main/main%20app/Mostadeem.png" style="margin-left: 100px;">
 Mostadeem is an environmentally friendly application that promotes sustainability. Our targeted users are the institutions who will be accept the recycling request, the contributors who will contribute to sustainable development, and the admin who will manage the institutions accounts and adding the stores and information related to sustainable development. 
 
 The contributor can schedule a request to pick up the recycling items. As the contributors submit additional recycling items, points will be provided to them so they can redeem the points in various stores as an incentive, in addition to advising them on how to live a waste-free life. 
