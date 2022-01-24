@@ -1,1 +1,6 @@
-# Mostadeem
+# Mostadeem ♻️
+          We will harness technology, the internet, and computational power to utilize sustainability to empower people all over Saudi Arabia to fully take control of their waste and integrate environmental care from the people’s perspective. And we will approach it by developing an environmentally friendly application. Mostadeem is an environmentally friendly application that promotes sustainability. Our targeted users are the institutions who will be accept the recycling request, the contributors who will contribute to sustainable development, and the admin who will manage the institutions accounts and adding the stores and information related to sustainable development. 
+
+          The contributor can schedule a request to pick up the recycling items. As the contributors submit additional recycling items, points will be provided to them so they can redeem the points in various stores as an incentive, in addition to advising them on how to live a waste-free life. 
+The institutions accept the requests and send a courier to pick up the items from contributor, then based on the submitted items points will be incremented. Mostadeem contributes directly to vision 2030 goals so that not only “The Line” is eco-friendly but rather, the whole Kingdom of Saudi Arabia. Mostadeem will help in reducing and managing waste by initiating requests to recycle unused items. 
+
